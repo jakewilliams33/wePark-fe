@@ -1,3 +1,4 @@
+
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { UserScreen } from "./components/UserScreen";
@@ -33,6 +34,7 @@ const App = () => {
           <NavButton destination="MapScreen" func={handlePress} />
           <NavButton destination="SearchScreen" func={handlePress} />
           <UserScreen />
+
         </View>
       );
       break;
