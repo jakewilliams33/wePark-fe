@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import * as Location from "expo-location";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  TouchableOpacity,
+  Button,
+} from "react-native";
+import {} from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
 
 const App = () => {
@@ -15,6 +23,7 @@ const App = () => {
   const [markers, setMarkers] = useState([]);
   const [markerAllowed, setMarkerAllowed] = useState(false);
   const [newMarker, setNewMarker] = useState([]);
+  const [markerKey, setMarkerKey] = useState(0);
 
   console.log(newMarker);
 
@@ -53,73 +62,78 @@ const App = () => {
     })();
   }, []);
 
+  const handleMarkerCreate = (event) => {
+    if (markerAllowed) {
+      let newPlace = event.nativeEvent.coordinate;
+      console.log(newPlace);
+      setNewMarker((curr) => [
+        ...curr,
+        {
+          coordinate: {
+            latitude: newPlace.latitude,
+            longitude: newPlace.longitude,
+          },
+          key: markerKey,
+        },
+      ]);
+    }
+    setMarkerAllowed(false);
+    setMarkerKey((markerKey) => markerKey + 1);
+  };
+
   //only render map if location is obtained - needed for initial region
   if (userLocation) {
     return (
-      <View>
-        <MapView
-          style={{ alignSelf: "stretch", height: "100%" }}
-          initialRegion={mapRegion}
-          showsUserLocation={true}
-          followsUserLocation={true}
-          //adding the marker on touch
-          onPress={(event) => {
-            if (markerAllowed) {
-              let newPlace = event.nativeEvent.coordinate;
-              console.log(newPlace);
-              setNewMarker([
-                {
-                  coordinate: {
-                    latitude: newPlace.latitude,
-                    longitude: newPlace.longitude,
-                  },
-                  key: "temp",
-                },
-              ]);
-            }
-            setMarkerAllowed(false);
-          }}
-        >
-          {newMarker.map((marker) => {
-            return (
-              <Marker
-                draggable
-                {...marker}
-                onDragEnd={(e) => {
-                  setNewMarker([
-                    {
-                      coordinate: {
-                        latitude: e.nativeEvent.coordinate.latitude,
-                        longitude: e.nativeEvent.coordinate.longitude,
-                      },
-                      key: "temp",
-                    },
-                  ]);
+      <View style={styles.container}>
+        <View>
+          <Text>Header</Text>
+        </View>
+        <View>
+          <MapView
+            style={{ alignSelf: "stretch", height: "100%" }}
+            initialRegion={mapRegion}
+            showsUserLocation={true}
+            followsUserLocation={true}
+            //adding the marker on touch
+            onPress={(event) => handleMarkerCreate(event)}
+          >
+            {newMarker.map((marker) => {
+              return (
+                <Marker
+                  draggable
+                  {...marker}
+                  onDragEnd={(event) => handleMarkerCreate(event)}
+                />
+              );
+            })}
+
+            {markers.map((marker) => {
+              return <Marker draggable {...marker} />;
+            })}
+          </MapView>
+          <View>
+            <Button
+              //add button
+              title={"Add Marker"}
+              activeOpacity={0.7}
+              onPress={clickHandler}
+              containerStyle={styles.touchableOpacityStyle}
+              style={styles.touchableOpacityStyle}
+            >
+              <Image
+                source={{
+                  uri: "https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png",
                 }}
+                //You can use you project image Example below
+                //source={require('./images/float-add-icon.png')}
+                style={styles.floatingButtonStyle}
               />
-            );
-          })}
-
-          {markers.map((marker) => {
-            return <Marker draggable {...marker} />;
-          })}
-        </MapView>
-
-        <TouchableOpacity
-          //add button
-          activeOpacity={0.7}
-          onPress={clickHandler}
-          style={styles.touchableOpacityStyle}
-        >
-          <Image
-            source={{
-              uri: "https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png",
-            }}
-            //You can use you project image Example below
-            //source={require('./images/float-add-icon.png')}
-            style={styles.floatingButtonStyle}
-          />
-        </TouchableOpacity>
+            </Button>
+          </View>
+        </View>
+        <View>
+          <Text>Footer</Text>
+        </View>
       </View>
     );
   }
@@ -128,7 +142,11 @@ const App = () => {
 export default App;
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    marginTop: 150,
+    marginBottom: 150,
   },
   touchableOpacityStyle: {
     position: "absolute",
