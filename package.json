@@ -16,6 +16,7 @@
     "location": "^0.0.1",
     "react": "18.0.0",
     "react-native": "0.69.5",
+    "react-native-gesture-handler": "^2.6.0",
     "react-native-maps": "0.31.1"
   },
   "devDependencies": {
