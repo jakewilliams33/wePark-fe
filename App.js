@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Button,
+  ToastAndroid,
 } from "react-native";
 import {} from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
@@ -23,13 +24,12 @@ const App = () => {
   const [markers, setMarkers] = useState([]);
   const [markerAllowed, setMarkerAllowed] = useState(false);
   const [newMarker, setNewMarker] = useState([]);
-  const [markerKey, setMarkerKey] = useState(0);
 
   console.log(newMarker);
 
   //function to handle click on floating Action Button
   const clickHandler = () => {
-    alert("Tap on map to add parking space");
+    ToastAndroid.show("Tap on map to add parking space", ToastAndroid.LONG);
 
     setMarkerAllowed(true);
   };
@@ -62,25 +62,6 @@ const App = () => {
     })();
   }, []);
 
-  const handleMarkerCreate = (event) => {
-    if (markerAllowed) {
-      let newPlace = event.nativeEvent.coordinate;
-      console.log(newPlace);
-      setNewMarker((curr) => [
-        ...curr,
-        {
-          coordinate: {
-            latitude: newPlace.latitude,
-            longitude: newPlace.longitude,
-          },
-          key: markerKey,
-        },
-      ]);
-    }
-    setMarkerAllowed(false);
-    setMarkerKey((markerKey) => markerKey + 1);
-  };
-
   //only render map if location is obtained - needed for initial region
   if (userLocation) {
     return (
@@ -95,14 +76,39 @@ const App = () => {
             showsUserLocation={true}
             followsUserLocation={true}
             //adding the marker on touch
-            onPress={(event) => handleMarkerCreate(event)}
+            onPress={(event) => {
+              if (markerAllowed) {
+                let newPlace = event.nativeEvent.coordinate;
+                console.log(newPlace);
+                setNewMarker([
+                  {
+                    coordinate: {
+                      latitude: newPlace.latitude,
+                      longitude: newPlace.longitude,
+                    },
+                    key: "temp",
+                  },
+                ]);
+              }
+              setMarkerAllowed(false);
+            }}
           >
             {newMarker.map((marker) => {
               return (
                 <Marker
                   draggable
                   {...marker}
-                  onDragEnd={(event) => handleMarkerCreate(event)}
+                  onDragEnd={(e) => {
+                    setNewMarker([
+                      {
+                        coordinate: {
+                          latitude: e.nativeEvent.coordinate.latitude,
+                          longitude: e.nativeEvent.coordinate.longitude,
+                        },
+                        key: "temp",
+                      },
+                    ]);
+                  }}
                 />
               );
             })}
@@ -111,6 +117,7 @@ const App = () => {
               return <Marker draggable {...marker} />;
             })}
           </MapView>
+
           <View>
             <Button
               //add button
