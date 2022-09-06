@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { UserScreen } from "./components/UserScreen";
 import { SearchScreen } from "./components/SearchScreen";
 import { MapScreen } from "./components/MapScreen";
@@ -16,30 +16,39 @@ const App = () => {
 
   useEffect(() => {}, [screen]);
 
-  if (screen === "MapScreen") {
-    return (
-      <View style={styles.container}>
-        <NavButton destination="UserScreen" func={handlePress} />
-        <NavButton destination="SearchScreen" func={handlePress} />
-        <MapScreen />
-      </View>
-    );
-  } else if (screen === "UserScreen") {
-    return (
-      <View style={styles.container}>
-        <NavButton destination="MapScreen" func={handlePress} />
-        <NavButton destination="SearchScreen" func={handlePress} />
-        <UserScreen />
-      </View>
-    );
-  } else if (screen === "SearchScreen") {
-    return (
-      <View style={styles.container}>
-        <NavButton destination="MapScreen" func={handlePress} />
-        <NavButton destination="UserScreen" func={handlePress} />
-        <SearchScreen />
-      </View>
-    );
+  switch (screen) {
+    case "MapScreen":
+      return (
+        <View style={styles.container}>
+          <NavButton destination="UserScreen" func={handlePress} />
+          <NavButton destination="SearchScreen" func={handlePress} />
+          <MapScreen />
+        </View>
+      );
+      break;
+
+    case "UserScreen":
+      return (
+        <View style={styles.container}>
+          <NavButton destination="MapScreen" func={handlePress} />
+          <NavButton destination="SearchScreen" func={handlePress} />
+          <UserScreen />
+        </View>
+      );
+      break;
+
+    case "SearchScreen":
+      return (
+        <View style={styles.container}>
+          <NavButton destination="MapScreen" func={handlePress} />
+          <NavButton destination="UserScreen" func={handlePress} />
+          <SearchScreen />
+        </View>
+      );
+      break;
+
+    default:
+      return <Text>Something Went Wrong!</Text>;
   }
 };
 
