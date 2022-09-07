@@ -7,8 +7,11 @@ import {
   Text,
   Button,
   ToastAndroid,
+  TouchableOpacity,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import { showMessage, hideMessage } from "react-native-flash-message";
+import FlashMessage from "react-native-flash-message";
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -19,18 +22,39 @@ export default function MapScreen({ navigation, route }) {
     longitudeDelta: 1,
   });
   const [status, setStatus] = useState();
-  const [markers, setMarkers] = useState([]);
+  const [markers, setMarkers] = useState([
+    {
+      coordinate: {
+        latitude: 53.820851393806905,
+        longitude: -1.5859020128846169,
+      },
+      key: 2,
+    },
+    {
+      coordinate: {
+        latitude: 53.81018980502543,
+        longitude: -1.569543890655041,
+      },
+      key: 1,
+    },
+  ]);
   const [markerAllowed, setMarkerAllowed] = useState(false);
   const [newMarker, setNewMarker] = useState([]);
-  //   const [markerKey, setMarkerKey] = useState(0);
+
+  const [showConfirmButton, setShowConfirmButton] = useState(false);
+  const [showAddButton, setShowAddButton] = useState(true);
 
   console.log(newMarker);
+  console.log(markers);
 
   //function to handle click on floating Action Button
   const clickHandler = () => {
-    ToastAndroid.show("Tap on map to add parking space", ToastAndroid.LONG);
-
+    showMessage({
+      message: "Tap on the map to add a parking space",
+      type: "info",
+    });
     setMarkerAllowed(true);
+    setShowAddButton(false);
   };
 
   //get location permission
@@ -61,142 +85,163 @@ export default function MapScreen({ navigation, route }) {
     })();
   }, []);
 
-  //   const handleMarkerCreate = (event) => {
-  //     if (markerAllowed) {
-  //       let newPlace = event.nativeEvent.coordinate;
-  //       console.log(newPlace);
-  //       setNewMarker((curr) => [
-  //         ...curr,
-  //         {
-  //           coordinate: {
-  //             latitude: newPlace.latitude,
-  //             longitude: newPlace.longitude,
-  //           },
-  //           key: markerKey,
-  //         },
-  //       ]);
-  //     }
-  //     setMarkerAllowed(false);
-  //     setMarkerKey((markerKey) => markerKey + 1);
-  //   };
+  //confirm marker
+  const confirmMarkerPosition = () => {
+    const finalChoice = newMarker[0].coordinate;
+    setMarkers([
+      ...markers,
+      {
+        coordinate: {
+          latitude: finalChoice.latitude,
+          longitude: finalChoice.longitude,
+        },
+        key: Date.now(),
+      },
+    ]);
+    setNewMarker([]);
+  };
 
   if (userLocation) {
     return (
-      <View style={styles.container}>
-        <View>
-          <MapView
-            style={{
-              alignSelf: "stretch",
-              height: "100%",
-              minHeight: 100,
-              minWidth: 100,
-            }}
-            initialRegion={mapRegion}
-            showsUserLocation={true}
-            followsUserLocation={true}
-            //adding the marker on touch
-            onPress={(event) => {
-              if (markerAllowed) {
-                let newPlace = event.nativeEvent.coordinate;
+      <View style={{ flex: 1 }}>
+        <MapView
+          style={{ flex: 1 }}
+          initialRegion={mapRegion}
+          showsUserLocation={true}
+          followsUserLocation={true}
+          //adding the marker on touch
+          onPress={(event) => {
+            if (markerAllowed) {
+              hideMessage();
+              let newPlace = event.nativeEvent.coordinate;
+              setShowConfirmButton(true);
 
-                setNewMarker([
-                  {
-                    coordinate: {
-                      latitude: newPlace.latitude,
-                      longitude: newPlace.longitude,
-                    },
-                    key: "temp",
+              setNewMarker([
+                {
+                  coordinate: {
+                    latitude: newPlace.latitude,
+                    longitude: newPlace.longitude,
                   },
-                ]);
-              }
-              setMarkerAllowed(false);
+                  key: "temp",
+                },
+              ]);
+            }
+            setMarkerAllowed(false);
+          }}
+        >
+          {newMarker.map((marker) => {
+            return (
+              <Marker
+                draggable
+                {...marker}
+                onDragEnd={(e) => {
+                  setNewMarker([
+                    {
+                      coordinate: {
+                        latitude: e.nativeEvent.coordinate.latitude,
+                        longitude: e.nativeEvent.coordinate.longitude,
+                      },
+                      key: "temp",
+                    },
+                  ]);
+                }}
+              />
+            );
+          })}
+
+          {markers.map((marker) => {
+            return <Marker draggable {...marker} />;
+          })}
+        </MapView>
+        {showConfirmButton && (
+          <TouchableOpacity
+            style={{
+              backgroundColor: "white",
+              padding: 20,
+              borderRadius: 10,
+              flex: 1,
+              flexDirection: "row",
+              position: "absolute",
+              bottom: 50,
+              alignSelf: "center",
+            }}
+            onPress={() => {
+              setShowAddButton(true),
+                setShowConfirmButton(false),
+                confirmMarkerPosition();
             }}
           >
-            {newMarker.map((marker) => {
-              return (
-                <Marker
-                  draggable
-                  {...marker}
-                  onDragEnd={(e) => {
-                    setNewMarker([
-                      {
-                        coordinate: {
-                          latitude: e.nativeEvent.coordinate.latitude,
-                          longitude: e.nativeEvent.coordinate.longitude,
-                        },
-                        key: "temp",
-                      },
-                    ]);
-                  }}
-                />
-              );
-            })}
-
-            {markers.map((marker) => {
-              return <Marker draggable {...marker} />;
-            })}
-          </MapView>
-          <View>
-            <Button
-              title={"Add Marker"}
-              activeOpacity={0.7}
-              onPress={clickHandler}
-              containerStyle={styles.touchableOpacityStyle}
-              style={styles.touchableOpacityStyle}
-            >
-              <Image
-                source={{
-                  uri: "https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png",
-                }}
-                //You can use you project image Example below
-                //source={require('./images/float-add-icon.png')}
-                style={styles.floatingButtonStyle}
-              />
-            </Button>
-          </View>
-        </View>
-        <View></View>
+            <Text>Confirm?</Text>
+          </TouchableOpacity>
+        )}
+        {showAddButton && (
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              position: "absolute",
+              bottom: 10,
+              alignSelf: "center",
+            }}
+            //add button
+            activeOpacity={0.7}
+            onPress={() => {
+              clickHandler();
+            }}
+          >
+            <Image
+              style={{ resizeMode: "contain", width: 65, height: 65 }}
+              source={{
+                uri: "https://www.freeiconspng.com/uploads/parking-icon-png-12.png",
+              }}
+            />
+          </TouchableOpacity>
+        )}
+        <FlashMessage
+          position={"center"}
+          style={{ marginBottom: 600 }}
+          autoHide={false}
+        />
       </View>
     );
   } else
     return (
-      <View style={styles.container}>
-        <Button
-          title={"User"}
-          activeOpacity={0.7}
-          onPress={() => navigation.push("User")}
-          containerStyle={styles.touchableOpacityStyle}
-          style={styles.touchableOpacityStyle}
-        ></Button>
-        <Button
-          title={"Search"}
-          activeOpacity={0.7}
-          onPress={() => navigation.push("Search")}
-          containerStyle={styles.touchableOpacityStyle}
-          style={styles.touchableOpacityStyle}
-        ></Button>
+      <View>
         <Text>Sorry! No User location data!</Text>
       </View>
     );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    // display: "flex",
-    // flexDirection: "column",
-    // justifyContent: "center",
-  },
-  touchableOpacityStyle: {
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-
-    marginLeft: 179,
-    padding: 20,
-  },
-  floatingButtonStyle: {
-    resizeMode: "contain",
-    width: 50,
-    height: 50,
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+//   touchableOpacityStyle: {
+//     position: "absolute",
+//     alignItems: "center",
+//     justifyContent: "center",
+//     marginTop: 800,
+//     marginLeft: 179,
+//   },
+//   floatingButtonStyle: {
+//     resizeMode: "contain",
+//     width: 50,
+//     height: 50,
+//   },
+//   buttonText: {
+//     fontSize: 20,
+//     color: "black",
+//   },
+//   button: {
+//     backgroundColor: "white",
+//     padding: 20,
+//     borderRadius: 5,
+//     position: "absolute",
+//     alignItems: "center",
+//     justifyContent: "center",
+//     marginTop: 700,
+//     marginLeft: 142,
+//   },
+// });
