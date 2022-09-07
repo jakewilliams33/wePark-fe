@@ -112,7 +112,11 @@ export default function MapScreen({ navigation, route }) {
           //adding the marker on touch
           onPress={(event) => {
             if (markerAllowed) {
-              hideMessage();
+              showMessage({
+                message: "Hold down on the marker to drag",
+                type: "info",
+              });
+
               let newPlace = event.nativeEvent.coordinate;
               setShowConfirmButton(true);
 
@@ -175,6 +179,7 @@ export default function MapScreen({ navigation, route }) {
                 setShowAddButton(true),
                   setShowConfirmButton(false),
                   confirmMarkerPosition();
+                hideMessage();
               }}
             >
               <Text>Confirm?</Text>
@@ -193,6 +198,7 @@ export default function MapScreen({ navigation, route }) {
                 setShowAddButton(true),
                   setShowConfirmButton(false),
                   setNewMarker([]);
+                hideMessage();
               }}
             >
               <Text>Cancel</Text>
