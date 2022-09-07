@@ -154,49 +154,77 @@ export default function MapScreen({ navigation, route }) {
           })}
         </MapView>
         {showConfirmButton && (
-          <TouchableOpacity
+          <View
             style={{
-              backgroundColor: "white",
-              padding: 20,
-              borderRadius: 10,
               flex: 1,
               flexDirection: "row",
               position: "absolute",
               bottom: 50,
               alignSelf: "center",
-            }}
-            onPress={() => {
-              setShowAddButton(true),
-                setShowConfirmButton(false),
-                confirmMarkerPosition();
+              justifyContent: "space-between",
             }}
           >
-            <Text>Confirm?</Text>
-          </TouchableOpacity>
-        )}
-        {showAddButton && (
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              position: "absolute",
-              bottom: 10,
-              alignSelf: "center",
-            }}
-            //add button
-            activeOpacity={0.7}
-            onPress={() => {
-              clickHandler();
-            }}
-          >
-            <Image
-              style={{ resizeMode: "contain", width: 65, height: 65 }}
-              source={{
-                uri: "https://www.freeiconspng.com/uploads/parking-icon-png-12.png",
+            <TouchableOpacity
+              style={{
+                backgroundColor: "white",
+                padding: 20,
+                borderRadius: 10,
+                marginRight: 2,
               }}
-            />
-          </TouchableOpacity>
+              onPress={() => {
+                setShowAddButton(true),
+                  setShowConfirmButton(false),
+                  confirmMarkerPosition();
+              }}
+            >
+              <Text>Confirm?</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: "white",
+                padding: 20,
+                paddingRight: 27,
+                paddingLeft: 26.5,
+                borderRadius: 10,
+                marginLeft: 2,
+              }}
+              onPress={() => {
+                setShowAddButton(true),
+                  setShowConfirmButton(false),
+                  setNewMarker([]);
+              }}
+            >
+              <Text>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         )}
+        {
+          //add button
+          showAddButton && (
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                position: "absolute",
+                bottom: 10,
+                alignSelf: "center",
+              }}
+              //add button
+              activeOpacity={0.7}
+              onPress={() => {
+                clickHandler();
+              }}
+            >
+              <Image
+                style={{ resizeMode: "contain", width: 65, height: 65 }}
+                source={{
+                  uri: "https://www.freeiconspng.com/uploads/parking-icon-png-12.png",
+                }}
+              />
+            </TouchableOpacity>
+          )
+        }
         <FlashMessage
           position={"center"}
           style={{ marginBottom: 600 }}
