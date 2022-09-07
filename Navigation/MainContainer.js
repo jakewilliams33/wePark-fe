@@ -27,11 +27,11 @@ export default function MainContainer() {
             let rn = route.name;
 
             if (rn === homeName) {
-              icon = focused ? "home" : "home-outline";
+              iconName = focused ? "home" : "home-outline";
             } else if (rn === mapName) {
-              icon = focused ? "map" : "map-outline";
+              iconName = focused ? "map" : "map-outline";
             } else if (rn === userPageName) {
-              icon = focused ? "id-card" : "id-card-o";
+              iconName = focused ? "id-card" : "id-card-o";
             }
 
             return <Ionicons name={iconName} size={size} color={color} />;
