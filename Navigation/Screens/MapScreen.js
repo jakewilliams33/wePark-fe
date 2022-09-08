@@ -6,10 +6,8 @@ import {
   Image,
   Text,
   Button,
-  ToastAndroid,
   TouchableOpacity,
   Modal,
-  Pressable,
   TextInput,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
@@ -17,6 +15,7 @@ import { showMessage, hideMessage } from "react-native-flash-message";
 import FlashMessage from "react-native-flash-message";
 import { Formik } from "formik";
 import * as ImagePicker from "expo-image-picker";
+import SelectDropdown from "react-native-select-dropdown";
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -132,7 +131,14 @@ export default function MapScreen({ navigation, route }) {
           }}
         >
           <Formik
-            initialValues={{ name: "", description: "" }}
+            initialValues={{
+              name: "",
+              description: "",
+              parking_type: "",
+              opening_time: "No specified times",
+              closing_time: "No specified times",
+              time_limit: "",
+            }}
             onSubmit={(values) => {
               console.log(values);
             }}
@@ -168,6 +174,37 @@ export default function MapScreen({ navigation, route }) {
                   onChangeText={props.handleChange("description")}
                   value={props.values.description}
                 />
+                <View style={{ alignItems: "center" }}>
+                  <SelectDropdown
+                    data={["street", "car park"]}
+                    onSelect={props.handleChange("parking_type")}
+                    defaultButtonText={"Select parking type"}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                  />
+                  <SelectDropdown
+                    data={times}
+                    onSelect={props.handleChange("opening_time")}
+                    defaultButtonText={"Opening time"}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                  />
+                  <SelectDropdown
+                    data={times}
+                    onSelect={props.handleChange("closing_time")}
+                    defaultButtonText={"Closing time"}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                  />
+                  <SelectDropdown
+                    data={limit}
+                    onSelect={props.handleChange("time_limit")}
+                    defaultButtonText={"Time limit (hours)"}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                  />
+                </View>
+
                 <Button
                   title="Pick an image from camera roll"
                   onPress={pickImage}
@@ -338,4 +375,103 @@ const styles = StyleSheet.create({
     borderWidth: 0.1,
     borderRadius: 50,
   },
+
+  dropdown1BtnStyle: {
+    width: "80%",
+    height: 50,
+    backgroundColor: "#f4f8ff",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#f4f8ff",
+    marginTop: 10,
+    justifyContent: "center",
+  },
+  dropdown1BtnTxtStyle: { color: "#444", textAlign: "left" },
+  dropdown1DropdownStyle: {
+    backgroundColor: "#EFEFEF",
+    justifyContent: "center",
+  },
+  dropdown1RowStyle: {
+    backgroundColor: "#EFEFEF",
+    borderBottomColor: "#C5C5C5",
+  },
 });
+
+const times = [
+  "No specified times",
+  "00:00",
+  "00:30",
+  "01:00",
+  "01:30",
+  "02:00",
+  "02:30",
+  "03:00",
+  "03:30",
+  "04:00",
+  "04:30",
+  "05:00",
+  "05:30",
+  "06:00",
+  "06:30",
+  "07:00",
+  "07:30",
+  "08:00",
+  "08:30",
+  "09:00",
+  "09:30",
+  "10:00",
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
+  "20:00",
+  "20:30",
+  "21:00",
+  "21:30",
+  "22:00",
+  "22:30",
+  "23:00",
+  "23:30",
+];
+
+const limit = [
+  "No limit",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "11",
+  "12",
+  "13",
+  "14",
+  "15",
+  "16",
+  "17",
+  "18",
+  "19",
+  "20",
+  "21",
+  "22",
+  "23",
+  "24",
+];
