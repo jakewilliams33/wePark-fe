@@ -115,9 +115,11 @@ export default function MapScreen({ navigation, route }) {
         >
           <Formik
             initialValues={{ name: "", description: "" }}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={(values) => {
+              console.log(values);
+            }}
           >
-            {({ handleChange, handleBlur, handleSubmit, values }) => (
+            {(props) => (
               <View>
                 <TextInput
                   style={{
@@ -130,25 +132,25 @@ export default function MapScreen({ navigation, route }) {
                     borderRadius: 50,
                   }}
                   placeholder="Name"
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                  value={values.name}
+                  onChangeText={props.handleChange("name")}
+                  value={props.values.name}
                 />
                 <TextInput
                   multiline
-                  style={styles.input}
-                  placeholder="Description"
-                  onChangeText={handleChange("description")}
-                  onBlur={handleBlur("description")}
-                  value={values.description}
-                />
-
-                <Button
-                  onPress={() => {
-                    handleSubmit;
+                  style={{
+                    backgroundColor: "#f4f8ff",
+                    marginTop: 50,
+                    margin: 20,
+                    padding: 10,
+                    borderColor: "grey",
+                    borderWidth: 0.1,
+                    borderRadius: 50,
                   }}
-                  title="Submit"
+                  placeholder="Description"
+                  onChangeText={props.handleChange("description")}
+                  value={props.values.description}
                 />
+                <Button title="submit" onPress={props.handleSubmit} />
               </View>
             )}
           </Formik>
