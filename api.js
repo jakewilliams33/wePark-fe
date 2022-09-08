@@ -13,5 +13,13 @@ export const postSpot = (coordinate, values) => {
     creator: "testUser",
   };
   console.log(parkingSpot);
-  //   axios.post("api/spots", parkingSpot);
+  //axios.post("https://wepark-be.herokuapp.com/api/spots", parkingSpot);
+};
+
+export const getSpots = () => {
+  return axios
+    .get("https://wepark-be.herokuapp.com/api/spots")
+    .then(({ data }) => {
+      return data;
+    });
 };
