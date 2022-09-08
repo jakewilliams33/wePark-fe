@@ -8,10 +8,14 @@ import {
   Button,
   ToastAndroid,
   TouchableOpacity,
+  Modal,
+  Pressable,
+  TextInput,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { showMessage, hideMessage } from "react-native-flash-message";
 import FlashMessage from "react-native-flash-message";
+import { Formik } from "formik";
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -43,9 +47,7 @@ export default function MapScreen({ navigation, route }) {
 
   const [showConfirmButton, setShowConfirmButton] = useState(false);
   const [showAddButton, setShowAddButton] = useState(true);
-
-  console.log(newMarker);
-  console.log(markers);
+  const [showModal, setShowModal] = useState(false);
 
   //function to handle click on floating Action Button
   const clickHandler = () => {
@@ -101,9 +103,57 @@ export default function MapScreen({ navigation, route }) {
     setNewMarker([]);
   };
 
-  if (userLocation) {
+  if (userLocation && mapRegion.latitude === userLocation.coords.latitude) {
     return (
       <View style={{ flex: 1 }}>
+        <Modal
+          animationType="slide"
+          visible={showModal}
+          onRequestClose={() => {
+            setShowModal(false);
+          }}
+        >
+          <Formik
+            initialValues={{ name: "", description: "" }}
+            onSubmit={(values) => console.log(values)}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values }) => (
+              <View>
+                <TextInput
+                  style={{
+                    backgroundColor: "#f4f8ff",
+                    marginTop: 200,
+                    margin: 20,
+                    padding: 10,
+                    borderColor: "grey",
+                    borderWidth: 0.1,
+                    borderRadius: 50,
+                  }}
+                  placeholder="Name"
+                  onChangeText={handleChange("name")}
+                  onBlur={handleBlur("name")}
+                  value={values.name}
+                />
+                <TextInput
+                  multiline
+                  style={styles.input}
+                  placeholder="Description"
+                  onChangeText={handleChange("description")}
+                  onBlur={handleBlur("description")}
+                  value={values.description}
+                />
+
+                <Button
+                  onPress={() => {
+                    handleSubmit;
+                  }}
+                  title="Submit"
+                />
+              </View>
+            )}
+          </Formik>
+        </Modal>
+
         <MapView
           style={{ flex: 1 }}
           initialRegion={mapRegion}
@@ -180,6 +230,7 @@ export default function MapScreen({ navigation, route }) {
                   setShowConfirmButton(false),
                   confirmMarkerPosition();
                 hideMessage();
+                setShowModal(true);
               }}
             >
               <Text>Confirm?</Text>
@@ -246,36 +297,14 @@ export default function MapScreen({ navigation, route }) {
     );
 }
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-//   touchableOpacityStyle: {
-//     position: "absolute",
-//     alignItems: "center",
-//     justifyContent: "center",
-//     marginTop: 800,
-//     marginLeft: 179,
-//   },
-//   floatingButtonStyle: {
-//     resizeMode: "contain",
-//     width: 50,
-//     height: 50,
-//   },
-//   buttonText: {
-//     fontSize: 20,
-//     color: "black",
-//   },
-//   button: {
-//     backgroundColor: "white",
-//     padding: 20,
-//     borderRadius: 5,
-//     position: "absolute",
-//     alignItems: "center",
-//     justifyContent: "center",
-//     marginTop: 700,
-//     marginLeft: 142,
-//   },
-// });
+const styles = StyleSheet.create({
+  input: {
+    backgroundColor: "#f4f8ff",
+    marginTop: 20,
+    margin: 20,
+    padding: 10,
+    borderColor: "grey",
+    borderWidth: 0.1,
+    borderRadius: 50,
+  },
+});
