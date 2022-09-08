@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
+import SpotsComponent from "./ScreeenComponents/SpotsComponent";
+import BottomComponent from "./ScreeenComponents/BottomComponent";
 
 const testUserObject = {
   id: 4,
@@ -9,6 +11,7 @@ const testUserObject = {
     "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/3f01db52-f675-48dc-9c91-f245d99f1486/d2nqynw-af694fd2-e1ba-4e9c-badb-630a48474599.jpg/v1/fill/w_950,h_633,q_75,strp/random_person_by_vurtov_d2nqynw-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjMzIiwicGF0aCI6IlwvZlwvM2YwMWRiNTItZjY3NS00OGRjLTljOTEtZjI0NWQ5OWYxNDg2XC9kMm5xeW53LWFmNjk0ZmQyLWUxYmEtNGU5Yy1iYWRiLTYzMGE0ODQ3NDU5OS5qcGciLCJ3aWR0aCI6Ijw9OTUwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.c2w8ijUJquyo71KU-F_oxYiyQ7m5RjWAvFeMvkqFUwY",
   bio: "I've seen some Shit",
   hometown: "Manchester",
+  kudos: 69,
 };
 
 const testFavouritesObject = {
@@ -39,62 +42,6 @@ export default function UserScreen({ navigation }) {
     setIsInfoScreen(true);
   };
 
-  const SpotsComponent = ({ spotsObj }) => {
-    return (
-      <View style={styles.spots}>
-        {spotsObj.spots.map((spot) => {
-          return (
-            <View style={styles.spot} key={spot.id}>
-              <Text>Name: {spot.spotName}</Text>
-              <Text>latitude: {spot.latitude}</Text>
-              <Text>longitude: {spot.longitude}</Text>
-            </View>
-          );
-        })}
-        <TouchableOpacity
-          title={"Spots"}
-          activeOpacity={0.7}
-          onPress={handleBack}
-          containerStyle={styles.touchableOpacityStyle}
-          style={styles.touchableOpacityStyle}
-        >
-          <Text style={{ color: "white" }}>Back</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  const BottomComponent = ({ userObj }) => {
-    return (
-      <View style={styles.bottom}>
-        <Text style={styles.userInfo}>Username: {userObj.username}</Text>
-        <Text style={styles.userInfo}>{userObj.full_name}</Text>
-        <Text style={styles.userInfo}>bio: {userObj.bio}</Text>
-        <Text style={styles.userInfo}>Hometown: {userObj.hometown}</Text>
-        <TouchableOpacity
-          title={"Favourites"}
-          activeOpacity={0.7}
-          onPress={() => handleClick(true)}
-          containerStyle={styles.touchableOpacityStyle}
-          style={styles.touchableOpacityStyle}
-        >
-          <Text style={{ color: "white" }}>My Favourites</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          title={"Spots"}
-          activeOpacity={0.7}
-          onPress={() => {
-            handleClick(false);
-          }}
-          containerStyle={styles.touchableOpacityStyle}
-          style={styles.touchableOpacityStyle}
-        >
-          <Text style={{ color: "white" }}>My Spots</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   useEffect(() => {
     console.log(
       "in useEffect -> isInfoScreen, isFavScreen:",
@@ -108,12 +55,30 @@ export default function UserScreen({ navigation }) {
 
     if (!isInfoScreen) {
       if (isFavScreen) {
-        content = <SpotsComponent spotsObj={testFavouritesObject} />;
+        content = (
+          <SpotsComponent
+            spotsObj={testFavouritesObject}
+            handleBack={handleBack}
+            styles={styles}
+          />
+        );
       } else {
-        content = <SpotsComponent spotsObj={testMySpotsObject} />;
+        content = (
+          <SpotsComponent
+            spotsObj={testMySpotsObject}
+            handleBack={handleBack}
+            styles={styles}
+          />
+        );
       }
     } else {
-      content = <BottomComponent userObj={testUserObject} />;
+      content = (
+        <BottomComponent
+          userObj={testUserObject}
+          handleClick={handleClick}
+          styles={styles}
+        />
+      );
     }
 
     return <View>{content}</View>;
