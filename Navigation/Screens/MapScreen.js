@@ -18,7 +18,7 @@ import * as ImagePicker from "expo-image-picker";
 import SelectDropdown from "react-native-select-dropdown";
 import * as Yup from "yup";
 
-import { postSpot } from "../../api";
+import { getSpots, postSpot } from "../../api";
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -66,8 +66,15 @@ export default function MapScreen({ navigation, route }) {
     parking_type: Yup.string().required("Required"),
   });
 
+  // get spots from db
+  useEffect(() => {
+    getSpots().then(({ spots }) => {
+      console.log(spots[0]);
+    });
+  });
+
+  // get image from gallery
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -322,7 +329,7 @@ export default function MapScreen({ navigation, route }) {
           })}
 
           {markers.map((marker) => {
-            return <Marker draggable {...marker} />;
+            if (markers.length > 0) return <Marker {...marker} />;
           })}
         </MapView>
         {showConfirmButton && (
