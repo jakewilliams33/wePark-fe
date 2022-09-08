@@ -16,6 +16,7 @@ import MapView, { Marker } from "react-native-maps";
 import { showMessage, hideMessage } from "react-native-flash-message";
 import FlashMessage from "react-native-flash-message";
 import { Formik } from "formik";
+import * as ImagePicker from "expo-image-picker";
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -48,6 +49,23 @@ export default function MapScreen({ navigation, route }) {
   const [showConfirmButton, setShowConfirmButton] = useState(false);
   const [showAddButton, setShowAddButton] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
 
   //function to handle click on floating Action Button
   const clickHandler = () => {
@@ -150,6 +168,17 @@ export default function MapScreen({ navigation, route }) {
                   onChangeText={props.handleChange("description")}
                   value={props.values.description}
                 />
+                <Button
+                  title="Pick an image from camera roll"
+                  onPress={pickImage}
+                />
+                {image && (
+                  <Image
+                    source={{ uri: image }}
+                    style={{ width: 200, height: 200 }}
+                  />
+                )}
+
                 <Button title="submit" onPress={props.handleSubmit} />
               </View>
             )}
