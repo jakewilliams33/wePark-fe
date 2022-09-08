@@ -31,7 +31,7 @@ export default function MainContainer() {
             } else if (rn === mapName) {
               iconName = focused ? "map" : "map-outline";
             } else if (rn === userPageName) {
-              iconName = focused ? "id-card" : "id-card-o";
+              iconName = focused ? "person" : "person-outline";
             }
 
             return <Ionicons name={iconName} size={size} color={color} />;
