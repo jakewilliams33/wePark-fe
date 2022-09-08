@@ -13,6 +13,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default function HomeScreen({ navigation }) {
   const [text, onChangeText] = React.useState("Where do you want to park?");
+  // static contextType = UserContext
 
   return (
     <View className="flex-1 items-center justify-evenly bg-white w-screen">

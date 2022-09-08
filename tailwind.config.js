@@ -6,6 +6,7 @@ module.exports = {
     "./Navigation/Screens/ScreeenComponents/SpotsComponent",
     "./Navigation/Screens/HomeScreen.js",
     "./Navigation/Screens/MapScreen.js",
+    "./Navigation/Screens/LoginScreen.js",
     "./Navigation/Screens/UserScreen.js",
     "./Navigation/MainContainer.js",
   ],
