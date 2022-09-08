@@ -6,65 +6,87 @@ import {
   StyleSheet,
   SafeAreaView,
   TextInput,
-  Image,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCar } from "@fortawesome/free-solid-svg-icons/faCar";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default function HomeScreen({ navigation }) {
   const [text, onChangeText] = React.useState("Where do you want to park?");
 
   return (
-    <View className="flex-1 items-center justify-evenly bg-white ">
-      <View className="border-2" style={styles.titleSection}>
-        <Text style={styles.titleText}>We Park</Text>
-        <Text style={styles.titleTag}>But Mostly We Care</Text>
+    <View className="flex-1 items-center justify-evenly bg-white w-screen">
+      <View className=" basis-1/6 w-screen items-center justify-evenly">
+        <Text className="text-7xl text-slate-600 font-medium">We Park</Text>
+        <Text className="text-xl text-slate-600 font-medium">
+          But Mostly We Care
+        </Text>
       </View>
 
-      <View className="border-2" style={styles.middleSection}>
-        <View style={styles.buttonWrapper}>
-          <View style={styles.middleButton}>
-            <TouchableOpacity className="border-2">
-              <Text>Favourites</Text>
+      <View className=" flex-1 flex-col justify-evenly items-center basis-2/4 w-screen">
+        <View className="flex-row justify-center">
+          <View className="mx-5">
+            <TouchableOpacity className=" p-2 rounded-md bg-slate-400">
+              <Text className="text-white text-l font-medium">Favourites</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.middleButton}>
-            <TouchableOpacity className="border-2">
-              <Text>Favourites</Text>
+          <View className="mx-5">
+            <TouchableOpacity className=" p-2 rounded-md bg-slate-400">
+              <Text className="text-white text-l font-medium">Favourites</Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        <SafeAreaView>
+        <SafeAreaView className="w-8/12 ">
           <TextInput
+            className="rounded-md shadow-xl"
             style={styles.input}
             onChangeText={onChangeText}
             value={text}
           />
         </SafeAreaView>
 
-        <View style={styles.recentWrapper}>
-          <FontAwesomeIcon icon={faCar} />
-          <Text>This is a recent spot you viewed</Text>
-        </View>
-        <View style={styles.recentWrapper}>
-          <FontAwesomeIcon icon={faCar} />
-          <Text>This is a recent spot you viewed </Text>
+        <View className=" p-2 px-6 rounded-lg rounded-md bg-slate-400">
+          <View className="m-2 flex-row justify-center">
+            <FontAwesomeIcon icon={faCar} />
+            <Text className="text-white text-l font-medium ml-2">
+              This is a recent spot you viewed
+            </Text>
+          </View>
+          <View className="m-2 flex-row justify-center">
+            <FontAwesomeIcon icon={faCar} />
+            <Text className="text-white text-l font-medium ml-2">
+              This is a recent spot you viewed{" "}
+            </Text>
+          </View>
+
+          <View className="m-2 flex-row justify-center">
+            <FontAwesomeIcon icon={faCar} />
+            <Text className="text-white text-l font-medium ml-2">
+              This is a recent spot you viewed{" "}
+            </Text>
+          </View>
         </View>
       </View>
 
-      <View className="border-2">
-        <View style={styles.recentWrapper}>
-          <FontAwesomeIcon icon={faCar} />
-          <Text>This is a Featured Place</Text>
+      <View className=" basis-1/4 flex-1 flex-col justify-evenly  p-2 mb-4 rounded-lg px-14 rounded-md bg-slate-400">
+        <View className="flex-row justify-center">
+          <Ionicons name={"golf-outline"} size={20} color={"darkBlue"} />
+          <Text className="text-white text-l font-medium ml-2">
+            This is a Featured Place
+          </Text>
         </View>
-        <View style={styles.recentWrapper}>
-          <FontAwesomeIcon icon={faCar} />
-          <Text>This is a Featured Place</Text>
+        <View className="flex-row justify-center">
+          <Ionicons name={"golf-outline"} size={20} color={"darkBlue"} />
+          <Text className="text-white text-l font-medium ml-2">
+            This is a Featured Place
+          </Text>
         </View>
-        <View style={styles.recentWrapper}>
-          <FontAwesomeIcon icon={faCar} />
-          <Text>This is a Featured Place</Text>
+        <View className="flex-row justify-center">
+          <Ionicons name={"golf-outline"} size={20} color={"darkBlue"} />
+          <Text className="text-white text-l font-medium ml-2">
+            This is a Featured Place
+          </Text>
         </View>
       </View>
     </View>
@@ -72,30 +94,11 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  titleSection: {},
-  middleSection: {},
-  buttonWrapper: {
-    display: "flex",
-    flexDirection: "row",
-
-    justifyContent: "center",
-  },
-  middleButton: { marginRight: 5, marginLeft: 5 },
   input: {
     height: 40,
     margin: 12,
     borderWidth: 1,
     padding: 10,
-  },
-  recentWrapper: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  bottomSection: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
+    elevation: 2,
   },
 });
