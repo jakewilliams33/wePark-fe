@@ -6,16 +6,19 @@ import {
   Image,
   Text,
   Button,
-  ToastAndroid,
   TouchableOpacity,
   Modal,
-  Pressable,
   TextInput,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { showMessage, hideMessage } from "react-native-flash-message";
 import FlashMessage from "react-native-flash-message";
 import { Formik } from "formik";
+import * as ImagePicker from "expo-image-picker";
+import SelectDropdown from "react-native-select-dropdown";
+import * as Yup from "yup";
+
+import { postSpot } from "../../api";
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -48,6 +51,36 @@ export default function MapScreen({ navigation, route }) {
   const [showConfirmButton, setShowConfirmButton] = useState(false);
   const [showAddButton, setShowAddButton] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [image, setImage] = useState(null);
+
+  //form validation
+  const SpaceSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(3, "Name must be over 2 characters")
+      .max(50, "Name must be between 2 and 50 characters")
+      .required("Required"),
+    description: Yup.string()
+      .min(11, "Description must be over 10 characters")
+      .max(500, "Too Long!")
+      .required("Required"),
+    parking_type: Yup.string().required("Required"),
+  });
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
 
   //function to handle click on floating Action Button
   const clickHandler = () => {
@@ -111,12 +144,24 @@ export default function MapScreen({ navigation, route }) {
           visible={showModal}
           onRequestClose={() => {
             setShowModal(false);
+            setNewMarker([]);
           }}
         >
           <Formik
-            initialValues={{ name: "", description: "" }}
+            initialValues={{
+              name: "",
+              description: "",
+              parking_type: "",
+              opening_time: "No specified times",
+              closing_time: "No specified times",
+              time_limit: "",
+            }}
+            validationSchema={SpaceSchema}
             onSubmit={(values) => {
-              console.log(values);
+              confirmMarkerPosition();
+              setShowModal(false);
+              let finalChoice = newMarker[0].coordinate;
+              postSpot(finalChoice, values);
             }}
           >
             {(props) => (
@@ -124,7 +169,7 @@ export default function MapScreen({ navigation, route }) {
                 <TextInput
                   style={{
                     backgroundColor: "#f4f8ff",
-                    marginTop: 200,
+                    marginTop: 50,
                     margin: 20,
                     padding: 10,
                     borderColor: "grey",
@@ -135,11 +180,18 @@ export default function MapScreen({ navigation, route }) {
                   onChangeText={props.handleChange("name")}
                   value={props.values.name}
                 />
+                {props.errors.name && (
+                  <Text
+                    style={{ fontSize: 10, color: "red", alignItems: "center" }}
+                  >
+                    {props.errors.name}
+                  </Text>
+                )}
                 <TextInput
                   multiline
                   style={{
                     backgroundColor: "#f4f8ff",
-                    marginTop: 50,
+                    marginTop: 20,
                     margin: 20,
                     padding: 10,
                     borderColor: "grey",
@@ -150,6 +202,70 @@ export default function MapScreen({ navigation, route }) {
                   onChangeText={props.handleChange("description")}
                   value={props.values.description}
                 />
+                {props.errors.description && (
+                  <Text style={{ fontSize: 10, color: "red" }}>
+                    {props.errors.description}
+                  </Text>
+                )}
+                <View style={{ alignItems: "center" }}>
+                  <SelectDropdown
+                    data={["street", "car park"]}
+                    onSelect={props.handleChange("parking_type")}
+                    defaultButtonText={"Select parking type"}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                  />
+
+                  {props.errors.parking_type && (
+                    <Text style={{ fontSize: 10, color: "red" }}>
+                      {props.errors.parking_type}
+                    </Text>
+                  )}
+
+                  <SelectDropdown
+                    data={times}
+                    onSelect={props.handleChange("opening_time")}
+                    defaultButtonText={"Opening time"}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                  />
+                  <SelectDropdown
+                    data={times}
+                    onSelect={props.handleChange("closing_time")}
+                    defaultButtonText={"Closing time"}
+                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                  />
+                  <SelectDropdown
+                    data={limit}
+                    onSelect={props.handleChange("time_limit")}
+                    defaultButtonText={"Time limit (hours)"}
+                    buttonStyle={{
+                      width: "80%",
+                      height: 50,
+                      backgroundColor: "#f4f8ff",
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: "#f4f8ff",
+                      marginTop: 10,
+                      justifyContent: "center",
+                      marginBottom: 40,
+                    }}
+                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                  />
+                </View>
+
+                <Button
+                  title="Pick an image from camera roll"
+                  onPress={pickImage}
+                />
+                {image && (
+                  <Image
+                    source={{ uri: image }}
+                    style={{ width: 200, height: 200 }}
+                  />
+                )}
+
                 <Button title="submit" onPress={props.handleSubmit} />
               </View>
             )}
@@ -230,8 +346,7 @@ export default function MapScreen({ navigation, route }) {
               onPress={() => {
                 setShowAddButton(true),
                   setShowConfirmButton(false),
-                  confirmMarkerPosition();
-                hideMessage();
+                  hideMessage();
                 setShowModal(true);
               }}
             >
@@ -309,4 +424,103 @@ const styles = StyleSheet.create({
     borderWidth: 0.1,
     borderRadius: 50,
   },
+
+  dropdown1BtnStyle: {
+    width: "80%",
+    height: 50,
+    backgroundColor: "#f4f8ff",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#f4f8ff",
+    marginTop: 10,
+    justifyContent: "center",
+  },
+  dropdown1BtnTxtStyle: { color: "#444", textAlign: "left" },
+  dropdown1DropdownStyle: {
+    backgroundColor: "#EFEFEF",
+    justifyContent: "center",
+  },
+  dropdown1RowStyle: {
+    backgroundColor: "#EFEFEF",
+    borderBottomColor: "#C5C5C5",
+  },
 });
+
+const times = [
+  "No specified times",
+  "00:00",
+  "00:30",
+  "01:00",
+  "01:30",
+  "02:00",
+  "02:30",
+  "03:00",
+  "03:30",
+  "04:00",
+  "04:30",
+  "05:00",
+  "05:30",
+  "06:00",
+  "06:30",
+  "07:00",
+  "07:30",
+  "08:00",
+  "08:30",
+  "09:00",
+  "09:30",
+  "10:00",
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
+  "20:00",
+  "20:30",
+  "21:00",
+  "21:30",
+  "22:00",
+  "22:30",
+  "23:00",
+  "23:30",
+];
+
+const limit = [
+  "No limit",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "11",
+  "12",
+  "13",
+  "14",
+  "15",
+  "16",
+  "17",
+  "18",
+  "19",
+  "20",
+  "21",
+  "22",
+  "23",
+  "24",
+];
