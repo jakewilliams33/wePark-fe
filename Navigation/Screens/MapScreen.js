@@ -16,6 +16,9 @@ import FlashMessage from "react-native-flash-message";
 import { Formik } from "formik";
 import * as ImagePicker from "expo-image-picker";
 import SelectDropdown from "react-native-select-dropdown";
+import * as Yup from "yup";
+
+import { postSpot } from "../../api";
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -49,6 +52,19 @@ export default function MapScreen({ navigation, route }) {
   const [showAddButton, setShowAddButton] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [image, setImage] = useState(null);
+
+  //form validation
+  const SpaceSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(3, "Name must be over 2 characters")
+      .max(50, "Name must be between 2 and 50 characters")
+      .required("Required"),
+    description: Yup.string()
+      .min(11, "Description must be over 10 characters")
+      .max(500, "Too Long!")
+      .required("Required"),
+    parking_type: Yup.string().required("Required"),
+  });
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -128,6 +144,7 @@ export default function MapScreen({ navigation, route }) {
           visible={showModal}
           onRequestClose={() => {
             setShowModal(false);
+            setNewMarker([]);
           }}
         >
           <Formik
@@ -139,8 +156,12 @@ export default function MapScreen({ navigation, route }) {
               closing_time: "No specified times",
               time_limit: "",
             }}
+            validationSchema={SpaceSchema}
             onSubmit={(values) => {
-              console.log(values);
+              confirmMarkerPosition();
+              setShowModal(false);
+              let finalChoice = newMarker[0].coordinate;
+              postSpot(finalChoice, values);
             }}
           >
             {(props) => (
@@ -148,7 +169,7 @@ export default function MapScreen({ navigation, route }) {
                 <TextInput
                   style={{
                     backgroundColor: "#f4f8ff",
-                    marginTop: 200,
+                    marginTop: 50,
                     margin: 20,
                     padding: 10,
                     borderColor: "grey",
@@ -159,11 +180,18 @@ export default function MapScreen({ navigation, route }) {
                   onChangeText={props.handleChange("name")}
                   value={props.values.name}
                 />
+                {props.errors.name && (
+                  <Text
+                    style={{ fontSize: 10, color: "red", alignItems: "center" }}
+                  >
+                    {props.errors.name}
+                  </Text>
+                )}
                 <TextInput
                   multiline
                   style={{
                     backgroundColor: "#f4f8ff",
-                    marginTop: 50,
+                    marginTop: 20,
                     margin: 20,
                     padding: 10,
                     borderColor: "grey",
@@ -174,6 +202,11 @@ export default function MapScreen({ navigation, route }) {
                   onChangeText={props.handleChange("description")}
                   value={props.values.description}
                 />
+                {props.errors.description && (
+                  <Text style={{ fontSize: 10, color: "red" }}>
+                    {props.errors.description}
+                  </Text>
+                )}
                 <View style={{ alignItems: "center" }}>
                   <SelectDropdown
                     data={["street", "car park"]}
@@ -182,6 +215,13 @@ export default function MapScreen({ navigation, route }) {
                     buttonStyle={styles.dropdown1BtnStyle}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                   />
+
+                  {props.errors.parking_type && (
+                    <Text style={{ fontSize: 10, color: "red" }}>
+                      {props.errors.parking_type}
+                    </Text>
+                  )}
+
                   <SelectDropdown
                     data={times}
                     onSelect={props.handleChange("opening_time")}
@@ -200,7 +240,17 @@ export default function MapScreen({ navigation, route }) {
                     data={limit}
                     onSelect={props.handleChange("time_limit")}
                     defaultButtonText={"Time limit (hours)"}
-                    buttonStyle={styles.dropdown1BtnStyle}
+                    buttonStyle={{
+                      width: "80%",
+                      height: 50,
+                      backgroundColor: "#f4f8ff",
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: "#f4f8ff",
+                      marginTop: 10,
+                      justifyContent: "center",
+                      marginBottom: 40,
+                    }}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                   />
                 </View>
@@ -296,8 +346,7 @@ export default function MapScreen({ navigation, route }) {
               onPress={() => {
                 setShowAddButton(true),
                   setShowConfirmButton(false),
-                  confirmMarkerPosition();
-                hideMessage();
+                  hideMessage();
                 setShowModal(true);
               }}
             >
