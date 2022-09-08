@@ -19,8 +19,6 @@ const userPageName = "User";
 const Tab = createBottomTabNavigator();
 
 export default function MainContainer() {
-  console.log(UserContext);
-
   return (
     <UserProvider>
       <NavigationContainer>

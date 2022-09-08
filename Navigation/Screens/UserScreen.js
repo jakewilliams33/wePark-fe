@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image } from "react-native";
-import SpotsComponent from "./ScreeenComponents/SpotsComponent";
-import BottomComponent from "./ScreeenComponents/BottomComponent";
+import SpotsComponent from "./ScreenComponents/SpotsComponent";
+import BottomComponent from "./ScreenComponents/BottomComponent";
 
 import axios from "axios";
 
