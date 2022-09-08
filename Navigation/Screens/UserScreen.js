@@ -3,6 +3,8 @@ import { View, StyleSheet, Image } from "react-native";
 import SpotsComponent from "./ScreeenComponents/SpotsComponent";
 import BottomComponent from "./ScreeenComponents/BottomComponent";
 
+import axios from "axios";
+
 const testUserObject = {
   id: 4,
   username: "Test123",
