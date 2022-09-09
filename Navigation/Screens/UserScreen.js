@@ -23,6 +23,10 @@ export default function UserScreen({ navigation }) {
   const [spots, setSpots] = useState();
   const [favs, setFavs] = useState();
   const [spotsError, toggleSpotsError] = useState(false);
+  const [IDtoFav, setIDToFav] = useState();
+  const [addToFavs, toggleAddToFavs] = useState(false);
+  const [IDtoUnFav, setIDToUnFav] = useState();
+  const [unFav, toggleUnFav] = useState(false);
 
   const handleClick = (bool) => {
     setIsFavScreen(bool);
@@ -32,6 +36,30 @@ export default function UserScreen({ navigation }) {
   const handleBack = () => {
     setIsInfoScreen(true);
   };
+
+  const handleFavPress = (event) => {
+    spot_id = event.spot_id;
+    setIDToFav(spot_id);
+    toggleAddToFavs(true);
+  };
+
+  const handleUnFavPress = (event) => {
+    spot_id = event.spot_id;
+    setIDToUnFav(spot_id);
+    toggleUnFav(true);
+  };
+
+  useEffect(() => {
+    if (addToFavs) {
+      axios.post("");
+    }
+  }, [addToFavs]);
+
+  useEffect(() => {
+    if (unFav) {
+      axios.delete("");
+    }
+  }, [unFav]);
 
   useEffect(() => {
     if (!isInfoScreen && !isFavScreen) {
@@ -92,7 +120,11 @@ export default function UserScreen({ navigation }) {
             <Text className="text-xl text-center font-bold color-slate-600 mb-4">
               Favourites
             </Text>
-            <SpotsComponent className=" w-screen" spotsObj={favs} />
+            <SpotsComponent
+              className=" w-screen"
+              spotsObj={favs}
+              handleFavPress={handleUnFavPress}
+            />
 
             <View className="w-screen items-center justify-start ">
               <TouchableOpacity
@@ -112,7 +144,11 @@ export default function UserScreen({ navigation }) {
             <Text className="text-xl text-center font-bold color-slate-600 mb-4">
               Your Spots
             </Text>
-            <SpotsComponent className="  w-screen" spotsObj={spots} />
+            <SpotsComponent
+              className="  w-screen"
+              spotsObj={spots}
+              handleFavPress={handleFavPress}
+            />
 
             <View className="w-screen items-center justify-center ">
               <TouchableOpacity
