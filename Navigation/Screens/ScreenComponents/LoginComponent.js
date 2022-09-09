@@ -8,7 +8,6 @@ import {
 } from "react-native";
 
 export default LoginComponent = ({
-  styles,
   handlePress,
   text6,
   text7,
@@ -31,23 +30,25 @@ export default LoginComponent = ({
           </TouchableOpacity>
         </View>
 
-        <SafeAreaView className="w-8/12 ">
+        <SafeAreaView className="w-8/12 rounded-md border-2 border-slate-400 mt-10">
           <TextInput
-            className="rounded-md shadow-xl"
-            style={styles.input}
+            className="rounded-md"
             onChangeText={onChangeText6}
             value={text6}
           />
-          <Text>Username</Text>
+          <Text className="border-t-2 border-slate-400 bg-slate-400 text-white text-l font-medium py-1 text-center">
+            Username
+          </Text>
         </SafeAreaView>
-        <SafeAreaView className="w-8/12 ">
+        <SafeAreaView className="w-8/12 rounded-md border-2 border-slate-400 mt-2 mb-10">
           <TextInput
             className="rounded-md shadow-xl"
-            style={styles.input}
             onChangeText={onChangeText7}
             value={text7}
           />
-          <Text>Password</Text>
+          <Text className="border-t-2 border-slate-400 bg-slate-400 text-white text-l font-medium py-1 text-center">
+            Password
+          </Text>
         </SafeAreaView>
         <View className="mx-5 ">
           <TouchableOpacity

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Text } from "react-native";
 import SpotsComponent from "./ScreenComponents/SpotsComponent";
 import BottomComponent from "./ScreenComponents/BottomComponent";
 import LoginScreen from "./LoginScreen";
@@ -54,14 +54,6 @@ export default function UserScreen({ navigation }) {
     setIsInfoScreen(true);
   };
 
-  // useEffect(() => {
-  //   console.log(
-  //     "in useEffect -> isInfoScreen, isFavScreen:",
-  //     isInfoScreen,
-  //     isFavScreen
-  //   );
-  // }, [isInfoScreen, isFavScreen]);
-
   const Card = ({ isFavScreen, isInfoScreen }) => {
     let content;
 
@@ -69,17 +61,17 @@ export default function UserScreen({ navigation }) {
       if (isFavScreen) {
         content = (
           <SpotsComponent
+            className="h-2/4 flex-1 w-screen"
             spotsObj={testFavouritesObject}
             handleBack={handleBack}
-            styles={styles}
           />
         );
       } else {
         content = (
           <SpotsComponent
+            className="h-2/4 flex-1 w-screen"
             spotsObj={testMySpotsObject}
             handleBack={handleBack}
-            styles={styles}
           />
         );
       }
@@ -88,7 +80,6 @@ export default function UserScreen({ navigation }) {
         <BottomComponent
           userObj={user || noUserObject}
           handleClick={handleClick}
-          styles={styles}
         />
       );
     }
@@ -99,17 +90,32 @@ export default function UserScreen({ navigation }) {
   const WhichScreen = ({ isFavScreen, isInfoScreen, user }) => {
     if (user) {
       return (
-        <View style={styles.container}>
-          <View style={styles.top}>
+        <View className="flex-1 flex-column items-center justify-evenly h-screen ">
+          <View className="flex-2/4 flex-row items-center justify-evenly w-screen h-2/4">
             <Image
-              style={styles.profilePic}
+              className="w-32 h-32 rounded-full "
               source={{
                 uri: user.avatar || noUserObject.avatar,
               }}
             />
+            <View>
+              <Text className="text-l text-slate-600 font-medium mt-2">
+                Username: {user.username}
+              </Text>
+              <Text className="text-l text-slate-600 font-medium mt-2">
+                bio: {user.about}
+              </Text>
+              <Text className="text-l text-slate-600 font-medium mt-2">
+                Kudos: {user.kudos}
+              </Text>
+            </View>
           </View>
 
-          <Card isFavScreen={isFavScreen} isInfoScreen={isInfoScreen} />
+          <Card
+            className="flex-2/4 "
+            isFavScreen={isFavScreen}
+            isInfoScreen={isInfoScreen}
+          />
         </View>
       );
     } else return <LoginScreen />;
@@ -123,26 +129,3 @@ export default function UserScreen({ navigation }) {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    display: "flex",
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "space-evenly",
-  },
-  profilePic: {
-    width: 250,
-    height: 250,
-  },
-  userInfo: {},
-  touchableOpacityStyle: {
-    marginTop: 10,
-    padding: 20,
-
-    backgroundColor: "black",
-  },
-  top: {},
-  bottom: {},
-  spots: {},
-});

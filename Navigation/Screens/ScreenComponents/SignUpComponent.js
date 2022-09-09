@@ -8,7 +8,6 @@ import {
 } from "react-native";
 
 export default SignUpComponent = ({
-  styles,
   text1,
   text2,
   text3,
@@ -36,50 +35,55 @@ export default SignUpComponent = ({
             <Text className="text-white text-l font-medium">Back</Text>
           </TouchableOpacity>
         </View>
-        <SafeAreaView className="w-8/12 ">
+        <SafeAreaView className="w-8/12 rounded-md border-2 border-slate-400 mt-10">
           <TextInput
             className="rounded-md shadow-xl"
-            style={styles.input}
             onChangeText={onChangeText1}
             value={text1}
           />
-          <Text>Username</Text>
+          <Text className="border-t-2 border-slate-400 bg-slate-400 text-white text-l font-medium py-1 text-center">
+            Username
+          </Text>
         </SafeAreaView>
-        <SafeAreaView className="w-8/12 ">
+        <SafeAreaView className="w-8/12 rounded-md border-2 border-slate-400 mt-10">
           <TextInput
             className="rounded-md shadow-xl"
-            style={styles.input}
             onChangeText={onChangeText5}
             value={text5}
           />
-          <Text>Password</Text>
+          <Text className="border-t-2 border-slate-400 bg-slate-400 text-white text-l font-medium py-1 text-center">
+            Password
+          </Text>
         </SafeAreaView>
-        <SafeAreaView className="w-8/12 ">
+        <SafeAreaView className="w-8/12 rounded-md border-2 border-slate-400 mt-10">
           <TextInput
             className="rounded-md shadow-xl"
-            style={styles.input}
             onChangeText={onChangeText2}
             value={text2}
           />
-          <Text>Email Address</Text>
+          <Text className="border-t-2 border-slate-400 bg-slate-400 text-white text-l font-medium py-1 text-center">
+            Email Address
+          </Text>
         </SafeAreaView>
-        <SafeAreaView className="w-8/12 ">
+        <SafeAreaView className="w-8/12 rounded-md border-2 border-slate-400 mt-10">
           <TextInput
             className="rounded-md shadow-xl"
-            style={styles.input}
             onChangeText={onChangeText3}
             value={text3}
           />
-          <Text>A Few Words About Yourself</Text>
+          <Text className="border-t-2 border-slate-400 bg-slate-400 text-white text-l font-medium py-1 text-center">
+            A Few Words About Yourself
+          </Text>
         </SafeAreaView>
-        <SafeAreaView className="w-8/12 ">
+        <SafeAreaView className="w-8/12 rounded-md border-2 border-slate-400 mt-10 mb-10">
           <TextInput
             className="rounded-md shadow-xl"
-            style={styles.input}
             onChangeText={onChangeText4}
             value={text4}
           />
-          <Text>A Picture of You</Text>
+          <Text className="border-t-2 border-slate-400 bg-slate-400 text-white text-l font-medium py-1 text-center">
+            A Picture of You
+          </Text>
         </SafeAreaView>
         <View className="mx-5 ">
           <TouchableOpacity
