@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, StyleSheet, Image, Text } from "react-native";
+import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 import SpotsComponent from "./ScreenComponents/SpotsComponent";
 import BottomComponent from "./ScreenComponents/BottomComponent";
 import LoginScreen from "./LoginScreen";
@@ -17,13 +17,16 @@ const noUserObject = {
 
 const testFavouritesObject = {
   spots: [
-    { id: 1, spotName: "randomSpot1", latitude: 55.3781, longitude: -3.436 },
-    { id: 2, spotName: "randomSpot2", latitude: 54.3781, longitude: -4.436 },
+    { id: 1, name: "randomSpot1", latitude: 55.3781, longitude: -3.436 },
+    { id: 2, name: "randomSpot2", latitude: 54.3781, longitude: -4.436 },
   ],
 };
 
 const noSpotsObject = {
-  spots: [{ id: 0, spotName: "Waiting for Spots", latitude: 0, longitude: 0 }],
+  spots: [
+    { id: 0, name: "Waiting for Spots", latitude: 0, longitude: 0 },
+    { id: 1, name: "Waiting for Spots", latitude: 0, longitude: 0 },
+  ],
 };
 
 export default function UserScreen({ navigation }) {
@@ -71,19 +74,49 @@ export default function UserScreen({ navigation }) {
     if (!isInfoScreen) {
       if (isFavScreen) {
         content = (
-          <SpotsComponent
-            className="h-2/4 flex-1 w-screen"
-            spotsObj={testFavouritesObject}
-            handleBack={handleBack}
-          />
+          <View className="flex-col">
+            <Text className="text-xl text-center font-bold color-slate-600 mb-4">
+              Favourites
+            </Text>
+            <SpotsComponent
+              className=" w-screen"
+              spotsObj={testFavouritesObject}
+            />
+
+            <View className="w-screen items-center justify-start ">
+              <TouchableOpacity
+                title={"Spots"}
+                className=" rounded-md bg-slate-400 h-12 w-24 justify-center items-center"
+                activeOpacity={0.7}
+                onPress={handleBack}
+              >
+                <Text className="text-xl text-white font-medium ">Back</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         );
       } else {
         content = (
-          <SpotsComponent
-            className="h-2/4 flex-1 w-screen"
-            spotsObj={spots || noSpotsObject}
-            handleBack={handleBack}
-          />
+          <>
+            <Text className="text-xl text-center font-bold color-slate-600 mb-4">
+              Your Spots
+            </Text>
+            <SpotsComponent
+              className="  w-screen"
+              spotsObj={spots || noSpotsObject}
+            />
+
+            <View className="w-screen items-center justify-center ">
+              <TouchableOpacity
+                title={"Spots"}
+                className=" rounded-md bg-slate-400 h-12 w-24 justify-center items-center"
+                activeOpacity={0.7}
+                onPress={handleBack}
+              >
+                <Text className="text-xl text-white font-medium ">Back</Text>
+              </TouchableOpacity>
+            </View>
+          </>
         );
       }
     } else {
@@ -101,8 +134,8 @@ export default function UserScreen({ navigation }) {
   const WhichScreen = ({ isFavScreen, isInfoScreen, user }) => {
     if (user) {
       return (
-        <View className="flex-1 flex-column items-center justify-evenly h-screen ">
-          <View className="flex-2/4 flex-row items-center justify-evenly w-screen h-2/4">
+        <View className="flex-column items-center justify-evenly h-screen mt-8">
+          <View className=" flex-row items-center justify-evenly w-screen mb-4">
             <Image
               className="w-32 h-32 rounded-full "
               source={{
@@ -123,7 +156,7 @@ export default function UserScreen({ navigation }) {
           </View>
 
           <Card
-            className="flex-2/4 "
+            className=""
             isFavScreen={isFavScreen}
             isInfoScreen={isInfoScreen}
           />
