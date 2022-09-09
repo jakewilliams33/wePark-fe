@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import * as Location from "expo-location";
 import {
   View,
@@ -17,6 +17,7 @@ import { Formik } from "formik";
 import * as ImagePicker from "expo-image-picker";
 import SelectDropdown from "react-native-select-dropdown";
 import * as Yup from "yup";
+import { UserContext } from "../AppContext";
 
 import { getSpots, postSpot } from "../../api";
 
@@ -38,6 +39,7 @@ export default function MapScreen({ navigation, route }) {
   const [showAddButton, setShowAddButton] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [image, setImage] = useState(null);
+  const { user } = useContext(UserContext);
 
   //form validation
   const SpaceSchema = Yup.object().shape({
@@ -155,7 +157,7 @@ export default function MapScreen({ navigation, route }) {
               confirmMarkerPosition();
               setShowModal(false);
               let finalChoice = newMarker[0].coordinate;
-              postSpot(finalChoice, values);
+              postSpot(finalChoice, values, user);
             }}
           >
             {(props) => (

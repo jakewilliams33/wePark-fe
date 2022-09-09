@@ -7,17 +7,6 @@ import LoginScreen from "./LoginScreen";
 import axios from "axios";
 import { UserContext } from "../AppContext";
 
-const testUserObject = {
-  id: 4,
-  username: "Test123",
-  full_name: "Test Test",
-  user_avatar_uri:
-    "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/3f01db52-f675-48dc-9c91-f245d99f1486/d2nqynw-af694fd2-e1ba-4e9c-badb-630a48474599.jpg/v1/fill/w_950,h_633,q_75,strp/random_person_by_vurtov_d2nqynw-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjMzIiwicGF0aCI6IlwvZlwvM2YwMWRiNTItZjY3NS00OGRjLTljOTEtZjI0NWQ5OWYxNDg2XC9kMm5xeW53LWFmNjk0ZmQyLWUxYmEtNGU5Yy1iYWRiLTYzMGE0ODQ3NDU5OS5qcGciLCJ3aWR0aCI6Ijw9OTUwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.c2w8ijUJquyo71KU-F_oxYiyQ7m5RjWAvFeMvkqFUwY",
-  bio: "I've seen some Shit",
-  hometown: "Manchester",
-  kudos: 69,
-};
-
 const noUserObject = {
   username: "No User",
   avatar:
@@ -33,17 +22,16 @@ const testFavouritesObject = {
   ],
 };
 
-const testMySpotsObject = {
-  spots: [
-    { id: 1, spotName: "randomSpot1", latitude: 55.3781, longitude: -3.436 },
-    { id: 2, spotName: "randomSpot2", latitude: 54.3781, longitude: -4.436 },
-  ],
+const noSpotsObject = {
+  spots: [{ id: 0, spotName: "Waiting for Spots", latitude: 0, longitude: 0 }],
 };
 
 export default function UserScreen({ navigation }) {
   const [isInfoScreen, setIsInfoScreen] = useState(true);
   const [isFavScreen, setIsFavScreen] = useState();
   const { user, setUser } = useContext(UserContext);
+  const [spots, setSpots] = useState();
+  const [spotsError, toggleSpotsError] = useState(false);
 
   const handleClick = (bool) => {
     setIsFavScreen(bool);
@@ -53,6 +41,29 @@ export default function UserScreen({ navigation }) {
   const handleBack = () => {
     setIsInfoScreen(true);
   };
+
+  useEffect(() => {
+    if (!isInfoScreen && !isFavScreen) {
+      axios
+        .get("https://wepark-be.herokuapp.com/api/spots", {
+          params: { creator: user.username, radius: 10000 },
+        })
+        .then((response) => {
+          return response.data;
+        })
+        .then((spots) => {
+          console.log(
+            "in UserScreen get spots useEffect --->> spots, user.username",
+            spots,
+            user.username
+          );
+          return setSpots(spots);
+        })
+        .catch((err) => {
+          console.log("Error in UserScreen, in getSpots useEffect", err.config);
+        });
+    }
+  }, [isFavScreen, isInfoScreen]);
 
   const Card = ({ isFavScreen, isInfoScreen }) => {
     let content;
@@ -70,7 +81,7 @@ export default function UserScreen({ navigation }) {
         content = (
           <SpotsComponent
             className="h-2/4 flex-1 w-screen"
-            spotsObj={testMySpotsObject}
+            spotsObj={spots || noSpotsObject}
             handleBack={handleBack}
           />
         );

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const postSpot = (coordinate, values) => {
+export const postSpot = (coordinate, values, user) => {
   const parkingSpot = {
     name: values.name,
     description: values.description,
@@ -10,10 +10,17 @@ export const postSpot = (coordinate, values) => {
     closing_time: values.closing_time,
     time_limit: values.time_limit,
     parking_type: values.parking_type,
-    creator: "test-1",
+    creator: user.username,
   };
   axios
     .post("https://wepark-be.herokuapp.com/api/spots", parkingSpot)
+    .then((response) => {
+      console.log("the post request was a success");
+      return response.data;
+    })
+    .then((spots) => {
+      console.log("spots post request in api.js", spots);
+    })
     .catch(function (error) {
       if (error.response) {
         console.log(error.response.data);

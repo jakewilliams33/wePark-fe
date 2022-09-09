@@ -63,7 +63,6 @@ export default LoginScreen = () => {
 
   useEffect(() => {
     if (loginAttempted) {
-      console.log("in get user request");
       axios
         .get(`https://wepark-be.herokuapp.com/api/users/${text6}`)
         .then((response) => {
@@ -75,7 +74,6 @@ export default LoginScreen = () => {
         })
         .catch((err) => {
           if (err) {
-            console.log("Login Error", err);
             toggleIsError(true);
           }
         });
@@ -84,7 +82,6 @@ export default LoginScreen = () => {
 
   useEffect(() => {
     if (signUpAttempted) {
-      console.log("in user post request");
       axios
         .post("https://wepark-be.herokuapp.com/api/users", {
           username: text1,
@@ -101,7 +98,6 @@ export default LoginScreen = () => {
         })
         .catch((err) => {
           if (err) {
-            console.log("Sign Up Error", err);
             toggleIsError(true);
           }
         });
