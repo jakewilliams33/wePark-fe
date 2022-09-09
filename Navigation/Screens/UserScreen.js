@@ -16,20 +16,6 @@ const noUserObject = {
   kudos: 0,
 };
 
-const noFavsObject = {
-  favs: [
-    { id: 0, name: "Waiting for Favs", latitude: 0, longitude: 0 },
-    { id: 1, name: "Waiting for Favs", latitude: 0, longitude: 0 },
-  ],
-};
-
-const noSpotsObject = {
-  spots: [
-    { id: 0, name: "Waiting for Spots", latitude: 0, longitude: 0 },
-    { id: 1, name: "Waiting for Spots", latitude: 0, longitude: 0 },
-  ],
-};
-
 export default function UserScreen({ navigation }) {
   const [isInfoScreen, setIsInfoScreen] = useState(true);
   const [isFavScreen, setIsFavScreen] = useState();
