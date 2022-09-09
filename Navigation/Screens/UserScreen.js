@@ -46,7 +46,7 @@ export default function UserScreen({ navigation }) {
     if (!isInfoScreen && !isFavScreen) {
       axios
         .get("https://wepark-be.herokuapp.com/api/spots", {
-          params: { creator: user.username, radius: 10000 },
+          params: { creator: user.username, radius: 1000000000 },
         })
         .then((response) => {
           return response.data;

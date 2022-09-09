@@ -94,7 +94,7 @@ export default LoginScreen = () => {
           return response.data;
         })
         .then((user) => {
-          setUser(user.user);
+          setUser(user.username);
         })
         .catch((err) => {
           if (err) {
