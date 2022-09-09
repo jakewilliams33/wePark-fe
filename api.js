@@ -44,3 +44,32 @@ export const getSpots = () => {
       return data;
     });
 };
+
+export const getSingleSpot = (spot_id) => {
+  console.log("spot id =", spot_id, "in the api");
+  return axios
+    .get(`https://wepark-be.herokuapp.com/api/spots/${spot_id}`)
+    .then(({ data }) => {
+      return data;
+    });
+};
+
+const g = {
+  closing_time: null,
+  created_at: "2022-09-09T12:46:55.089Z",
+  creator: "Jake",
+  description: "Leeeeeeeeds",
+  downvotes: 0,
+  image_count: 0,
+  images: null,
+  isbusy: false,
+  lastchanged: "2022-09-09T12:46:55.089Z",
+  latitude: 53.80564976020919,
+  longitude: -1.582925096154213,
+  name: "Leeds",
+  opening_time: null,
+  parking_type: "street",
+  spot_id: 35,
+  time_limit: null,
+  upvotes: 0,
+};
