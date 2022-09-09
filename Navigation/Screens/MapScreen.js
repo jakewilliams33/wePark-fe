@@ -10,7 +10,7 @@ import {
   Modal,
   TextInput,
 } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Callout } from "react-native-maps";
 import { showMessage, hideMessage } from "react-native-flash-message";
 import FlashMessage from "react-native-flash-message";
 import { Formik } from "formik";
@@ -19,7 +19,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import * as Yup from "yup";
 import { UserContext } from "../AppContext";
 
-import { getSpots, postSpot } from "../../api";
+import { getSpots, postSpot, getSingleSpot } from "../../api";
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -39,7 +39,9 @@ export default function MapScreen({ navigation, route }) {
   const [showAddButton, setShowAddButton] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [image, setImage] = useState(null);
-  const { user } = useContext(UserContext);
+  const [showMarkerModal, setShowMarkerModal] = useState(false);
+  const [selectedSpotInfo, setSelectedSpotInfo] = useState();
+  const { user, setUser } = useContext(UserContext);
 
   //form validation
   const SpaceSchema = Yup.object().shape({
@@ -75,6 +77,14 @@ export default function MapScreen({ navigation, route }) {
     if (!result.cancelled) {
       setImage(result.uri);
     }
+  };
+
+  // Get single spot information
+  const handleSpotPopup = (spot_id) => {
+    setShowMarkerModal(true);
+    getSingleSpot(spot_id).then(({ spot }) => {
+      setSelectedSpotInfo(spot);
+    });
   };
 
   //function to handle click on floating Action Button
@@ -267,6 +277,29 @@ export default function MapScreen({ navigation, route }) {
             )}
           </Formik>
         </Modal>
+        {/* SPOT INFO MODAL HERE!!!!!1 
+          HERE!!!!!!!!!*/}
+        <Modal
+          visible={showMarkerModal}
+          style={{ flex: 1 }}
+          animationType="slide"
+          onRequestClose={() => {
+            setShowMarkerModal(false);
+          }}
+        >
+          {selectedSpotInfo && (
+            <>
+              <Text>{selectedSpotInfo.name}</Text>
+              <Text>
+                Added By: {selectedSpotInfo.creator} On:{" "}
+                {selectedSpotInfo.created_at}
+              </Text>
+              <Text>Type: {selectedSpotInfo.parking_type}</Text>
+
+              <Text>Description: {selectedSpotInfo.description}</Text>
+            </>
+          )}
+        </Modal>
 
         <MapView
           style={{ flex: 1 }}
@@ -334,7 +367,19 @@ export default function MapScreen({ navigation, route }) {
               votes: marker.votes,
             };
 
-            if (markers.length > 0) return <Marker {...spotDetails} />;
+            if (markers.length > 0)
+              return (
+                <Marker {...spotDetails}>
+                  <Callout
+                    onPress={() => {
+                      handleSpotPopup(marker.spot_id);
+                    }}
+                  >
+                    <Text style={{ fontWeight: "bold" }}>{marker.name}</Text>
+                    <Text>Sample Description</Text>
+                  </Callout>
+                </Marker>
+              );
           })}
         </MapView>
         {showConfirmButton && (
