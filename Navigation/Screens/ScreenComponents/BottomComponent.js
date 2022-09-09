@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import { UserContext } from "../../AppContext";
 
 export default BottomComponent = ({ userObj, handleClick, styles }) => {
   console.log("in BottomComponent. user -->>", userObj);
+
+  const { setUser } = useContext(UserContext);
 
   return (
     <View style={styles.bottom}>
@@ -28,6 +31,17 @@ export default BottomComponent = ({ userObj, handleClick, styles }) => {
         style={styles.touchableOpacityStyle}
       >
         <Text style={{ color: "white" }}>My Spots</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        title={"Spots"}
+        activeOpacity={0.7}
+        onPress={() => {
+          setUser(null);
+        }}
+        containerStyle={styles.touchableOpacityStyle}
+        style={styles.touchableOpacityStyle}
+      >
+        <Text style={{ color: "white" }}>Sign Out</Text>
       </TouchableOpacity>
     </View>
   );
