@@ -1,33 +1,40 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import { UserContext } from "../../AppContext";
 
-export default BottomComponent = ({ userObj, handleClick, styles }) => {
-  console.log("in BottomComponent. user -->>", userObj);
+export default BottomComponent = ({ userObj, handleClick }) => {
+  const { setUser } = useContext(UserContext);
 
   return (
-    <View style={styles.bottom}>
-      <Text style={styles.userInfo}>Username: {userObj.username}</Text>
-      <Text style={styles.userInfo}>bio: {userObj.about}</Text>
-      <Text style={styles.userInfo}>Kudos: {userObj.kudos}</Text>
+    <View className="w-screen flex-col justify-between items-center h-2/4">
+      <TouchableOpacity
+        title={"Sign Out"}
+        className=" justify-center items-center p-3 rounded-md bg-slate-400 w-4/12 "
+        activeOpacity={0.7}
+        onPress={() => {
+          setUser(null);
+        }}
+      >
+        <Text className="text-white text-l font-medium">Sign Out</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity
         title={"Favourites"}
+        className=" justify-center items-center p-3 rounded-md bg-slate-400 w-4/12 "
         activeOpacity={0.7}
         onPress={() => handleClick(true)}
-        containerStyle={styles.touchableOpacityStyle}
-        style={styles.touchableOpacityStyle}
       >
-        <Text style={{ color: "white" }}>My Favourites</Text>
+        <Text className="text-white text-l font-medium">My Favourites</Text>
       </TouchableOpacity>
       <TouchableOpacity
         title={"Spots"}
+        className=" justify-center items-center p-3 rounded-md bg-slate-400 w-4/12 "
         activeOpacity={0.7}
         onPress={() => {
           handleClick(false);
         }}
-        containerStyle={styles.touchableOpacityStyle}
-        style={styles.touchableOpacityStyle}
       >
-        <Text style={{ color: "white" }}>My Spots</Text>
+        <Text className="text-white text-l font-medium">My Spots</Text>
       </TouchableOpacity>
     </View>
   );
