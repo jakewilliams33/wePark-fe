@@ -6,6 +6,7 @@ import LoginScreen from "./LoginScreen";
 
 import axios from "axios";
 import { UserContext } from "../AppContext";
+import { faVanShuttle } from "@fortawesome/free-solid-svg-icons";
 
 const noUserObject = {
   username: "No User",
@@ -15,10 +16,10 @@ const noUserObject = {
   kudos: 0,
 };
 
-const testFavouritesObject = {
-  spots: [
-    { id: 1, name: "randomSpot1", latitude: 55.3781, longitude: -3.436 },
-    { id: 2, name: "randomSpot2", latitude: 54.3781, longitude: -4.436 },
+const noFavsObject = {
+  favs: [
+    { id: 0, name: "Waiting for Favs", latitude: 0, longitude: 0 },
+    { id: 1, name: "Waiting for Favs", latitude: 0, longitude: 0 },
   ],
 };
 
@@ -34,6 +35,7 @@ export default function UserScreen({ navigation }) {
   const [isFavScreen, setIsFavScreen] = useState();
   const { user, setUser } = useContext(UserContext);
   const [spots, setSpots] = useState();
+  const [favs, setFavs] = useState();
   const [spotsError, toggleSpotsError] = useState(false);
 
   const handleClick = (bool) => {
@@ -68,6 +70,32 @@ export default function UserScreen({ navigation }) {
     }
   }, [isFavScreen, isInfoScreen]);
 
+  useEffect(() => {
+    if (!isInfoScreen && isFavScreen) {
+      axios
+        .get(
+          `https://wepark-be.herokuapp.com/api/users/${user.username}/favourites`
+        )
+        .then((response) => {
+          return response.data;
+        })
+        .then((favs) => {
+          console.log(
+            "in UserScreen get favourites useEffect --->> spots, user.username",
+            favs,
+            user.username
+          );
+          return setFavs(favs);
+        })
+        .catch((err) => {
+          console.log(
+            "Error in UserScreen, in getfavourites useEffect",
+            err.config
+          );
+        });
+    }
+  }, [isFavScreen, isInfoScreen]);
+
   const Card = ({ isFavScreen, isInfoScreen }) => {
     let content;
 
@@ -78,10 +106,7 @@ export default function UserScreen({ navigation }) {
             <Text className="text-xl text-center font-bold color-slate-600 mb-4">
               Favourites
             </Text>
-            <SpotsComponent
-              className=" w-screen"
-              spotsObj={testFavouritesObject}
-            />
+            <SpotsComponent className=" w-screen" spotsObj={favs} />
 
             <View className="w-screen items-center justify-start ">
               <TouchableOpacity
@@ -101,10 +126,7 @@ export default function UserScreen({ navigation }) {
             <Text className="text-xl text-center font-bold color-slate-600 mb-4">
               Your Spots
             </Text>
-            <SpotsComponent
-              className="  w-screen"
-              spotsObj={spots || noSpotsObject}
-            />
+            <SpotsComponent className="  w-screen" spotsObj={spots} />
 
             <View className="w-screen items-center justify-center ">
               <TouchableOpacity
