@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, StyleSheet, Image } from "react-native";
 import SpotsComponent from "./ScreenComponents/SpotsComponent";
 import BottomComponent from "./ScreenComponents/BottomComponent";
+import LoginScreen from "./LoginScreen";
 
 import axios from "axios";
+import { UserContext } from "../AppContext";
 
 const testUserObject = {
   id: 4,
@@ -14,6 +16,14 @@ const testUserObject = {
   bio: "I've seen some Shit",
   hometown: "Manchester",
   kudos: 69,
+};
+
+const noUserObject = {
+  username: "No User",
+  avatar:
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAkjktNk_waKZ6A064JikKQRYLxoKPNIUR_g&usqp=CAU",
+  about: "Some random user bio",
+  kudos: 0,
 };
 
 const testFavouritesObject = {
@@ -33,9 +43,9 @@ const testMySpotsObject = {
 export default function UserScreen({ navigation }) {
   const [isInfoScreen, setIsInfoScreen] = useState(true);
   const [isFavScreen, setIsFavScreen] = useState();
+  const { user, setUser } = useContext(UserContext);
 
   const handleClick = (bool) => {
-    console.log("hitting handleclick");
     setIsFavScreen(bool);
     setIsInfoScreen(false);
   };
@@ -44,13 +54,13 @@ export default function UserScreen({ navigation }) {
     setIsInfoScreen(true);
   };
 
-  useEffect(() => {
-    console.log(
-      "in useEffect -> isInfoScreen, isFavScreen:",
-      isInfoScreen,
-      isFavScreen
-    );
-  }, [isInfoScreen, isFavScreen]);
+  // useEffect(() => {
+  //   console.log(
+  //     "in useEffect -> isInfoScreen, isFavScreen:",
+  //     isInfoScreen,
+  //     isFavScreen
+  //   );
+  // }, [isInfoScreen, isFavScreen]);
 
   const Card = ({ isFavScreen, isInfoScreen }) => {
     let content;
@@ -76,7 +86,7 @@ export default function UserScreen({ navigation }) {
     } else {
       content = (
         <BottomComponent
-          userObj={testUserObject}
+          userObj={user || noUserObject}
           handleClick={handleClick}
           styles={styles}
         />
@@ -86,19 +96,31 @@ export default function UserScreen({ navigation }) {
     return <View>{content}</View>;
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.top}>
-        <Image
-          style={styles.profilePic}
-          source={{
-            uri: testUserObject.user_avatar_uri,
-          }}
-        />
-      </View>
+  const WhichScreen = ({ isFavScreen, isInfoScreen, user }) => {
+    if (user) {
+      return (
+        <View style={styles.container}>
+          <View style={styles.top}>
+            <Image
+              style={styles.profilePic}
+              source={{
+                uri: user.avatar || noUserObject.avatar,
+              }}
+            />
+          </View>
 
-      <Card isFavScreen={isFavScreen} isInfoScreen={isInfoScreen} />
-    </View>
+          <Card isFavScreen={isFavScreen} isInfoScreen={isInfoScreen} />
+        </View>
+      );
+    } else return <LoginScreen />;
+  };
+
+  return (
+    <WhichScreen
+      isFavScreen={isFavScreen}
+      isInfoScreen={isInfoScreen}
+      user={user}
+    />
   );
 }
 

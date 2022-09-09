@@ -1,12 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  TextInput,
-  SafeAreaView,
-} from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import { Text, StyleSheet } from "react-native";
 import axios from "axios";
 import { UserContext } from "../AppContext";
 import LoginComponent from "./ScreenComponents/LoginComponent.js";
@@ -26,6 +19,7 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen = () => {
+  const { user, setUser } = useContext(UserContext);
   const [screenToDisplay, setScreenToDisplay] = useState("Main");
   const [text1, onChangeText1] = useState("");
   const [text2, onChangeText2] = useState("");
@@ -36,7 +30,7 @@ export default LoginScreen = () => {
   const [text7, onChangeText7] = useState("");
   const [loginAttempted, toggleLoginAttempted] = useState(false);
   const [signUpAttempted, toggleSignUpAttempted] = useState(false);
-  const [user, setUser] = useState();
+
   const [isError, toggleIsError] = useState(false);
 
   const handleSignUpSubmit = () => {
@@ -74,8 +68,10 @@ export default LoginScreen = () => {
         .get(`https://wepark-be.herokuapp.com/api/users/${text6}`)
         .then((response) => {
           toggleLoginAttempted(false);
-          console.log(response);
-          setUser(response);
+          return response.data;
+        })
+        .then((user) => {
+          setUser(user.user);
         })
         .catch((err) => {
           if (err) {
@@ -98,12 +94,10 @@ export default LoginScreen = () => {
         })
         .then((response) => {
           toggleSignUpAttempted(false);
-          console.log(response.data);
           return response.data;
         })
         .then((user) => {
-          console.log(user);
-          setUser(user);
+          setUser(user.user);
         })
         .catch((err) => {
           if (err) {
@@ -113,6 +107,11 @@ export default LoginScreen = () => {
         });
     }
   }, [signUpAttempted]);
+
+  useEffect(() => {
+    if (user) {
+    }
+  }, [user]);
 
   switch (screenToDisplay) {
     case "Main":
