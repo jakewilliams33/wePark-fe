@@ -29,24 +29,10 @@ export default function MapScreen({ navigation, route }) {
     longitudeDelta: 1,
   });
   const [status, setStatus] = useState();
-  const [markers, setMarkers] = useState([
-    {
-      coordinate: {
-        latitude: 53.820851393806905,
-        longitude: -1.5859020128846169,
-      },
-      key: 2,
-    },
-    {
-      coordinate: {
-        latitude: 53.81018980502543,
-        longitude: -1.569543890655041,
-      },
-      key: 1,
-    },
-  ]);
+  const [markers, setMarkers] = useState([]);
   const [markerAllowed, setMarkerAllowed] = useState(false);
   const [newMarker, setNewMarker] = useState([]);
+  const [optimisticMarkers, setOptimisticmarkers] = useState([]);
 
   const [showConfirmButton, setShowConfirmButton] = useState(false);
   const [showAddButton, setShowAddButton] = useState(true);
@@ -69,9 +55,9 @@ export default function MapScreen({ navigation, route }) {
   // get spots from db
   useEffect(() => {
     getSpots().then(({ spots }) => {
-      console.log(spots[0]);
+      setMarkers(spots);
     });
-  });
+  }, []);
 
   // get image from gallery
   const pickImage = async () => {
@@ -130,8 +116,9 @@ export default function MapScreen({ navigation, route }) {
   //confirm marker
   const confirmMarkerPosition = () => {
     const finalChoice = newMarker[0].coordinate;
-    setMarkers([
-      ...markers,
+    const optimisticCopy = [...optimisticMarkers];
+    setOptimisticmarkers([
+      ...optimisticCopy,
       {
         coordinate: {
           latitude: finalChoice.latitude,
@@ -161,7 +148,7 @@ export default function MapScreen({ navigation, route }) {
               parking_type: "",
               opening_time: "No specified times",
               closing_time: "No specified times",
-              time_limit: "",
+              time_limit: null,
             }}
             validationSchema={SpaceSchema}
             onSubmit={(values) => {
@@ -327,9 +314,25 @@ export default function MapScreen({ navigation, route }) {
               />
             );
           })}
+          {optimisticMarkers.map((marker) => {
+            return <Marker {...marker} />;
+          })}
 
           {markers.map((marker) => {
-            if (markers.length > 0) return <Marker {...marker} />;
+            const spotDetails = {
+              coordinate: {
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+              },
+              key: marker.spot_id ? marker.spot_id : Date.now,
+              opening_time: marker.opening_time,
+              closing_time: marker.closing_time,
+              time_limit: marker.time_limit,
+              parking_type: marker.parking_type,
+              votes: marker.votes,
+            };
+
+            if (markers.length > 0) return <Marker {...spotDetails} />;
           })}
         </MapView>
         {showConfirmButton && (
