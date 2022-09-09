@@ -1,152 +1,12 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  StyleSheet,
-  TextInput,
-} from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import { Text, StyleSheet } from "react-native";
 import axios from "axios";
+import { UserContext } from "../AppContext";
+import LoginComponent from "./ScreenComponents/LoginComponent.js";
+import SignUpComponent from "./ScreenComponents/SignUpComponent.js";
+import MainLoginComponent from "./ScreenComponents/MainLoginComponent.js";
 
-export default LoginScreen = () => {
-  const [screenToDisplay, setScreenToDisplay] = useState("Main");
-  const [text1, onChangeText1] = React.useState("Username");
-  const [text2, onChangeText2] = React.useState("Email Address");
-  const [text3, onChangeText3] = React.useState("A few Words About Yourself");
-  const [text4, onChangeText4] = React.useState("A link to a picture of you");
-
-  const handleSignUpSubmit = () => {};
-  const handlePress = (event) => {
-    const dest = event.destination;
-    setScreenToDisplay(dest);
-  };
-
-  switch (screenToDisplay) {
-    case "Main":
-      return (
-        <>
-          <View className="flex-1 items-center justify-center bg-white w-screen ">
-            <View className=" flex-1 flex-col justify-end items-center basis-2/4 w-screen border-2 border-red-400">
-              <Text className="text-xl text-slate-600 font-medium ">
-                Login or Sign Up
-              </Text>
-            </View>
-
-            <View className=" flex-1 flex-col justify-start items-center basis-3/4 w-screen border-2 border-red-400 pt-10">
-              <View className="flex-row justify-center  w-screen">
-                <View className="mx-5 ">
-                  <TouchableOpacity
-                    className=" p-2 rounded-md bg-slate-400 h-10 w-20 justify-center items-center"
-                    onPress={(event) => {
-                      event.destination = "Login";
-                      handlePress(event);
-                    }}
-                  >
-                    <Text className="text-white text-l font-medium">Login</Text>
-                  </TouchableOpacity>
-                </View>
-
-                <View className="mx-5 ">
-                  <TouchableOpacity
-                    className=" p-2 rounded-md bg-slate-400 h-10 w-20 justify-center items-center"
-                    onPress={(event) => {
-                      event.destination = "Sign Up";
-                      handlePress(event);
-                    }}
-                  >
-                    <Text className="text-white text-l font-medium">
-                      Sign Up
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </View>
-        </>
-      );
-
-      break;
-
-    case "Login":
-      return (
-        <>
-          <View className="mx-5 ">
-            <TouchableOpacity
-              className=" p-2 rounded-md bg-slate-400 h-10 w-20 justify-center items-center"
-              onPress={(event) => {
-                event.destination = "Main";
-                handlePress(event);
-              }}
-            >
-              <Text className="text-white text-l font-medium">Back</Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      );
-      break;
-
-    case "Sign Up":
-      return (
-        <>
-          <View className="mx-5 ">
-            <TouchableOpacity
-              className=" p-2 rounded-md bg-slate-400 h-10 w-20 justify-center items-center"
-              onPress={(event) => {
-                event.destination = "Main";
-                handlePress(event);
-              }}
-            >
-              <Text className="text-white text-l font-medium">Back</Text>
-            </TouchableOpacity>
-          </View>
-          <SafeAreaView className="w-8/12 ">
-            <TextInput
-              className="rounded-md shadow-xl"
-              style={styles.input}
-              onChangeText={onChangeText1}
-              value={text1}
-            />
-          </SafeAreaView>
-          <SafeAreaView className="w-8/12 ">
-            <TextInput
-              className="rounded-md shadow-xl"
-              style={styles.input}
-              onChangeText={onChangeText2}
-              value={text2}
-            />
-          </SafeAreaView>
-          <SafeAreaView className="w-8/12 ">
-            <TextInput
-              className="rounded-md shadow-xl"
-              style={styles.input}
-              onChangeText={onChangeText3}
-              value={text3}
-            />
-          </SafeAreaView>
-          <SafeAreaView className="w-8/12 ">
-            <TextInput
-              className="rounded-md shadow-xl"
-              style={styles.input}
-              onChangeText={onChangeText4}
-              value={text4}
-            />
-          </SafeAreaView>
-          <View className="mx-5 ">
-            <TouchableOpacity
-              className=" p-2 rounded-md bg-slate-400 h-10 w-20 justify-center items-center"
-              onPress={() => {
-                handleSignUpSubmit();
-              }}
-            >
-              <Text className="text-white text-l font-medium">Submit</Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      );
-      break;
-  }
-};
+console.log("@LoginScreen", UserContext);
 
 const styles = StyleSheet.create({
   input: {
@@ -157,3 +17,145 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
 });
+
+export default LoginScreen = () => {
+  const { user, setUser } = useContext(UserContext);
+  const [screenToDisplay, setScreenToDisplay] = useState("Main");
+  const [text1, onChangeText1] = useState("");
+  const [text2, onChangeText2] = useState("");
+  const [text3, onChangeText3] = useState("");
+  const [text4, onChangeText4] = useState("");
+  const [text5, onChangeText5] = useState("");
+  const [text6, onChangeText6] = useState("");
+  const [text7, onChangeText7] = useState("");
+  const [loginAttempted, toggleLoginAttempted] = useState(false);
+  const [signUpAttempted, toggleSignUpAttempted] = useState(false);
+
+  const [isError, toggleIsError] = useState(false);
+
+  const handleSignUpSubmit = () => {
+    if (text1) {
+      toggleSignUpAttempted(true);
+    } else {
+      onChangeText1("");
+      onChangeText2("");
+      onChangeText3("");
+      onChangeText4("");
+      onChangeText5("");
+      return;
+    }
+  };
+
+  const handleLoginSubmit = () => {
+    if (text6) {
+      toggleLoginAttempted(true);
+    } else {
+      onChangeText6("");
+      onChangeText7("");
+      return;
+    }
+  };
+  const handlePress = (event) => {
+    const dest = event.destination;
+    toggleIsError(false);
+    setScreenToDisplay(dest);
+  };
+
+  useEffect(() => {
+    if (loginAttempted) {
+      console.log("in get user request");
+      axios
+        .get(`https://wepark-be.herokuapp.com/api/users/${text6}`)
+        .then((response) => {
+          toggleLoginAttempted(false);
+          return response.data;
+        })
+        .then((user) => {
+          setUser(user.user);
+        })
+        .catch((err) => {
+          if (err) {
+            console.log("Login Error", err);
+            toggleIsError(true);
+          }
+        });
+    }
+  }, [loginAttempted]);
+
+  useEffect(() => {
+    if (signUpAttempted) {
+      console.log("in user post request");
+      axios
+        .post("https://wepark-be.herokuapp.com/api/users", {
+          username: text1,
+          about: text3,
+          email: text2,
+          avatar: text4,
+        })
+        .then((response) => {
+          toggleSignUpAttempted(false);
+          return response.data;
+        })
+        .then((user) => {
+          setUser(user.user);
+        })
+        .catch((err) => {
+          if (err) {
+            console.log("Sign Up Error", err);
+            toggleIsError(true);
+          }
+        });
+    }
+  }, [signUpAttempted]);
+
+  useEffect(() => {
+    if (user) {
+    }
+  }, [user]);
+
+  switch (screenToDisplay) {
+    case "Main":
+      return <MainLoginComponent handlePress={handlePress} />;
+      break;
+
+    case "Login":
+      return (
+        <>
+          <LoginComponent
+            styles={styles}
+            handlePress={handlePress}
+            text6={text6}
+            text7={text7}
+            onChangeText6={onChangeText6}
+            onChangeText7={onChangeText7}
+            handleLoginSubmit={handleLoginSubmit}
+          />
+          {isError ? <Text>Something Went Wrong</Text> : null}
+        </>
+      );
+      break;
+
+    case "Sign Up":
+      return (
+        <>
+          <SignUpComponent
+            styles={styles}
+            text1={text1}
+            text2={text2}
+            text3={text3}
+            text4={text4}
+            text5={text5}
+            handlePress={handlePress}
+            handleSignUpSubmit={handleSignUpSubmit}
+            onChangeText1={onChangeText1}
+            onChangeText2={onChangeText2}
+            onChangeText3={onChangeText3}
+            onChangeText4={onChangeText4}
+            onChangeText5={onChangeText5}
+          />
+          {isError ? <Text>Something Went Wrong</Text> : null}
+        </>
+      );
+      break;
+  }
+};

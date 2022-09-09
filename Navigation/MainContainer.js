@@ -1,5 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
-import * as React from "react";
+import React, { useContext, useEffect, createContext, useState } from "react";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -19,8 +19,6 @@ const userPageName = "User";
 const Tab = createBottomTabNavigator();
 
 export default function MainContainer() {
-  console.log(UserContext);
-
   return (
     <UserProvider>
       <NavigationContainer>
@@ -45,12 +43,11 @@ export default function MainContainer() {
         >
           <Tab.Screen name={homeName} component={HomeScreen} />
           <Tab.Screen name={mapName} component={MapScreen} />
-          <Tab.Screen
-            name={userPageName}
-            component={UserContext._currentValue ? UserScreen : LoginScreen}
-          />
+          <Tab.Screen name={userPageName} component={UserScreen} />
         </Tab.Navigator>
       </NavigationContainer>
     </UserProvider>
   );
 }
+
+export { UserContext, MainContainer };
