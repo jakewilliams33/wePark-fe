@@ -6,8 +6,6 @@ import LoginComponent from "./ScreenComponents/LoginComponent.js";
 import SignUpComponent from "./ScreenComponents/SignUpComponent.js";
 import MainLoginComponent from "./ScreenComponents/MainLoginComponent.js";
 
-console.log("@LoginScreen", UserContext);
-
 const styles = StyleSheet.create({
   input: {
     height: 40,

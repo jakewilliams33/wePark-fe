@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-const SpotsItem = ({ spot, handleFavPress }) => (
+const SpotsItem = ({ spot, handleFavPress, handleDelete }) => (
   <View
     className="bg-slate-400 border-slate-400 flex-col items-center justify-evenly border-2  pl-2 mt-3 ml-5 mr-5 rounded-md"
     key={spot.item.id}
@@ -48,18 +48,39 @@ const SpotsItem = ({ spot, handleFavPress }) => (
             handleFavPress(event);
           }}
         >
-          <Ionicons name="star" size={20} color="yellow" />
+          <Ionicons name="star-outline" size={20} color="white" />
           <Text className="text-m text-white font-medium text-center">Add</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          className=" ml-2 rounded-md bg-slate-600 h-7 mt-1 w-14 justify-center items-center"
+          onPress={(event) => {
+            event.spot_id = spot.item.spot_id;
+            handleDelete(event);
+          }}
+        >
+          <Text className="text-m text-white font-medium text-center">
+            Delete
+          </Text>
         </TouchableOpacity>
       </SafeAreaView>
     </View>
   </View>
 );
 
-export default SpotsComponent = ({ spotsObj }) => {
+export default SpotsComponent = ({
+  spotsObj,
+  handleFavPress,
+  handleDelete,
+}) => {
   const renderItem = (spot) => {
-    console.log(spot);
-    return <SpotsItem spot={spot} />;
+    return (
+      <SpotsItem
+        spot={spot}
+        handleDelete={handleDelete}
+        handleFavPress={handleFavPress}
+        key={spot.spot_id}
+      />
+    );
   };
 
   return (
@@ -69,7 +90,7 @@ export default SpotsComponent = ({ spotsObj }) => {
           <FlatList
             data={spotsObj.spots}
             renderItem={renderItem}
-            keyExtractor={(spot) => spot.id}
+            keyExtractor={(spot) => spot.spot_id}
           />
         </SafeAreaView>
       ) : null}

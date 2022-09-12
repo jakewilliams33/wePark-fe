@@ -20,7 +20,7 @@ export default LoginComponent = ({
       <View className="flex-1 items-center justify-center bg-white w-screen ">
         <View className="mx-5 ">
           <TouchableOpacity
-            className=" p-2 rounded-md bg-slate-400 h-10 w-20 justify-center items-center"
+            className=" p-2 rounded-md bg-slate-600 h-10 w-20 justify-center items-center"
             onPress={(event) => {
               event.destination = "Main";
               handlePress(event);
@@ -52,7 +52,7 @@ export default LoginComponent = ({
         </SafeAreaView>
         <View className="mx-5 ">
           <TouchableOpacity
-            className=" p-2 rounded-md bg-slate-400 h-10 w-20 justify-center items-center"
+            className=" p-2 rounded-md bg-slate-600 h-10 w-20 justify-center items-center"
             onPress={() => {
               handleLoginSubmit();
             }}
