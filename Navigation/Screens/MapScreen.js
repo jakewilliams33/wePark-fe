@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
+  ToastAndroid,
 } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { showMessage, hideMessage } from "react-native-flash-message";
@@ -19,7 +20,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import * as Yup from "yup";
 import { UserContext } from "../AppContext";
 
-import { getSpots, postSpot, getSingleSpot } from "../../api";
+import { getSpots, postSpot, getSingleSpot, deleteSpot } from "../../api";
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -41,6 +42,8 @@ export default function MapScreen({ navigation, route }) {
   const [image, setImage] = useState(null);
   const [showMarkerModal, setShowMarkerModal] = useState(false);
   const [selectedSpotInfo, setSelectedSpotInfo] = useState();
+  const [selectedSpotID, setSelectedSpotID] = useState();
+  const [previewImage, setPreview] = useState();
   const { user, setUser } = useContext(UserContext);
 
   //form validation
@@ -72,9 +75,10 @@ export default function MapScreen({ navigation, route }) {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.cancelled) {
+      setPreview(result.uri);
+      // const response = await fetch(result.uri);
+      // const blob = await response.blob();
       setImage(result.uri);
     }
   };
@@ -89,12 +93,18 @@ export default function MapScreen({ navigation, route }) {
 
   //function to handle click on floating Action Button
   const clickHandler = () => {
-    showMessage({
-      message: "Tap on the map to add a parking space",
-      type: "info",
-    });
-    setMarkerAllowed(true);
-    setShowAddButton(false);
+    if (user) {
+      showMessage({
+        message: "Tap on the map to add a parking space",
+        type: "info",
+      });
+      setMarkerAllowed(true);
+      setShowAddButton(false);
+    } else
+      ToastAndroid.show(
+        "Please sign up or log in to add a parking spot",
+        ToastAndroid.SHORT
+      );
   };
 
   //get location permission
@@ -105,7 +115,6 @@ export default function MapScreen({ navigation, route }) {
         setStatus("Permission to access location was denied");
         return;
       } else {
-        console.log("Access granted!");
         setStatus(status);
       }
     })();
@@ -142,6 +151,15 @@ export default function MapScreen({ navigation, route }) {
     setNewMarker([]);
   };
 
+  //delete
+  const handleDelete = () => {
+    deleteSpot(selectedSpotID);
+    getSpots().then(({ spots }) => {
+      setMarkers(spots);
+      setShowMarkerModal(false);
+    });
+  };
+
   if (userLocation && mapRegion.latitude === userLocation.coords.latitude) {
     return (
       <View style={{ flex: 1 }}>
@@ -167,7 +185,13 @@ export default function MapScreen({ navigation, route }) {
               confirmMarkerPosition();
               setShowModal(false);
               let finalChoice = newMarker[0].coordinate;
-              postSpot(finalChoice, values, user);
+              postSpot(finalChoice, values, user, image);
+              let prev = markers.length;
+
+              getSpots().then(({ spots }) => {
+                setMarkers(spots);
+              });
+              setOptimisticmarkers([]);
             }}
           >
             {(props) => (
@@ -265,9 +289,9 @@ export default function MapScreen({ navigation, route }) {
                   title="Pick an image from camera roll"
                   onPress={pickImage}
                 />
-                {image && (
+                {previewImage && (
                   <Image
-                    source={{ uri: image }}
+                    source={{ uri: previewImage }}
                     style={{ width: 200, height: 200 }}
                   />
                 )}
@@ -297,7 +321,16 @@ export default function MapScreen({ navigation, route }) {
               <Text>Type: {selectedSpotInfo.parking_type}</Text>
 
               <Text>Description: {selectedSpotInfo.description}</Text>
+              <Image
+                style={{ width: 200, height: 200 }}
+                source={{ uri: selectedSpotInfo.images }}
+              ></Image>
             </>
+          )}
+          {selectedSpotID && (
+            <Button title="delete button" onPress={handleDelete}>
+              Delete
+            </Button>
           )}
         </Modal>
 
@@ -373,6 +406,7 @@ export default function MapScreen({ navigation, route }) {
                   <Callout
                     onPress={() => {
                       handleSpotPopup(marker.spot_id);
+                      setSelectedSpotID(marker.spot_id);
                     }}
                   >
                     <Text style={{ fontWeight: "bold" }}>{marker.name}</Text>
