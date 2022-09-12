@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { MainContainer } from "./Navigation/MainContainer";
-import { UserProvider, UserContext } from "./Navigation/AppContext";
+import { UserProvider } from "./Navigation/AppContext";
 
 function App() {
   return (

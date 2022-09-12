@@ -28,6 +28,9 @@ export default function UserScreen({ navigation }) {
   const [unFav, toggleUnFav] = useState(false);
   const [IDtoDelete, setIDtoDelete] = useState();
   const [shouldDelete, toggleShouldDelete] = useState(false);
+  const [reFav, toggleReFav] = useState(false);
+
+  console.log(user);
 
   const handleClick = (bool) => {
     setIsFavScreen(bool);
@@ -56,20 +59,53 @@ export default function UserScreen({ navigation }) {
     toggleUnFav(true);
   };
 
+  //-----------------------------------------------------------------------------
+  // POST USER FAV
   useEffect(() => {
     if (addToFavs) {
-      const spot = IDtoFav;
-      toggleAddToFavs(false);
-      setIDToFav(null);
-      axios
-        .post(`https://wepark-be.herokuapp.com/api/users/${user}/favourites`, {
-          spot_id: IDtoFav,
-        })
-        .then(() => {
-          console.log("FAV WORKED");
-        });
+      if (favs) {
+        console.log("here are the favs", favs);
+      }
+      if (favs) {
+        if (favs.filter((fav) => fav.spot_id === IDtoFav).length > 0) {
+          console.log("NAUGHTY, aready fav");
+          return;
+        }
+      } else {
+        const FAVSPOT = IDtoFav;
+        console.log("Beginning POST fav request, spot_id-->>", FAVSPOT);
+        toggleAddToFavs(false);
+        setIDToFav(null);
+        axios
+          .post(
+            `https://wepark-be.herokuapp.com/api/users/${user.username}/favourites`,
+            {
+              spot_id: FAVSPOT,
+            }
+          )
+          .then((response) => {
+            return response.data;
+          })
+          .then((spot) => {
+            console.log("FAV WORKED, here's the response -->>", spot);
+            console.log("and here are the current favs: ", favs);
+            const newFavs = favs;
+
+            newFavs.push(spot.spot);
+            return setFavs(newFavs);
+          })
+          .catch((err) => {
+            console.log(
+              "Error in UserScreen, in post Favs useEffect",
+              err.response
+            );
+          });
+      }
     }
-  }, [addToFavs]);
+  }, [addToFavs, shouldDelete]);
+
+  //--------------------------------------------------------------------------
+  // DELETE USER FAV
 
   // useEffect(() => {
   //   if (unFav) {
@@ -77,6 +113,8 @@ export default function UserScreen({ navigation }) {
   //   }
   // }, [unFav]);
 
+  //----------------------------------------------------------------------------
+  // GET USER SPOTS
   useEffect(() => {
     if (!isInfoScreen && !isFavScreen) {
       axios
@@ -90,11 +128,13 @@ export default function UserScreen({ navigation }) {
           return setSpots(spots);
         })
         .catch((err) => {
-          console.log("Error in UserScreen, in getSpots useEffect", err.config);
+          console.log("Error in UserScreen, in getSpots useEffect", err);
         });
     }
   }, [isFavScreen, isInfoScreen]);
 
+  //--------------------------------------------------------------------------
+  // GET USER FAVS
   useEffect(() => {
     if (!isInfoScreen && isFavScreen) {
       axios
@@ -116,6 +156,8 @@ export default function UserScreen({ navigation }) {
     }
   }, [isFavScreen, isInfoScreen]);
 
+  //---------------------------------------------------------------------------
+  // DELETE USER SPOT
   useEffect(() => {
     if (shouldDelete) {
       console.log("beginning delete request, -->> IDtoDelete: ", IDtoDelete);
@@ -166,7 +208,7 @@ export default function UserScreen({ navigation }) {
             <View className="w-screen items-center justify-start ">
               <TouchableOpacity
                 title={"Spots"}
-                className=" rounded-md bg-slate-400 h-12 w-24 justify-center items-center"
+                className=" rounded-md bg-slate-600 h-12 w-24 justify-center items-center"
                 activeOpacity={0.7}
                 onPress={handleBack}
               >
