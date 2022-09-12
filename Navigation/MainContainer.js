@@ -1,5 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
-import React, { useContext, useEffect, createContext, useState } from "react";
+import React from "react";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -8,7 +8,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import HomeScreen from "./Screens/HomeScreen";
 import MapScreen from "./Screens/MapScreen";
 import UserScreen from "./Screens/UserScreen";
-import LoginScreen from "./Screens/LoginScreen";
 import { UserProvider, UserContext } from "./AppContext";
 
 //screen names
