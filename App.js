@@ -1,12 +1,15 @@
 import React from "react";
 import { MainContainer } from "./Navigation/MainContainer";
 import { UserProvider } from "./Navigation/AppContext";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 function App() {
   return (
-    <UserProvider>
-      <MainContainer />
-    </UserProvider>
+    <RootSiblingParent>
+      <UserProvider>
+        <MainContainer />
+      </UserProvider>
+    </RootSiblingParent>
   );
 }
 

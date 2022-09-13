@@ -1,49 +1,5 @@
 import axios from "axios";
 
-export const postSpot = (coordinate, values, user, uri) => {
-  console.log(values.time_limit);
-  const parkingSpot = new FormData();
-  parkingSpot.append("name", values.name);
-  parkingSpot.append("description", values.description);
-  parkingSpot.append("longitude", coordinate.longitude);
-  parkingSpot.append("latitude", coordinate.latitude);
-  parkingSpot.append("opening_time", values.opening_time);
-  parkingSpot.append("closing_time", values.closing_time);
-  parkingSpot.append("time_limit", values.time_limit);
-  parkingSpot.append("parking_type", values.parking_type);
-  parkingSpot.append("creator", user.username);
-
-  console.log("posting spot");
-
-  if (uri) {
-    let uriParts = uri.split(".");
-    let fileType = uriParts[uriParts.length - 1];
-    parkingSpot.append("images", {
-      uri,
-      name: `photo.${fileType}`,
-      type: `image/${fileType}`,
-    });
-  }
-  axios
-    .post("https://wepark-be.herokuapp.com/api/spots", parkingSpot, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then((response) => {
-      console.log("the post request was a success");
-
-      return JSON.stringify(response.data);
-    })
-    .then((spots) => {
-      console.log("spots post request in api.js", spots);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-};
-
 export const getSpots = () => {
   console.log("getting spots");
 
