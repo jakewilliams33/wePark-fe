@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
-import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
-import SpotsComponent from "./ScreenComponents/SpotsComponent";
-import BottomComponent from "./ScreenComponents/BottomComponent";
-import LoginScreen from "./LoginScreen";
+import React, { useState, useEffect, useContext } from 'react';
+import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
+import SpotsComponent from './ScreenComponents/SpotsComponent';
+import BottomComponent from './ScreenComponents/BottomComponent';
+import LoginScreen from './LoginScreen';
 
-import axios from "axios";
-import { UserContext } from "../AppContext";
+import axios from 'axios';
+import { UserContext } from '../AppContext';
 
 const noUserObject = {
-  username: "No User",
+  username: 'No User',
   avatar:
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAkjktNk_waKZ6A064JikKQRYLxoKPNIUR_g&usqp=CAU",
-  about: "Some random user bio",
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAkjktNk_waKZ6A064JikKQRYLxoKPNIUR_g&usqp=CAU',
+  about: 'Some random user bio',
   kudos: 0,
 };
 
@@ -44,7 +44,7 @@ export default function UserScreen({ navigation }) {
   };
 
   const handleFavPress = (event) => {
-    console.log("in handleFavPress");
+    console.log('in handleFavPress');
     const spot_id = event.spot_id;
     setIDToFav(spot_id);
     console.log(IDtoFav);
@@ -62,14 +62,14 @@ export default function UserScreen({ navigation }) {
   // POST USER FAV
   useEffect(() => {
     if (addToFavs) {
-      console.log("here are the favs", favs);
+      console.log('here are the favs', favs);
 
       if (favs.filter((fav) => fav.spot_id === IDtoFav).length > 0) {
-        console.log("NAUGHTY, aready fav");
+        console.log('NAUGHTY, aready fav');
         return;
       } else {
         const FAVSPOT = IDtoFav;
-        console.log("Beginning POST fav request, spot_id-->>", FAVSPOT);
+        console.log('Beginning POST fav request, spot_id-->>', FAVSPOT);
         toggleAddToFavs(false);
         setIDToFav(null);
         const newUser = user;
@@ -87,7 +87,7 @@ export default function UserScreen({ navigation }) {
           })
           .then((spot) => {
             console.log("FAV WORKED, here's the response -->>", spot);
-            console.log("and here are the current favs: ", favs);
+            console.log('and here are the current favs: ', favs);
             const newFavs = favs.spots || [];
 
             newFavs.push(spot.spot);
@@ -97,7 +97,7 @@ export default function UserScreen({ navigation }) {
             return setFavs(newFavs);
           })
           .catch((err) => {
-            console.log("Error in UserScreen, in post Favs useEffect", err);
+            console.log('Error in UserScreen, in post Favs useEffect', err);
             const newUser = user;
             newUser.favourites = user.favourites.filter(
               (fav) => fav !== FAVSPOT
@@ -113,7 +113,7 @@ export default function UserScreen({ navigation }) {
 
   useEffect(() => {
     if (unFav && IDtoUnFav) {
-      console.log("entering delete favourite");
+      console.log('entering delete favourite');
       const unfavourableSpot = IDtoUnFav;
       setIDtoUnFav(null);
       toggleUnFav(false);
@@ -133,7 +133,7 @@ export default function UserScreen({ navigation }) {
           setFavs(newFavs);
         })
         .catch((err) => {
-          console.log("Error in UserScreen, in Delete Favs useEffect", err);
+          console.log('Error in UserScreen, in Delete Favs useEffect', err);
           const newUser = user;
           newUser.favourites = user.favourites.push(unfavourableSpot);
           setUser(newUser);
@@ -146,7 +146,7 @@ export default function UserScreen({ navigation }) {
   useEffect(() => {
     if (!isInfoScreen && !isFavScreen) {
       axios
-        .get("https://wepark-be.herokuapp.com/api/spots", {
+        .get('https://wepark-be.herokuapp.com/api/spots', {
           params: { creator: user.username, radius: 1000000000 },
         })
         .then((response) => {
@@ -156,7 +156,7 @@ export default function UserScreen({ navigation }) {
           return setSpots(spots);
         })
         .catch((err) => {
-          console.log("Error in UserScreen, in getSpots useEffect", err);
+          console.log('Error in UserScreen, in getSpots useEffect', err);
         });
     }
   }, [isFavScreen, isInfoScreen]);
@@ -177,7 +177,7 @@ export default function UserScreen({ navigation }) {
         })
         .catch((err) => {
           console.log(
-            "Error in UserScreen, in getfavourites useEffect",
+            'Error in UserScreen, in getfavourites useEffect',
             err.config
           );
         });
@@ -198,11 +198,11 @@ export default function UserScreen({ navigation }) {
             (spot) => !spot.spot_id === IDtoDelete
           );
 
-          console.log("HERE ARE YOUR NEW SPOTS", spots);
+          console.log('HERE ARE YOUR NEW SPOTS', spots);
           return setSpots(newSpots);
         })
         .catch((err) => {
-          console.log("Error in UserScreen, in delete spot useEffect", err);
+          console.log('Error in UserScreen, in delete spot useEffect', err);
         });
     }
   }, [shouldDelete]);
@@ -229,7 +229,7 @@ export default function UserScreen({ navigation }) {
 
             <View className="w-screen items-center justify-start ">
               <TouchableOpacity
-                title={"Spots"}
+                title={'Spots'}
                 className=" rounded-md bg-slate-600 h-12 w-24 justify-center items-center"
                 activeOpacity={0.7}
                 onPress={handleBack}
@@ -255,7 +255,7 @@ export default function UserScreen({ navigation }) {
 
             <View className="w-screen items-center justify-center ">
               <TouchableOpacity
-                title={"Spots"}
+                title={'Spots'}
                 className=" rounded-md bg-slate-600 h-12 w-24 justify-center items-center"
                 activeOpacity={0.7}
                 onPress={handleBack}
