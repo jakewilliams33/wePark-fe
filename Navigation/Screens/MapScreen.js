@@ -110,6 +110,20 @@ export default function MapScreen({ navigation, route }) {
   const handleSpotPopup = (spot_id) => {
     setShowMarkerModal(true);
     getSingleSpot(spot_id).then(({ spot }) => {
+      if (history.length > 0) {
+        let pushToHistory = true;
+
+        for (const thisSpot of history) {
+          if (thisSpot.spot_id === spot.spot_id) {
+            pushToHistory = false;
+          }
+        }
+        if (pushToHistory) {
+          setHistory((curr) => [...curr, spot]);
+        }
+        console.log('this is the history', history);
+      } else setHistory([spot]);
+      console.log('this is the history', history);
       setSelectedSpotInfo(spot);
       if (spot.images) {
         setSpotImages(spot.images.split(','));
@@ -253,15 +267,6 @@ export default function MapScreen({ navigation, route }) {
       setSelectedSpotInfo(contextSpot);
       setSelectedSpotID(contextSpot.spot_id);
       setContextSpot(null);
-
-      let pushToHistory = true;
-
-      for (const spot of history) {
-        if (spot.spot_id === selectedSpotID) {
-          pushToHistory = false;
-        }
-      }
-      if (pushToHistory) setHistory((curr) => [...curr, selectedSpotInfo]);
     }
   }, [contextSpot]);
 
