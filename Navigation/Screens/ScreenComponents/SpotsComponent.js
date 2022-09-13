@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
   View,
@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { UserContext, SpotContext } from '../../AppContext';
+import axios from 'axios';
 
 const SpotsItem = ({
   spot,
@@ -17,21 +18,39 @@ const SpotsItem = ({
   handleUnFavPress,
 }) => {
   const { user } = useContext(UserContext);
-
-  const { contextSpot, setContextSpot } = useContext(SpotContext);
+  const { setContextSpot } = useContext(SpotContext);
+  const [callMapScreen, toggleCallMapScreen] = useState(false);
+  const [spotToNavTo, setSpotToNavTo] = useState();
 
   const navigation = useNavigation();
-  console.log('this is the navigation prop: ', navigation);
 
   const handleNavToSpot = (event) => {
-    const spotContextObj = {
-      spot_id: event.spot_id,
-      latitude: event.latitude,
-      longitude: event.longitude,
-    };
-    setContextSpot(spotContextObj);
-    navigation.navigate('Map');
+    // const spotContextArr = [event.spot_id, event.latitude, event.longitude];
+    // setContextSpot(spotContextArr);
+    console.log('in UserScreen-SpotsComponent, Calling useEffect');
+    setSpotToNavTo(event.spot_id);
+    toggleCallMapScreen(true);
+    // navigation.navigate('Map');
   };
+
+  useEffect(() => {
+    if (callMapScreen) {
+      toggleCallMapScreen(false);
+      axios
+        .get(`https://wepark-be.herokuapp.com/api/spots/${spotToNavTo}`)
+        .then(({ data }) => {
+          return data;
+        })
+        .then(({ spot }) => {
+          setContextSpot(spot);
+          setSpotToNavTo(null);
+          navigation.navigate('Map');
+        })
+        .catch(function (error) {
+          console.log('ERROR IN getSingleSpot, in SpotsComponent', error);
+        });
+    }
+  }, [callMapScreen]);
 
   // const favsArray = user.favourites || [];
   useEffect(() => {}, [user.favourites]);
