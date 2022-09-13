@@ -23,13 +23,16 @@ const SpotsItem = ({
   const navigation = useNavigation();
   console.log('this is the navigation prop: ', navigation);
 
-  const goToSpotPage = () => {};
+  const handleNavToSpot = (event) => {
+    setContextSpot_id(event.spot_id);
+    navigation.navigate('Map');
+  };
 
   // const favsArray = user.favourites || [];
   useEffect(() => {}, [user.favourites]);
   return (
     <View
-      className="bg-slate-400 border-slate-400 flex-col items-center justify-evenly border-2  pl-2 mt-3 ml-5 mr-5 rounded-md"
+      className="bg-slate-400 border-slate-400 flex-col items-center justify-evenly border-2  pl-2 pb-2 mt-3 ml-5 mr-5 rounded-md"
       key={spot.item.id}
     >
       <View className="flex-row">
@@ -41,13 +44,12 @@ const SpotsItem = ({
               : spot.item.name + ',  '}
           </Text>
           <Text className="text-m text-white font-medium mt-1">
-            latitude: {spot.item.latitude}
+            Co-ords: {('' + spot.item.latitude).substring(0, 10)}
+            {', '}
+            {('' + spot.item.longitude).substring(0, 10)}
             {',  '}
           </Text>
-          <Text className="text-m text-white font-medium mt-1">
-            longitude: {spot.item.longitude}
-            {',  '}
-          </Text>
+
           <View className="flex-row justify-between">
             <Text className="text-m text-white font-medium mt-1">
               Type: {spot.item.parking_type}
@@ -58,8 +60,21 @@ const SpotsItem = ({
               {',  '}
             </Text>
           </View>
+          <TouchableOpacity
+            className="  mt-2 rounded-md bg-slate-600 h-10 w-10/12 px-2 flex-row justify-center items-center"
+            onPress={(event) => {
+              event.spot_id = spot.item.spot_id;
+              handleNavToSpot(event);
+            }}
+          >
+            <Ionicons name="md-globe" size={20} color="white" />
+            <Text className="text-m text-white font-medium text-center">
+              {'   '}
+              See More
+            </Text>
+          </TouchableOpacity>
         </View>
-        <SafeAreaView className="flex-col justify-center items-center">
+        <SafeAreaView className="flex-col justify-between items-center mt-2">
           {user.favourites.includes(spot.item.spot_id) ? (
             <TouchableOpacity
               className=" ml-2 rounded-md bg-slate-600 h-14 w-14 justify-center items-center"
@@ -88,7 +103,7 @@ const SpotsItem = ({
             </TouchableOpacity>
           )}
           <TouchableOpacity
-            className=" ml-2 rounded-md bg-slate-600 h-7 mt-1 w-14 justify-center items-center"
+            className=" ml-2 rounded-md bg-slate-600 h-10 mt-1 w-14 justify-center items-center"
             onPress={(event) => {
               event.spot_id = spot.item.spot_id;
               handleDelete(event);
