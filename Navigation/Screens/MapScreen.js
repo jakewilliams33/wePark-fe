@@ -418,18 +418,18 @@ export default function MapScreen({ navigation, route }) {
             setShowMarkerModal(false);
           }}
         >
-          <View style={{ marginTop: 45, marginHorizontal: 15 }}>
+          <View
+            className="mt-40  w-screen flex-col justify-evenly mx-15"
+            // style={{ marginTop: 45, marginHorizontal: 15 }}
+          >
             <ScrollView keyboardShouldPersistTaps={'handled'}>
               {selectedSpotInfo && (
                 <>
-                  <Text className="text-xl font-bold mx-auto my-4">
+                  <Text className="text-xl font-bold  my-4">
                     {selectedSpotInfo.name}
                   </Text>
-                  <View style={{ flex: 2, flexDirection: 'row' }}>
-                    <Text
-                      className="font-bold capitalize"
-                      style={{ flex: 1, width: 'fit-content' }}
-                    >
+                  <View className="flex-1 flex-row ">
+                    <Text className="font-bold capitalize  flex-1">
                       {selectedSpotInfo.parking_type}
                     </Text>
                     <View style={{ flex: 1 }}>
