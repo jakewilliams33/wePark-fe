@@ -54,7 +54,6 @@ export const getComments = (spot_id) => {
   return axios
     .get(`https://wepark-be.herokuapp.com/api/spots/${spot_id}/comments`)
     .then(({ data }) => {
-      console.log("comments", data);
       return data;
     });
 };
