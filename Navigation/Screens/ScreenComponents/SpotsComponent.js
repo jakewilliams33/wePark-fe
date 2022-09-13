@@ -18,13 +18,18 @@ const SpotsItem = ({
 }) => {
   const { user } = useContext(UserContext);
 
-  const { contextSpot_id, setContextSpot_id } = useContext(SpotContext);
+  const { contextSpot, setContextSpot } = useContext(SpotContext);
 
   const navigation = useNavigation();
   console.log('this is the navigation prop: ', navigation);
 
   const handleNavToSpot = (event) => {
-    setContextSpot_id(event.spot_id);
+    const spotContextObj = {
+      spot_id: event.spot_id,
+      latitude: event.latitude,
+      longitude: event.longitude,
+    };
+    setContextSpot(spotContextObj);
     navigation.navigate('Map');
   };
 
@@ -64,6 +69,8 @@ const SpotsItem = ({
             className="  mt-2 rounded-md bg-slate-600 h-10 w-10/12 px-2 flex-row justify-center items-center"
             onPress={(event) => {
               event.spot_id = spot.item.spot_id;
+              event.latitude = spot.item.latitude;
+              event.longitude = spot.item.longitude;
               handleNavToSpot(event);
             }}
           >

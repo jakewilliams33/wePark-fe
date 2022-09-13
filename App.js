@@ -1,14 +1,17 @@
 import React from 'react';
 import { MainContainer } from './Navigation/MainContainer';
 import { SpotProvider, UserProvider } from './Navigation/AppContext';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 function App() {
   return (
-    <UserProvider>
-      <SpotProvider>
-        <MainContainer />
-      </SpotProvider>
-    </UserProvider>
+    <RootSiblingParent>
+      <UserProvider>
+        <SpotProvider>
+          <MainContainer />
+        </SpotProvider>
+      </UserProvider>
+    </RootSiblingParent>
   );
 }
 

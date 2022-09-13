@@ -20,8 +20,10 @@ import { Formik } from 'formik';
 import * as ImagePicker from 'expo-image-picker';
 import SelectDropdown from 'react-native-select-dropdown';
 import * as Yup from 'yup';
-import { UserContext } from '../AppContext';
+import { UserContext, SpotContext } from '../AppContext';
 import FavButton from '../Buttons/FavButton';
+import axios from 'axios';
+import Toast from 'react-native-root-toast';
 
 import { getSpots, postSpot, getSingleSpot, deleteSpot } from '../../api';
 
@@ -48,6 +50,12 @@ export default function MapScreen({ navigation, route }) {
   const [selectedSpotID, setSelectedSpotID] = useState();
   const { user, setUser } = useContext(UserContext);
   const [reRender, setReRender] = useState(0);
+  const [spotImages, setSpotImages] = useState([]);
+  const { contextSpot, setContextSpot } = useContext(SpotContext);
+
+  if (contextSpot) {
+    handleArrivalFromUserScreen(contextSpot);
+  }
 
   //form validation
   const SpaceSchema = Yup.object().shape({
@@ -105,7 +113,21 @@ export default function MapScreen({ navigation, route }) {
     setShowMarkerModal(true);
     getSingleSpot(spot_id).then(({ spot }) => {
       setSelectedSpotInfo(spot);
+      setSpotImages(spot.images.split(','));
     });
+  };
+
+  const handleArrivalFromUserScreen = (contextSpot) => {
+    setmapRegion({
+      latitude: contextSpot.latitude,
+      longitude: contextSpot.longitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    });
+
+    setSelectedSpotID(contextSpot.spot_id);
+    handleSpotPopup(contextSpot.spot_id);
+    setContextSpot(null);
   };
 
   //function to handle click on floating Action Button
@@ -118,10 +140,10 @@ export default function MapScreen({ navigation, route }) {
       setMarkerAllowed(true);
       setShowAddButton(false);
     } else
-      ToastAndroid.show(
-        'Please sign up or log in to add a parking spot',
-        ToastAndroid.SHORT
-      );
+      Toast.show('Please sign up or log in to add a parking spot', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+      });
   };
 
   //get location permission
@@ -178,6 +200,67 @@ export default function MapScreen({ navigation, route }) {
     setShowMarkerModal(false);
   };
 
+  const handleSubmitPost = (values) => {
+    confirmMarkerPosition();
+    setShowModal(false);
+    let finalChoice = newMarker[0].coordinate;
+    postSpot(finalChoice, values, user, image);
+  };
+
+  console.log(spotImages);
+
+  const postSpot = (coordinate, values, user, uri) => {
+    console.log(values.time_limit);
+    const parkingSpot = new FormData();
+    parkingSpot.append('name', values.name);
+    parkingSpot.append('description', values.description);
+    parkingSpot.append('longitude', coordinate.longitude);
+    parkingSpot.append('latitude', coordinate.latitude);
+    parkingSpot.append('opening_time', values.opening_time);
+    parkingSpot.append('closing_time', values.closing_time);
+    parkingSpot.append('time_limit', values.time_limit);
+    parkingSpot.append('parking_type', values.parking_type);
+    parkingSpot.append('creator', user.username);
+
+    console.log('posting spot');
+
+    if (uri) {
+      let uriParts = uri.split('.');
+      let fileType = uriParts[uriParts.length - 1];
+      parkingSpot.append('images', {
+        uri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      });
+    }
+    axios
+      .post('https://wepark-be.herokuapp.com/api/spots', parkingSpot, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        getSpots().then(({ spots }) => {
+          const spotsCopy = [...spots];
+          setMarkers(spotsCopy);
+          setOptimisticmarkers([]);
+        });
+
+        console.log('the post request was a success');
+
+        return JSON.stringify(response.data);
+      })
+      .then((spots) => {
+        console.log('spots post request in api.js', spots);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  if (selectedSpotInfo) {
+    console.log(selectedSpotInfo);
+  }
   if (userLocation && mapRegion.latitude === userLocation.coords.latitude) {
     return (
       <View style={{ flex: 1 }}>
@@ -200,16 +283,7 @@ export default function MapScreen({ navigation, route }) {
             }}
             validationSchema={SpaceSchema}
             onSubmit={(values) => {
-              confirmMarkerPosition();
-              setShowModal(false);
-              let finalChoice = newMarker[0].coordinate;
-              postSpot(finalChoice, values, user, image);
-              getSpots().then(({ spots }) => {
-                const spotsCopy = [...spots];
-                setMarkers(spotsCopy);
-              });
-
-              setOptimisticmarkers([]);
+              handleSubmitPost(values);
             }}
           >
             {(props) => (
@@ -355,11 +429,13 @@ export default function MapScreen({ navigation, route }) {
                       ? ' no limit'
                       : selectedSpotInfo.time_limit}
                   </Text>
+                  {selectedSpotInfo.images &&
+                    selectedSpotInfo.images.split(',').map((image) => {})}
 
-                  <Image
+                  {/* <Image
                     style={{ width: 200, height: 200 }}
-                    source={{ uri: selectedSpotInfo.images }}
-                  ></Image>
+                    source={{ uri: selectedSpotInfo.images.split(",")[0] }}
+                  ></Image> */}
                 </>
               )}
               {selectedSpotID && <FavButton spot_id={selectedSpotID} />}
@@ -377,10 +453,10 @@ export default function MapScreen({ navigation, route }) {
         </Modal>
 
         <MapView
+          provider={MapView.PROVIDER_GOOGLE}
           style={{ flex: 1 }}
           initialRegion={mapRegion}
           showsUserLocation={true}
-          followsUserLocation={true}
           //adding the marker on touch
           onPress={(event) => {
             if (markerAllowed) {
@@ -425,7 +501,7 @@ export default function MapScreen({ navigation, route }) {
             );
           })}
           {optimisticMarkers.map((marker) => {
-            return <Marker {...marker} />;
+            return <Marker title="loading" {...marker} />;
           })}
 
           {markers.map((marker) => {

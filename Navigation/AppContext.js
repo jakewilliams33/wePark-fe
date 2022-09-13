@@ -14,10 +14,10 @@ const UserProvider = ({ children }) => {
 };
 
 const SpotProvider = ({ children }) => {
-  const [contextSpot_id, setContextSpot_id] = useState();
+  const [contextSpot, setContextSpot] = useState();
 
   return (
-    <SpotContext.Provider value={{ contextSpot_id, setContextSpot_id }}>
+    <SpotContext.Provider value={{ contextSpot, setContextSpot }}>
       {children}
     </SpotContext.Provider>
   );
