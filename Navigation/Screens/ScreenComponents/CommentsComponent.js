@@ -7,6 +7,7 @@ import { UserContext } from "../../AppContext";
 import uuid from "react-native-uuid";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from "axios";
+import CommentVotes from "./CommentVotesComponent";
 
 export default function CommentsComponent(selectedSpotID) {
   const [commentsList, setComments] = useState([]);
@@ -68,16 +69,6 @@ export default function CommentsComponent(selectedSpotID) {
     setText("");
   };
 
-  const handleUpVote = (comment_id) => {
-    const votes = { inc_upvotes: 1, inc_downvotes: 0 };
-    updateVotes(comment_id, votes);
-  };
-
-  const handleDownVote = (comment_id) => {
-    const votes = { inc_upvotes: 0, inc_downvotes: 1 };
-    updateVotes(comment_id, votes);
-  };
-
   return (
     <View
       style={{ marginHorizontal: 40, paddingTop: 20 }}
@@ -133,44 +124,7 @@ export default function CommentsComponent(selectedSpotID) {
             <Text key={uuid.v4()} style={{ paddingBottom: 5, paddingTop: 5 }}>
               {comment.body}
             </Text>
-
-            <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity
-                onPress={() => {
-                  handleUpVote(comment.comment_id);
-                }}
-                key={uuid.v4()}
-              >
-                <Ionicons
-                  key={uuid.v4()}
-                  name="thumbs-up-outline"
-                  size={15}
-                  color={"black"}
-                />
-              </TouchableOpacity>
-              <Text
-                style={{ marginRight: 20, marginLeft: 5, color: "grey" }}
-                key={uuid.v4()}
-              >
-                {comment.upvotes}
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  handleDownVote(comment.comment_id);
-                }}
-                key={uuid.v4()}
-              >
-                <Ionicons
-                  key={uuid.v4()}
-                  name="thumbs-down-outline"
-                  size={15}
-                  color={"black"}
-                />
-              </TouchableOpacity>
-              <Text style={{ marginLeft: 5, color: "grey" }} key={uuid.v4()}>
-                {comment.downvotes}
-              </Text>
-            </View>
+           <CommentVotes comment={comment}/>
           </View>
         );
       })}
