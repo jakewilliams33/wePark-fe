@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Text, StyleSheet } from "react-native";
-import axios from "axios";
-import { UserContext } from "../AppContext";
-import LoginComponent from "./ScreenComponents/LoginComponent.js";
-import SignUpComponent from "./ScreenComponents/SignUpComponent.js";
-import MainLoginComponent from "./ScreenComponents/MainLoginComponent.js";
+import React, { useEffect, useState, useContext } from 'react';
+import { Text, StyleSheet } from 'react-native';
+import axios from 'axios';
+import { UserContext } from '../AppContext';
+import LoginComponent from './ScreenComponents/LoginComponent.js';
+import SignUpComponent from './ScreenComponents/SignUpComponent.js';
+import MainLoginComponent from './ScreenComponents/MainLoginComponent.js';
 
 const styles = StyleSheet.create({
   input: {
@@ -18,14 +18,14 @@ const styles = StyleSheet.create({
 
 export default LoginScreen = () => {
   const { user, setUser } = useContext(UserContext);
-  const [screenToDisplay, setScreenToDisplay] = useState("Main");
-  const [text1, onChangeText1] = useState("");
-  const [text2, onChangeText2] = useState("");
-  const [text3, onChangeText3] = useState("");
-  const [text4, onChangeText4] = useState("");
-  const [text5, onChangeText5] = useState("");
-  const [text6, onChangeText6] = useState("");
-  const [text7, onChangeText7] = useState("");
+  const [screenToDisplay, setScreenToDisplay] = useState('Main');
+  const [text1, onChangeText1] = useState('');
+  const [text2, onChangeText2] = useState('');
+  const [text3, onChangeText3] = useState('');
+  const [text4, onChangeText4] = useState('');
+  const [text5, onChangeText5] = useState('');
+  const [text6, onChangeText6] = useState('');
+  const [text7, onChangeText7] = useState('');
   const [loginAttempted, toggleLoginAttempted] = useState(false);
   const [signUpAttempted, toggleSignUpAttempted] = useState(false);
 
@@ -35,11 +35,11 @@ export default LoginScreen = () => {
     if (text1) {
       toggleSignUpAttempted(true);
     } else {
-      onChangeText1("");
-      onChangeText2("");
-      onChangeText3("");
-      onChangeText4("");
-      onChangeText5("");
+      onChangeText1('');
+      onChangeText2('');
+      onChangeText3('');
+      onChangeText4('');
+      onChangeText5('');
       return;
     }
   };
@@ -48,8 +48,8 @@ export default LoginScreen = () => {
     if (text6) {
       toggleLoginAttempted(true);
     } else {
-      onChangeText6("");
-      onChangeText7("");
+      onChangeText6('');
+      onChangeText7('');
       return;
     }
   };
@@ -81,7 +81,7 @@ export default LoginScreen = () => {
   useEffect(() => {
     if (signUpAttempted) {
       axios
-        .post("https://wepark-be.herokuapp.com/api/users", {
+        .post('https://wepark-be.herokuapp.com/api/users', {
           username: text1,
           about: text3,
           email: text2,
@@ -108,11 +108,11 @@ export default LoginScreen = () => {
   }, [user]);
 
   switch (screenToDisplay) {
-    case "Main":
+    case 'Main':
       return <MainLoginComponent handlePress={handlePress} />;
       break;
 
-    case "Login":
+    case 'Login':
       return (
         <>
           <LoginComponent
@@ -129,7 +129,7 @@ export default LoginScreen = () => {
       );
       break;
 
-    case "Sign Up":
+    case 'Sign Up':
       return (
         <>
           <SignUpComponent

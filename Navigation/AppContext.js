@@ -2,6 +2,7 @@ import React, { useState, createContext } from 'react';
 
 const UserContext = createContext();
 const SpotContext = createContext();
+const HistoryContext = createContext();
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -23,4 +24,21 @@ const SpotProvider = ({ children }) => {
   );
 };
 
-export { UserContext, UserProvider, SpotContext, SpotProvider };
+const HistoryProvider = ({ children }) => {
+  const [history, setHistory] = useState([]);
+
+  return (
+    <HistoryContext.Provider value={{ history, setHistory }}>
+      {children}
+    </HistoryContext.Provider>
+  );
+};
+
+export {
+  UserContext,
+  UserProvider,
+  SpotContext,
+  SpotProvider,
+  HistoryContext,
+  HistoryProvider,
+};
