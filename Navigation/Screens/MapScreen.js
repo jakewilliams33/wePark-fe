@@ -11,6 +11,7 @@ import {
   TextInput,
   ToastAndroid,
   ScrollView,
+  Container,
 } from 'react-native';
 import CommentsComponent from '../Screens/ScreenComponents/CommentsComponent';
 import MapView, { Marker, Callout } from 'react-native-maps';
@@ -20,11 +21,11 @@ import { Formik } from 'formik';
 import * as ImagePicker from 'expo-image-picker';
 import SelectDropdown from 'react-native-select-dropdown';
 import * as Yup from 'yup';
-import { UserContext, SpotContext, HistoryContext } from '../AppContext';
+import { UserContext, SpotContext } from '../AppContext';
 import FavButton from '../Buttons/FavButton';
 import axios from 'axios';
 import Toast from 'react-native-root-toast';
-
+import { HistoryContext } from '../AppContext';
 import { getSpots, postSpot, getSingleSpot, deleteSpot } from '../../api';
 
 export default function MapScreen({ navigation, route }) {
@@ -109,8 +110,8 @@ export default function MapScreen({ navigation, route }) {
   const handleSpotPopup = (spot_id) => {
     setShowMarkerModal(true);
     getSingleSpot(spot_id).then(({ spot }) => {
-      if (spot) {
-        setSelectedSpotInfo(spot);
+      setSelectedSpotInfo(spot);
+      if (spot.images) {
         setSpotImages(spot.images.split(','));
       }
     });
@@ -417,25 +418,54 @@ export default function MapScreen({ navigation, route }) {
             setShowMarkerModal(false);
           }}
         >
-          <View>
+          <View style={{ marginTop: 45, marginHorizontal: 15 }}>
             <ScrollView keyboardShouldPersistTaps={'handled'}>
               {selectedSpotInfo && (
                 <>
-                  <Text>{selectedSpotInfo.name}</Text>
-                  <Text>
-                    Added By: {selectedSpotInfo.creator} On:
-                    {new Date(selectedSpotInfo.created_at).toUTCString()}
+                  <Text className="text-xl font-bold mx-auto my-4">
+                    {selectedSpotInfo.name}
                   </Text>
-                  <Text>Type: {selectedSpotInfo.parking_type}</Text>
+                  <View style={{ flex: 2, flexDirection: 'row' }}>
+                    <Text
+                      className="font-bold capitalize"
+                      style={{ flex: 1, width: 'fit-content' }}
+                    >
+                      {selectedSpotInfo.parking_type}
+                    </Text>
+                    <View style={{ flex: 1 }}>
+                      <Text
+                        className="text-xs font-bold"
+                        style={{ textAlign: 'right' }}
+                      >
+                        {selectedSpotInfo.creator}
+                      </Text>
+                      <Text
+                        className="text-xs font-bold"
+                        style={{ textAlign: 'right' }}
+                      >
+                        {new Date(selectedSpotInfo.created_at).toUTCString()}
+                      </Text>
+                    </View>
+                  </View>
 
-                  <Text>Description: {selectedSpotInfo.description}</Text>
-                  <Text>Opening time: {selectedSpotInfo.opening_time}</Text>
-                  <Text>Closing time: {selectedSpotInfo.closing_time}</Text>
+                  <Text className="text-lg my-2">
+                    {selectedSpotInfo.description}
+                  </Text>
+                  {selectedSpotInfo.opening_time ? (
+                    <Text>Opening time: {selectedSpotInfo.opening_time}</Text>
+                  ) : (
+                    <></>
+                  )}
+                  {selectedSpotInfo.closing_time ? (
+                    <Text>Closing time: {selectedSpotInfo.closing_time}</Text>
+                  ) : (
+                    <></>
+                  )}
 
                   <Text>
                     Time Limit:
                     {selectedSpotInfo.time_limit === null
-                      ? ' no limit'
+                      ? ' No Limit'
                       : selectedSpotInfo.time_limit}
                   </Text>
                   {selectedSpotInfo.images &&
@@ -445,6 +475,26 @@ export default function MapScreen({ navigation, route }) {
                     style={{ width: 200, height: 200 }}
                     source={{ uri: selectedSpotInfo.images.split(",")[0] }}
                   ></Image> */}
+                  <View
+                    className="my-5"
+                    style={{
+                      flex: 1,
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      width: '100%',
+                      alignContent: 'space-around',
+                      justifyContent: 'space-around',
+                    }}
+                  >
+                    {spotImages.map((imgUrl, index) => (
+                      <Image
+                        style={{ width: 150, height: 150, margin: 5 }}
+                        source={{ uri: imgUrl }}
+                        key={index}
+                      ></Image>
+                    ))}
+                  </View>
                 </>
               )}
               {selectedSpotID && <FavButton spot_id={selectedSpotID} />}
@@ -661,6 +711,9 @@ const styles = StyleSheet.create({
   dropdown1RowStyle: {
     backgroundColor: '#EFEFEF',
     borderBottomColor: '#C5C5C5',
+  },
+  modalStyle: {
+    margin: '10%',
   },
 });
 
