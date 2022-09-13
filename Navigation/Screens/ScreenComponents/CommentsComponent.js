@@ -103,7 +103,7 @@ export default function CommentsComponent(selectedSpotID) {
         </View>
       ) : (
         <Text style={{ paddingBottom: 20 }}>
-          Please log in to post a comment
+          Please log in to post a comment or vote
         </Text>
       )}
       {commentsList.map((comment) => {
