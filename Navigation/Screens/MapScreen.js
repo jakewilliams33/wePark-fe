@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import * as Location from "expo-location";
+import React, { useState, useEffect, useContext } from 'react';
+import * as Location from 'expo-location';
 import {
   View,
   StyleSheet,
@@ -11,21 +11,21 @@ import {
   TextInput,
   ToastAndroid,
   ScrollView,
-} from "react-native";
-import CommentsComponent from "../Screens/ScreenComponents/CommentsComponent";
-import MapView, { Marker, Callout } from "react-native-maps";
-import { showMessage, hideMessage } from "react-native-flash-message";
-import FlashMessage from "react-native-flash-message";
-import { Formik } from "formik";
-import * as ImagePicker from "expo-image-picker";
-import SelectDropdown from "react-native-select-dropdown";
-import * as Yup from "yup";
-import { UserContext } from "../AppContext";
-import FavButton from "../Buttons/FavButton";
-import axios from "axios";
-import Toast from "react-native-root-toast";
+} from 'react-native';
+import CommentsComponent from '../Screens/ScreenComponents/CommentsComponent';
+import MapView, { Marker, Callout } from 'react-native-maps';
+import { showMessage, hideMessage } from 'react-native-flash-message';
+import FlashMessage from 'react-native-flash-message';
+import { Formik } from 'formik';
+import * as ImagePicker from 'expo-image-picker';
+import SelectDropdown from 'react-native-select-dropdown';
+import * as Yup from 'yup';
+import { UserContext, SpotContext } from '../AppContext';
+import FavButton from '../Buttons/FavButton';
+import axios from 'axios';
+import Toast from 'react-native-root-toast';
 
-import { getSpots, postSpot, getSingleSpot, deleteSpot } from "../../api";
+import { getSpots, postSpot, getSingleSpot, deleteSpot } from '../../api';
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -51,18 +51,19 @@ export default function MapScreen({ navigation, route }) {
   const { user, setUser } = useContext(UserContext);
   const [reRender, setReRender] = useState(0);
   const [spotImages, setSpotImages] = useState([]);
+  const { contextSpot, setContextSpot } = useContext(SpotContext);
 
   //form validation
   const SpaceSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Name must be over 2 characters")
-      .max(50, "Name must be between 2 and 50 characters")
-      .required("Required"),
+      .min(3, 'Name must be over 2 characters')
+      .max(50, 'Name must be between 2 and 50 characters')
+      .required('Required'),
     description: Yup.string()
-      .min(11, "Description must be over 10 characters")
-      .max(500, "Too Long!")
-      .required("Required"),
-    parking_type: Yup.string().required("Required"),
+      .min(11, 'Description must be over 10 characters')
+      .max(500, 'Too Long!')
+      .required('Required'),
+    parking_type: Yup.string().required('Required'),
   });
 
   // get spots from db
@@ -107,8 +108,10 @@ export default function MapScreen({ navigation, route }) {
   const handleSpotPopup = (spot_id) => {
     setShowMarkerModal(true);
     getSingleSpot(spot_id).then(({ spot }) => {
-      setSelectedSpotInfo(spot);
-      setSpotImages(spot.images.split(","));
+      if (spot) {
+        setSelectedSpotInfo(spot);
+        setSpotImages(spot.images.split(','));
+      }
     });
   };
 
@@ -116,13 +119,13 @@ export default function MapScreen({ navigation, route }) {
   const clickHandler = () => {
     if (user) {
       showMessage({
-        message: "Tap on the map to add a parking space",
-        type: "info",
+        message: 'Tap on the map to add a parking space',
+        type: 'info',
       });
       setMarkerAllowed(true);
       setShowAddButton(false);
     } else
-      Toast.show("Please sign up or log in to add a parking spot", {
+      Toast.show('Please sign up or log in to add a parking spot', {
         duration: Toast.durations.SHORT,
         position: Toast.positions.CENTER,
       });
@@ -132,8 +135,8 @@ export default function MapScreen({ navigation, route }) {
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setStatus("Permission to access location was denied");
+      if (status !== 'granted') {
+        setStatus('Permission to access location was denied');
         return;
       } else {
         setStatus(status);
@@ -153,7 +156,7 @@ export default function MapScreen({ navigation, route }) {
         longitudeDelta: 0.0421,
       });
     })();
-  }, []);
+  }, [contextSpot]);
 
   //confirm marker
   const confirmMarkerPosition = () => {
@@ -189,37 +192,37 @@ export default function MapScreen({ navigation, route }) {
     postSpot(finalChoice, values, user, image);
   };
 
-  console.log(spotImages);
+  console.log('spotImages, mapScreen, line~262', spotImages);
 
   const postSpot = (coordinate, values, user, uri) => {
-    console.log(values.time_limit);
+    console.log('MapScreen, value.time_limit, line~265', values.time_limit);
     const parkingSpot = new FormData();
-    parkingSpot.append("name", values.name);
-    parkingSpot.append("description", values.description);
-    parkingSpot.append("longitude", coordinate.longitude);
-    parkingSpot.append("latitude", coordinate.latitude);
-    parkingSpot.append("opening_time", values.opening_time);
-    parkingSpot.append("closing_time", values.closing_time);
-    parkingSpot.append("time_limit", values.time_limit);
-    parkingSpot.append("parking_type", values.parking_type);
-    parkingSpot.append("creator", user.username);
+    parkingSpot.append('name', values.name);
+    parkingSpot.append('description', values.description);
+    parkingSpot.append('longitude', coordinate.longitude);
+    parkingSpot.append('latitude', coordinate.latitude);
+    parkingSpot.append('opening_time', values.opening_time);
+    parkingSpot.append('closing_time', values.closing_time);
+    parkingSpot.append('time_limit', values.time_limit);
+    parkingSpot.append('parking_type', values.parking_type);
+    parkingSpot.append('creator', user.username);
 
-    console.log("posting spot");
+    console.log('posting spot');
 
     if (uri) {
-      let uriParts = uri.split(".");
+      let uriParts = uri.split('.');
       let fileType = uriParts[uriParts.length - 1];
-      parkingSpot.append("images", {
+      parkingSpot.append('images', {
         uri,
         name: `photo.${fileType}`,
         type: `image/${fileType}`,
       });
     }
     axios
-      .post("https://wepark-be.herokuapp.com/api/spots", parkingSpot, {
+      .post('https://wepark-be.herokuapp.com/api/spots', parkingSpot, {
         headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then((response) => {
@@ -229,20 +232,134 @@ export default function MapScreen({ navigation, route }) {
           setOptimisticmarkers([]);
         });
 
-        console.log("the post request was a success");
+        console.log('the post request was a success');
 
         return JSON.stringify(response.data);
       })
       .then((spots) => {
-        console.log("spots post request in api.js", spots);
+        console.log('spots post request in api.js', spots);
       })
       .catch(function (error) {
-        console.log(error);
+        console.log('error in MapScreen post spots request, line ~310', error);
       });
   };
-  if (selectedSpotInfo) {
-    console.log(selectedSpotInfo);
-  }
+
+  //=========KIEL AT WORK===================================================================
+  // const handleArrivalFromUserScreen = (contextSpot) => {
+
+  useEffect(() => {
+    if (contextSpot) {
+      console.log('heres the context spot in mapscreen: ', contextSpot);
+      setShowMarkerModal(true);
+      setSelectedSpotInfo(contextSpot);
+      setSelectedSpotID(contextSpot.spot_id);
+      setContextSpot(null);
+    }
+  }, [contextSpot]);
+
+  // if (!status) {
+  //   let { status } = await Location.requestForegroundPermissionsAsync();
+  //   if (status !== 'granted') {
+  //     setStatus('Permission to access location was denied');
+  //     return;
+  //   } else {
+  //     setStatus(status);
+  //   }
+  // }
+  // console.log(
+  //   'in mapscreen, handle arrival, past the location permissions check'
+  // );
+
+  // if (!userLocation) {
+  //   (async () => {
+  //     const location = await Location.getCurrentPositionAsync();
+  //     setUserLocation(location);
+  //     setmapRegion({
+  //       latitude: location.coords.latitude,
+  //       longitude: location.coords.longitude,
+  //       latitudeDelta: 0.0922,
+  //       longitudeDelta: 0.0421,
+  //     });
+  //   })();
+  // }
+  // console.log('in mapscreen, handle arrival, past the user location  check');
+
+  // return (
+  //   <Modal
+  //     visible={showMarkerModal}
+  //     style={{ flex: 1 }}
+  //     animationType="slide"
+  //     onRequestClose={() => {
+  //       setShowMarkerModal(false);
+  //     }}
+  //   >
+  //     <View>
+  //       <ScrollView>
+  //         {selectedSpotInfo && (
+  //           <>
+  //             <Text>{selectedSpotInfo.name}</Text>
+  //             <Text>
+  //               Added By: {selectedSpotInfo.creator} On:
+  //               {new Date(selectedSpotInfo.created_at).toUTCString()}
+  //             </Text>
+  //             <Text>Type: {selectedSpotInfo.parking_type}</Text>
+
+  //             <Text>Description: {selectedSpotInfo.description}</Text>
+  //             <Text>Opening time: {selectedSpotInfo.opening_time}</Text>
+  //             <Text>Closing time: {selectedSpotInfo.closing_time}</Text>
+
+  //             <Text>
+  //               Time Limit:
+  //               {selectedSpotInfo.time_limit === null
+  //                 ? ' no limit'
+  //                 : selectedSpotInfo.time_limit}
+  //             </Text>
+  //             {selectedSpotInfo.images &&
+  //               selectedSpotInfo.images.split(',').map((image) => {})}
+
+  //             {/* <Image
+  //               style={{ width: 200, height: 200 }}
+  //               source={{ uri: selectedSpotInfo.images.split(",")[0] }}
+  //             ></Image> */}
+  //           </>
+  //         )}
+  //         {selectedSpotID && <FavButton spot_id={selectedSpotID} />}
+  //         {selectedSpotID && (
+  //           <Button title="delete button" onPress={handleDelete}>
+  //             Delete
+  //           </Button>
+  //         )}
+
+  //         <CommentsComponent
+  //           selectedSpotID={selectedSpotID}
+  //         ></CommentsComponent>
+  //       </ScrollView>
+  //     </View>
+  //   </Modal>
+  // );
+
+  // await getSingleSpot(selectedSpotID)
+  //   .then(({ spot }) => {
+  //     if (spot) {
+  //       setSelectedSpotInfo(spot);
+  //       // setSpotImages(spot.images.split(','));
+  //     }
+  // //   })
+  // axios
+  //   .get(`https://wepark-be.herokuapp.com/api/spots/${contextID}`)
+  //   .then(({ data }) => {
+  //     console.log(
+  //       'something came back from the response, handleArrival func'
+  //     );
+  //     return data;
+  //   })
+  //   .then((spot) => {
+  //     return setSelectedSpotInfo(spot.spot);
+  //   })
+  //   .catch((e) => console.log('I am the error in question', e));
+
+  //=========KIEL AT WORK===================================================================
+
   if (userLocation && mapRegion.latitude === userLocation.coords.latitude) {
     return (
       <View style={{ flex: 1 }}>
@@ -256,11 +373,11 @@ export default function MapScreen({ navigation, route }) {
         >
           <Formik
             initialValues={{
-              name: "",
-              description: "",
-              parking_type: "",
-              opening_time: "No specified times",
-              closing_time: "No specified times",
+              name: '',
+              description: '',
+              parking_type: '',
+              opening_time: 'No specified times',
+              closing_time: 'No specified times',
               time_limit: null,
             }}
             validationSchema={SpaceSchema}
@@ -272,21 +389,25 @@ export default function MapScreen({ navigation, route }) {
               <View>
                 <TextInput
                   style={{
-                    backgroundColor: "#f4f8ff",
+                    backgroundColor: '#f4f8ff',
                     marginTop: 50,
                     margin: 20,
                     padding: 10,
-                    borderColor: "grey",
+                    borderColor: 'grey',
                     borderWidth: 0.1,
                     borderRadius: 50,
                   }}
                   placeholder="Name"
-                  onChangeText={props.handleChange("name")}
+                  onChangeText={props.handleChange('name')}
                   value={props.values.name}
                 />
                 {props.errors.name && (
                   <Text
-                    style={{ fontSize: 10, color: "red", alignItems: "center" }}
+                    style={{
+                      fontSize: 10,
+                      color: 'red',
+                      alignItems: 'center',
+                    }}
                   >
                     {props.errors.name}
                   </Text>
@@ -294,65 +415,65 @@ export default function MapScreen({ navigation, route }) {
                 <TextInput
                   multiline
                   style={{
-                    backgroundColor: "#f4f8ff",
+                    backgroundColor: '#f4f8ff',
                     marginTop: 20,
                     margin: 20,
                     padding: 10,
-                    borderColor: "grey",
+                    borderColor: 'grey',
                     borderWidth: 0.1,
                     borderRadius: 50,
                   }}
                   placeholder="Description"
-                  onChangeText={props.handleChange("description")}
+                  onChangeText={props.handleChange('description')}
                   value={props.values.description}
                 />
                 {props.errors.description && (
-                  <Text style={{ fontSize: 10, color: "red" }}>
+                  <Text style={{ fontSize: 10, color: 'red' }}>
                     {props.errors.description}
                   </Text>
                 )}
-                <View style={{ alignItems: "center" }}>
+                <View style={{ alignItems: 'center' }}>
                   <SelectDropdown
-                    data={["street", "car park"]}
-                    onSelect={props.handleChange("parking_type")}
-                    defaultButtonText={"Select parking type"}
+                    data={['street', 'car park']}
+                    onSelect={props.handleChange('parking_type')}
+                    defaultButtonText={'Select parking type'}
                     buttonStyle={styles.dropdown1BtnStyle}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                   />
 
                   {props.errors.parking_type && (
-                    <Text style={{ fontSize: 10, color: "red" }}>
+                    <Text style={{ fontSize: 10, color: 'red' }}>
                       {props.errors.parking_type}
                     </Text>
                   )}
 
                   <SelectDropdown
                     data={times}
-                    onSelect={props.handleChange("opening_time")}
-                    defaultButtonText={"Opening time"}
+                    onSelect={props.handleChange('opening_time')}
+                    defaultButtonText={'Opening time'}
                     buttonStyle={styles.dropdown1BtnStyle}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                   />
                   <SelectDropdown
                     data={times}
-                    onSelect={props.handleChange("closing_time")}
-                    defaultButtonText={"Closing time"}
+                    onSelect={props.handleChange('closing_time')}
+                    defaultButtonText={'Closing time'}
                     buttonStyle={styles.dropdown1BtnStyle}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                   />
                   <SelectDropdown
                     data={limit}
-                    onSelect={props.handleChange("time_limit")}
-                    defaultButtonText={"Time limit (hours)"}
+                    onSelect={props.handleChange('time_limit')}
+                    defaultButtonText={'Time limit (hours)'}
                     buttonStyle={{
-                      width: "80%",
+                      width: '80%',
                       height: 50,
-                      backgroundColor: "#f4f8ff",
+                      backgroundColor: '#f4f8ff',
                       borderRadius: 10,
                       borderWidth: 1,
-                      borderColor: "#f4f8ff",
+                      borderColor: '#f4f8ff',
                       marginTop: 10,
-                      justifyContent: "center",
+                      justifyContent: 'center',
                       marginBottom: 40,
                     }}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
@@ -381,7 +502,9 @@ export default function MapScreen({ navigation, route }) {
             )}
           </Formik>
         </Modal>
+        {}
         {/* SPOT INFO MODAL HERE -------------------------------------------------------------------------------------------- */}
+
         <Modal
           visible={showMarkerModal}
           style={{ flex: 1 }}
@@ -408,11 +531,11 @@ export default function MapScreen({ navigation, route }) {
                   <Text>
                     Time Limit:
                     {selectedSpotInfo.time_limit === null
-                      ? " no limit"
+                      ? ' no limit'
                       : selectedSpotInfo.time_limit}
                   </Text>
                   {selectedSpotInfo.images &&
-                    selectedSpotInfo.images.split(",").map((image) => {})}
+                    selectedSpotInfo.images.split(',').map((image) => {})}
 
                   {/* <Image
                     style={{ width: 200, height: 200 }}
@@ -443,8 +566,8 @@ export default function MapScreen({ navigation, route }) {
           onPress={(event) => {
             if (markerAllowed) {
               showMessage({
-                message: "Hold down on the marker to drag",
-                type: "info",
+                message: 'Hold down on the marker to drag',
+                type: 'info',
               });
 
               let newPlace = event.nativeEvent.coordinate;
@@ -456,7 +579,7 @@ export default function MapScreen({ navigation, route }) {
                     latitude: newPlace.latitude,
                     longitude: newPlace.longitude,
                   },
-                  key: "temp",
+                  key: 'temp',
                 },
               ]);
             }
@@ -475,7 +598,7 @@ export default function MapScreen({ navigation, route }) {
                         latitude: e.nativeEvent.coordinate.latitude,
                         longitude: e.nativeEvent.coordinate.longitude,
                       },
-                      key: "temp",
+                      key: 'temp',
                     },
                   ]);
                 }}
@@ -509,7 +632,7 @@ export default function MapScreen({ navigation, route }) {
                       setSelectedSpotID(marker.spot_id);
                     }}
                   >
-                    <Text style={{ fontWeight: "bold" }}>{marker.name}</Text>
+                    <Text style={{ fontWeight: 'bold' }}>{marker.name}</Text>
                     <Text>Sample Description</Text>
                   </Callout>
                 </Marker>
@@ -520,16 +643,16 @@ export default function MapScreen({ navigation, route }) {
           <View
             style={{
               flex: 1,
-              flexDirection: "row",
-              position: "absolute",
+              flexDirection: 'row',
+              position: 'absolute',
               bottom: 50,
-              alignSelf: "center",
-              justifyContent: "space-between",
+              alignSelf: 'center',
+              justifyContent: 'space-between',
             }}
           >
             <TouchableOpacity
               style={{
-                backgroundColor: "white",
+                backgroundColor: 'white',
                 padding: 20,
                 borderRadius: 10,
                 marginRight: 2,
@@ -546,7 +669,7 @@ export default function MapScreen({ navigation, route }) {
 
             <TouchableOpacity
               style={{
-                backgroundColor: "white",
+                backgroundColor: 'white',
                 padding: 20,
                 paddingRight: 27,
                 paddingLeft: 26.5,
@@ -570,10 +693,10 @@ export default function MapScreen({ navigation, route }) {
             <TouchableOpacity
               style={{
                 flex: 1,
-                flexDirection: "row",
-                position: "absolute",
+                flexDirection: 'row',
+                position: 'absolute',
                 bottom: 10,
-                alignSelf: "center",
+                alignSelf: 'center',
               }}
               //add button
               activeOpacity={0.7}
@@ -582,16 +705,16 @@ export default function MapScreen({ navigation, route }) {
               }}
             >
               <Image
-                style={{ resizeMode: "contain", width: 65, height: 65 }}
+                style={{ resizeMode: 'contain', width: 65, height: 65 }}
                 source={{
-                  uri: "https://www.freeiconspng.com/uploads/parking-icon-png-12.png",
+                  uri: 'https://www.freeiconspng.com/uploads/parking-icon-png-12.png',
                 }}
               />
             </TouchableOpacity>
           )
         }
         <FlashMessage
-          position={"center"}
+          position={'center'}
           style={{ marginBottom: 600 }}
           autoHide={false}
         />
@@ -607,111 +730,111 @@ export default function MapScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: "#f4f8ff",
+    backgroundColor: '#f4f8ff',
     marginTop: 20,
     margin: 20,
     padding: 10,
-    borderColor: "grey",
+    borderColor: 'grey',
     borderWidth: 0.1,
     borderRadius: 50,
   },
 
   dropdown1BtnStyle: {
-    width: "80%",
+    width: '80%',
     height: 50,
-    backgroundColor: "#f4f8ff",
+    backgroundColor: '#f4f8ff',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#f4f8ff",
+    borderColor: '#f4f8ff',
     marginTop: 10,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
-  dropdown1BtnTxtStyle: { color: "#444", textAlign: "left" },
+  dropdown1BtnTxtStyle: { color: '#444', textAlign: 'left' },
   dropdown1DropdownStyle: {
-    backgroundColor: "#EFEFEF",
-    justifyContent: "center",
+    backgroundColor: '#EFEFEF',
+    justifyContent: 'center',
   },
   dropdown1RowStyle: {
-    backgroundColor: "#EFEFEF",
-    borderBottomColor: "#C5C5C5",
+    backgroundColor: '#EFEFEF',
+    borderBottomColor: '#C5C5C5',
   },
 });
 
 const times = [
-  "No specified times",
-  "00:00",
-  "00:30",
-  "01:00",
-  "01:30",
-  "02:00",
-  "02:30",
-  "03:00",
-  "03:30",
-  "04:00",
-  "04:30",
-  "05:00",
-  "05:30",
-  "06:00",
-  "06:30",
-  "07:00",
-  "07:30",
-  "08:00",
-  "08:30",
-  "09:00",
-  "09:30",
-  "10:00",
-  "10:30",
-  "11:00",
-  "11:30",
-  "12:00",
-  "13:00",
-  "13:30",
-  "14:00",
-  "14:30",
-  "15:00",
-  "15:30",
-  "16:00",
-  "16:30",
-  "17:00",
-  "17:30",
-  "18:00",
-  "18:30",
-  "19:00",
-  "19:30",
-  "20:00",
-  "20:30",
-  "21:00",
-  "21:30",
-  "22:00",
-  "22:30",
-  "23:00",
-  "23:30",
+  'No specified times',
+  '00:00',
+  '00:30',
+  '01:00',
+  '01:30',
+  '02:00',
+  '02:30',
+  '03:00',
+  '03:30',
+  '04:00',
+  '04:30',
+  '05:00',
+  '05:30',
+  '06:00',
+  '06:30',
+  '07:00',
+  '07:30',
+  '08:00',
+  '08:30',
+  '09:00',
+  '09:30',
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '12:00',
+  '13:00',
+  '13:30',
+  '14:00',
+  '14:30',
+  '15:00',
+  '15:30',
+  '16:00',
+  '16:30',
+  '17:00',
+  '17:30',
+  '18:00',
+  '18:30',
+  '19:00',
+  '19:30',
+  '20:00',
+  '20:30',
+  '21:00',
+  '21:30',
+  '22:00',
+  '22:30',
+  '23:00',
+  '23:30',
 ];
 
 const limit = [
-  "no limit",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "11",
-  "12",
-  "13",
-  "14",
-  "15",
-  "16",
-  "17",
-  "18",
-  "19",
-  "20",
-  "21",
-  "22",
-  "23",
-  "24",
+  'no limit',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '13',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23',
+  '24',
 ];
