@@ -1,13 +1,14 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import {
   View,
   Text,
   TouchableOpacity,
   FlatList,
   SafeAreaView,
-} from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { UserContext } from "../../AppContext";
+} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { UserContext, SpotContext } from '../../AppContext';
 
 const SpotsItem = ({
   spot,
@@ -16,6 +17,13 @@ const SpotsItem = ({
   handleUnFavPress,
 }) => {
   const { user } = useContext(UserContext);
+
+  const { contextSpot_id, setContextSpot_id } = useContext(SpotContext);
+
+  const navigation = useNavigation();
+  console.log('this is the navigation prop: ', navigation);
+
+  const goToSpotPage = () => {};
 
   // const favsArray = user.favourites || [];
   useEffect(() => {}, [user.favourites]);
@@ -27,27 +35,27 @@ const SpotsItem = ({
       <View className="flex-row">
         <View className=" bg-slate-400 border-slate-400 flex-col  items-start justify-evenly">
           <Text className="text-m text-white flex-wrap font-medium mt-1">
-            Name:{" "}
+            Name:{' '}
             {spot.item.name.length > 20
-              ? spot.item.name.substring(0, 20) + "... "
-              : spot.item.name + ",  "}
+              ? spot.item.name.substring(0, 20) + '... '
+              : spot.item.name + ',  '}
           </Text>
           <Text className="text-m text-white font-medium mt-1">
             latitude: {spot.item.latitude}
-            {",  "}
+            {',  '}
           </Text>
           <Text className="text-m text-white font-medium mt-1">
             longitude: {spot.item.longitude}
-            {",  "}
+            {',  '}
           </Text>
           <View className="flex-row justify-between">
             <Text className="text-m text-white font-medium mt-1">
               Type: {spot.item.parking_type}
-              {",  "}
+              {',  '}
             </Text>
             <Text className="text-m text-white font-medium mt-1">
               Votes: {spot.item.vote_count}
-              {",  "}
+              {',  '}
             </Text>
           </View>
         </View>

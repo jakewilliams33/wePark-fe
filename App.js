@@ -1,11 +1,13 @@
-import React from "react";
-import { MainContainer } from "./Navigation/MainContainer";
-import { UserProvider } from "./Navigation/AppContext";
+import React from 'react';
+import { MainContainer } from './Navigation/MainContainer';
+import { SpotProvider, UserProvider } from './Navigation/AppContext';
 
 function App() {
   return (
     <UserProvider>
-      <MainContainer />
+      <SpotProvider>
+        <MainContainer />
+      </SpotProvider>
     </UserProvider>
   );
 }
