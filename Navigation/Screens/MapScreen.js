@@ -21,7 +21,7 @@ import { Formik } from "formik";
 import * as ImagePicker from "expo-image-picker";
 import SelectDropdown from "react-native-select-dropdown";
 import * as Yup from "yup";
-import { UserContext } from "../AppContext";
+import { UserContext, SpotContext } from "../AppContext";
 import FavButton from "../Buttons/FavButton";
 import axios from "axios";
 import Toast from "react-native-root-toast";
@@ -52,6 +52,7 @@ export default function MapScreen({ navigation, route }) {
   const { user, setUser } = useContext(UserContext);
   const [reRender, setReRender] = useState(0);
   const [spotImages, setSpotImages] = useState([]);
+  const { contextSpot, setContextSpot } = useContext(SpotContext);
 
   //form validation
   const SpaceSchema = Yup.object().shape({
@@ -109,7 +110,6 @@ export default function MapScreen({ navigation, route }) {
     setShowMarkerModal(true);
     getSingleSpot(spot_id).then(({ spot }) => {
       setSelectedSpotInfo(spot);
-      console.log("single spot", spot.images);
       if (spot.images) {
         setSpotImages(spot.images.split(","));
       }
@@ -157,7 +157,7 @@ export default function MapScreen({ navigation, route }) {
         longitudeDelta: 0.0421,
       });
     })();
-  }, []);
+  }, [contextSpot]);
 
   //confirm marker
   const confirmMarkerPosition = () => {
@@ -193,10 +193,10 @@ export default function MapScreen({ navigation, route }) {
     postSpot(finalChoice, values, user, image);
   };
 
-  console.log(spotImages);
+  console.log("spotImages, mapScreen, line~262", spotImages);
 
   const postSpot = (coordinate, values, user, uri) => {
-    console.log(values.time_limit);
+    console.log("MapScreen, value.time_limit, line~265", values.time_limit);
     const parkingSpot = new FormData();
     parkingSpot.append("name", values.name);
     parkingSpot.append("description", values.description);
@@ -241,12 +241,126 @@ export default function MapScreen({ navigation, route }) {
         console.log("spots post request in api.js", spots);
       })
       .catch(function (error) {
-        console.log(error);
+        console.log("error in MapScreen post spots request, line ~310", error);
       });
   };
-  if (selectedSpotInfo) {
-    console.log(selectedSpotInfo);
-  }
+
+  //=========KIEL AT WORK===================================================================
+  // const handleArrivalFromUserScreen = (contextSpot) => {
+
+  useEffect(() => {
+    if (contextSpot) {
+      console.log("heres the context spot in mapscreen: ", contextSpot);
+      setShowMarkerModal(true);
+      setSelectedSpotInfo(contextSpot);
+      setSelectedSpotID(contextSpot.spot_id);
+      setContextSpot(null);
+    }
+  }, [contextSpot]);
+
+  // if (!status) {
+  //   let { status } = await Location.requestForegroundPermissionsAsync();
+  //   if (status !== 'granted') {
+  //     setStatus('Permission to access location was denied');
+  //     return;
+  //   } else {
+  //     setStatus(status);
+  //   }
+  // }
+  // console.log(
+  //   'in mapscreen, handle arrival, past the location permissions check'
+  // );
+
+  // if (!userLocation) {
+  //   (async () => {
+  //     const location = await Location.getCurrentPositionAsync();
+  //     setUserLocation(location);
+  //     setmapRegion({
+  //       latitude: location.coords.latitude,
+  //       longitude: location.coords.longitude,
+  //       latitudeDelta: 0.0922,
+  //       longitudeDelta: 0.0421,
+  //     });
+  //   })();
+  // }
+  // console.log('in mapscreen, handle arrival, past the user location  check');
+
+  // return (
+  //   <Modal
+  //     visible={showMarkerModal}
+  //     style={{ flex: 1 }}
+  //     animationType="slide"
+  //     onRequestClose={() => {
+  //       setShowMarkerModal(false);
+  //     }}
+  //   >
+  //     <View>
+  //       <ScrollView>
+  //         {selectedSpotInfo && (
+  //           <>
+  //             <Text>{selectedSpotInfo.name}</Text>
+  //             <Text>
+  //               Added By: {selectedSpotInfo.creator} On:
+  //               {new Date(selectedSpotInfo.created_at).toUTCString()}
+  //             </Text>
+  //             <Text>Type: {selectedSpotInfo.parking_type}</Text>
+
+  //             <Text>Description: {selectedSpotInfo.description}</Text>
+  //             <Text>Opening time: {selectedSpotInfo.opening_time}</Text>
+  //             <Text>Closing time: {selectedSpotInfo.closing_time}</Text>
+
+  //             <Text>
+  //               Time Limit:
+  //               {selectedSpotInfo.time_limit === null
+  //                 ? ' no limit'
+  //                 : selectedSpotInfo.time_limit}
+  //             </Text>
+  //             {selectedSpotInfo.images &&
+  //               selectedSpotInfo.images.split(',').map((image) => {})}
+
+  //             {/* <Image
+  //               style={{ width: 200, height: 200 }}
+  //               source={{ uri: selectedSpotInfo.images.split(",")[0] }}
+  //             ></Image> */}
+  //           </>
+  //         )}
+  //         {selectedSpotID && <FavButton spot_id={selectedSpotID} />}
+  //         {selectedSpotID && (
+  //           <Button title="delete button" onPress={handleDelete}>
+  //             Delete
+  //           </Button>
+  //         )}
+
+  //         <CommentsComponent
+  //           selectedSpotID={selectedSpotID}
+  //         ></CommentsComponent>
+  //       </ScrollView>
+  //     </View>
+  //   </Modal>
+  // );
+
+  // await getSingleSpot(selectedSpotID)
+  //   .then(({ spot }) => {
+  //     if (spot) {
+  //       setSelectedSpotInfo(spot);
+  //       // setSpotImages(spot.images.split(','));
+  //     }
+  // //   })
+  // axios
+  //   .get(`https://wepark-be.herokuapp.com/api/spots/${contextID}`)
+  //   .then(({ data }) => {
+  //     console.log(
+  //       'something came back from the response, handleArrival func'
+  //     );
+  //     return data;
+  //   })
+  //   .then((spot) => {
+  //     return setSelectedSpotInfo(spot.spot);
+  //   })
+  //   .catch((e) => console.log('I am the error in question', e));
+
+  //=========KIEL AT WORK===================================================================
+
   if (userLocation && mapRegion.latitude === userLocation.coords.latitude) {
     return (
       <View style={{ flex: 1 }}>
@@ -290,7 +404,11 @@ export default function MapScreen({ navigation, route }) {
                 />
                 {props.errors.name && (
                   <Text
-                    style={{ fontSize: 10, color: "red", alignItems: "center" }}
+                    style={{
+                      fontSize: 10,
+                      color: "red",
+                      alignItems: "center",
+                    }}
                   >
                     {props.errors.name}
                   </Text>
@@ -385,7 +503,9 @@ export default function MapScreen({ navigation, route }) {
             )}
           </Formik>
         </Modal>
+        {}
         {/* SPOT INFO MODAL HERE -------------------------------------------------------------------------------------------- */}
+
         <Modal
           visible={showMarkerModal}
           style={{ flex: 1 }}
@@ -395,7 +515,7 @@ export default function MapScreen({ navigation, route }) {
           }}
         >
           <View style={{ marginTop: 45, marginHorizontal: 15 }}>
-            <ScrollView style={{ height: "80%" }}>
+            <ScrollView keyboardShouldPersistTaps={"handled"}>
               {selectedSpotInfo && (
                 <>
                   <Text className="text-xl font-bold mx-auto my-4">
