@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export const postSpot = (coordinate, values, user, uri) => {
+  console.log(values.time_limit);
   const parkingSpot = new FormData();
   parkingSpot.append("name", values.name);
   parkingSpot.append("description", values.description);
@@ -12,6 +13,8 @@ export const postSpot = (coordinate, values, user, uri) => {
   parkingSpot.append("parking_type", values.parking_type);
   parkingSpot.append("creator", user.username);
 
+  console.log("posting spot");
+
   if (uri) {
     let uriParts = uri.split(".");
     let fileType = uriParts[uriParts.length - 1];
@@ -21,7 +24,6 @@ export const postSpot = (coordinate, values, user, uri) => {
       type: `image/${fileType}`,
     });
   }
-
   axios
     .post("https://wepark-be.herokuapp.com/api/spots", parkingSpot, {
       headers: {
@@ -31,6 +33,7 @@ export const postSpot = (coordinate, values, user, uri) => {
     })
     .then((response) => {
       console.log("the post request was a success");
+
       return JSON.stringify(response.data);
     })
     .then((spots) => {
@@ -42,6 +45,8 @@ export const postSpot = (coordinate, values, user, uri) => {
 };
 
 export const getSpots = () => {
+  console.log("getting spots");
+
   return axios
     .get(
       "https://wepark-be.herokuapp.com/api/spots?radius=10000000000000000000000000"
@@ -64,10 +69,14 @@ export const getSpots = () => {
 };
 
 export const getSingleSpot = (spot_id) => {
+  console.log("getting single spot");
   return axios
     .get(`https://wepark-be.herokuapp.com/api/spots/${spot_id}`)
     .then(({ data }) => {
       return data;
+    })
+    .catch(function (error) {
+      console.log(error);
     });
 };
 
@@ -77,28 +86,19 @@ export const deleteSpot = (spot_id) => {
     .delete(`https://wepark-be.herokuapp.com/api/spots/${spot_id}`)
     .then(({ data }) => {
       return data;
+    })
+    .catch(function (error) {
+      console.log(error);
     });
 };
 
-const a = {
-  spot_id: 68,
-  name: "HHhshsggegegd",
-  latitude: -1.5760861337184906,
-  longitude: -1.5760861337184906,
-  opening_time: null,
-  closing_time: null,
-  time_limit: null,
-  parking_type: "street",
-  vote_count: 0,
-};
-const b = {
-  spot_id: 62,
-  name: "Gshahahaha",
-  latitude: -1.5784082561731339,
-  longitude: -1.5784082561731339,
-  opening_time: null,
-  closing_time: null,
-  time_limit: null,
-  parking_type: "street",
-  vote_count: 0,
+export const getComments = (spot_id) => {
+  console.log("getting comments");
+
+  return axios
+    .get(`https://wepark-be.herokuapp.com/api/spots/${spot_id}/comments`)
+    .then(({ data }) => {
+      console.log("comments", data);
+      return data;
+    });
 };

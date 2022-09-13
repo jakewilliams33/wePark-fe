@@ -10,7 +10,9 @@ import {
   Modal,
   TextInput,
   ToastAndroid,
+  ScrollView,
 } from "react-native";
+import CommentsComponent from "../Screens/ScreenComponents/CommentsComponent";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { showMessage, hideMessage } from "react-native-flash-message";
 import FlashMessage from "react-native-flash-message";
@@ -43,8 +45,8 @@ export default function MapScreen({ navigation, route }) {
   const [showMarkerModal, setShowMarkerModal] = useState(false);
   const [selectedSpotInfo, setSelectedSpotInfo] = useState();
   const [selectedSpotID, setSelectedSpotID] = useState();
-  const [previewImage, setPreview] = useState();
   const { user, setUser } = useContext(UserContext);
+  const [reRender, setReRender] = useState(0);
 
   //form validation
   const SpaceSchema = Yup.object().shape({
@@ -60,25 +62,39 @@ export default function MapScreen({ navigation, route }) {
   });
 
   // get spots from db
-  useEffect(() => {
-    getSpots().then(({ spots }) => {
-      setMarkers(spots);
-    });
-  }, []);
+  useEffect(
+    (markers) => {
+      getSpots(markers).then(({ spots }) => {
+        const spotsCopy = [...spots];
+        setMarkers(spotsCopy);
+      });
+    },
+    [JSON.stringify(markers), reRender]
+  );
+
+  console.log(markers.length);
 
   // get image from gallery
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 1,
     });
-
     if (!result.cancelled) {
-      setPreview(result.uri);
-      // const response = await fetch(result.uri);
-      // const blob = await response.blob();
+      setImage(result.uri);
+    }
+  };
+
+  //take picture
+  const openCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync();
+    if (!result.cancelled) {
       setImage(result.uri);
     }
   };
@@ -154,10 +170,11 @@ export default function MapScreen({ navigation, route }) {
   //delete
   const handleDelete = () => {
     deleteSpot(selectedSpotID);
-    getSpots().then(({ spots }) => {
-      setMarkers(spots);
-      setShowMarkerModal(false);
+    const filtered = markers.filter((spot) => {
+      return spot.spot_id !== selectedSpotID;
     });
+    setMarkers(filtered);
+    setShowMarkerModal(false);
   };
 
   if (userLocation && mapRegion.latitude === userLocation.coords.latitude) {
@@ -186,11 +203,11 @@ export default function MapScreen({ navigation, route }) {
               setShowModal(false);
               let finalChoice = newMarker[0].coordinate;
               postSpot(finalChoice, values, user, image);
-              let prev = markers.length;
-
               getSpots().then(({ spots }) => {
-                setMarkers(spots);
+                const spotsCopy = [...spots];
+                setMarkers(spotsCopy);
               });
+
               setOptimisticmarkers([]);
             }}
           >
@@ -289,9 +306,15 @@ export default function MapScreen({ navigation, route }) {
                   title="Pick an image from camera roll"
                   onPress={pickImage}
                 />
-                {previewImage && (
+
+                <Button
+                  title="Take a photo with camera"
+                  onPress={openCamera}
+                ></Button>
+
+                {image && (
                   <Image
-                    source={{ uri: previewImage }}
+                    source={{ uri: image }}
                     style={{ width: 200, height: 200 }}
                   />
                 )}
@@ -301,8 +324,7 @@ export default function MapScreen({ navigation, route }) {
             )}
           </Formik>
         </Modal>
-        {/* SPOT INFO MODAL HERE!!!!!1 
-          HERE!!!!!!!!!*/}
+        {/* SPOT INFO MODAL HERE -------------------------------------------------------------------------------------------- */}
         <Modal
           visible={showMarkerModal}
           style={{ flex: 1 }}
@@ -311,27 +333,45 @@ export default function MapScreen({ navigation, route }) {
             setShowMarkerModal(false);
           }}
         >
-          {selectedSpotInfo && (
-            <>
-              <Text>{selectedSpotInfo.name}</Text>
-              <Text>
-                Added By: {selectedSpotInfo.creator} On:{" "}
-                {selectedSpotInfo.created_at}
-              </Text>
-              <Text>Type: {selectedSpotInfo.parking_type}</Text>
+          <View>
+            <ScrollView>
+              {selectedSpotInfo && (
+                <>
+                  <Text>{selectedSpotInfo.name}</Text>
+                  <Text>
+                    Added By: {selectedSpotInfo.creator} On:
+                    {new Date(selectedSpotInfo.created_at).toUTCString()}
+                  </Text>
+                  <Text>Type: {selectedSpotInfo.parking_type}</Text>
 
-              <Text>Description: {selectedSpotInfo.description}</Text>
-              <Image
-                style={{ width: 200, height: 200 }}
-                source={{ uri: selectedSpotInfo.images }}
-              ></Image>
-            </>
-          )}
-          {selectedSpotID && (
-            <Button title="delete button" onPress={handleDelete}>
-              Delete
-            </Button>
-          )}
+                  <Text>Description: {selectedSpotInfo.description}</Text>
+                  <Text>Opening time: {selectedSpotInfo.opening_time}</Text>
+                  <Text>Closing time: {selectedSpotInfo.closing_time}</Text>
+
+                  <Text>
+                    Time Limit:
+                    {selectedSpotInfo.time_limit === null
+                      ? " no limit"
+                      : selectedSpotInfo.time_limit}
+                  </Text>
+
+                  <Image
+                    style={{ width: 200, height: 200 }}
+                    source={{ uri: selectedSpotInfo.images }}
+                  ></Image>
+                </>
+              )}
+              {selectedSpotID && (
+                <Button title="delete button" onPress={handleDelete}>
+                  Delete
+                </Button>
+              )}
+
+              <CommentsComponent
+                selectedSpotID={selectedSpotID}
+              ></CommentsComponent>
+            </ScrollView>
+          </View>
         </Modal>
 
         <MapView
@@ -589,7 +629,7 @@ const times = [
 ];
 
 const limit = [
-  "No limit",
+  "no limit",
   "1",
   "2",
   "3",
