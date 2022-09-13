@@ -50,6 +50,7 @@ export default function MapScreen({ navigation, route }) {
   const [selectedSpotID, setSelectedSpotID] = useState();
   const { user, setUser } = useContext(UserContext);
   const [reRender, setReRender] = useState(0);
+  const [spotImages, setSpotImages] = useState([]);
 
   //form validation
   const SpaceSchema = Yup.object().shape({
@@ -107,6 +108,7 @@ export default function MapScreen({ navigation, route }) {
     setShowMarkerModal(true);
     getSingleSpot(spot_id).then(({ spot }) => {
       setSelectedSpotInfo(spot);
+      setSpotImages(spot.images.split(","));
     });
   };
 
@@ -187,6 +189,8 @@ export default function MapScreen({ navigation, route }) {
     postSpot(finalChoice, values, user, image);
   };
 
+  console.log(spotImages);
+
   const postSpot = (coordinate, values, user, uri) => {
     console.log(values.time_limit);
     const parkingSpot = new FormData();
@@ -236,7 +240,9 @@ export default function MapScreen({ navigation, route }) {
         console.log(error);
       });
   };
-
+  if (selectedSpotInfo) {
+    console.log(selectedSpotInfo);
+  }
   if (userLocation && mapRegion.latitude === userLocation.coords.latitude) {
     return (
       <View style={{ flex: 1 }}>
@@ -405,11 +411,13 @@ export default function MapScreen({ navigation, route }) {
                       ? " no limit"
                       : selectedSpotInfo.time_limit}
                   </Text>
+                  {selectedSpotInfo.images &&
+                    selectedSpotInfo.images.split(",").map((image) => {})}
 
-                  <Image
+                  {/* <Image
                     style={{ width: 200, height: 200 }}
-                    source={{ uri: selectedSpotInfo.images }}
-                  ></Image>
+                    source={{ uri: selectedSpotInfo.images.split(",")[0] }}
+                  ></Image> */}
                 </>
               )}
               {selectedSpotID && <FavButton spot_id={selectedSpotID} />}
@@ -427,6 +435,7 @@ export default function MapScreen({ navigation, route }) {
         </Modal>
 
         <MapView
+          provider={MapView.PROVIDER_GOOGLE}
           style={{ flex: 1 }}
           initialRegion={mapRegion}
           showsUserLocation={true}
