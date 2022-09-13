@@ -57,3 +57,13 @@ export const getComments = (spot_id) => {
       return data;
     });
 };
+
+export const updateVotes = (comment_id, votes) => {
+  console.log(comment_id, votes);
+  return axios
+    .patch(`https://wepark-be.herokuapp.com/api/comments/${comment_id}`, votes)
+    .then(({ data }) => {
+      console.log(data);
+      return data;
+    });
+};
