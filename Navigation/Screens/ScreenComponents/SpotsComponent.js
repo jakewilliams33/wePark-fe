@@ -8,7 +8,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { UserContext, SpotContext } from '../../AppContext';
+import { UserContext, SpotContext, HistoryContext } from '../../AppContext';
 import axios from 'axios';
 
 const SpotsItem = ({
@@ -21,16 +21,13 @@ const SpotsItem = ({
   const { setContextSpot } = useContext(SpotContext);
   const [callMapScreen, toggleCallMapScreen] = useState(false);
   const [spotToNavTo, setSpotToNavTo] = useState();
-
+  const { history, setHistory } = useContext(HistoryContext);
   const navigation = useNavigation();
 
   const handleNavToSpot = (event) => {
-    // const spotContextArr = [event.spot_id, event.latitude, event.longitude];
-    // setContextSpot(spotContextArr);
     console.log('in UserScreen-SpotsComponent, Calling useEffect');
     setSpotToNavTo(event.spot_id);
     toggleCallMapScreen(true);
-    // navigation.navigate('Map');
   };
 
   useEffect(() => {
@@ -44,6 +41,24 @@ const SpotsItem = ({
         .then(({ spot }) => {
           setContextSpot(spot);
           setSpotToNavTo(null);
+
+          if (history.length > 0) {
+            let pushToHistory = true;
+
+            for (const thisSpot of history) {
+              if (thisSpot.spot_id === spot.spot_id) {
+                pushToHistory = false;
+              }
+            }
+            if (pushToHistory) {
+              const newHistory = history;
+              newHistory.push(spot);
+              setHistory((curr) => [...curr, spot]);
+            }
+            console.log('this is the history', history);
+          } else setHistory([spot]);
+
+          console.log('this is the history', history);
           navigation.navigate('Map');
         })
         .catch(function (error) {
