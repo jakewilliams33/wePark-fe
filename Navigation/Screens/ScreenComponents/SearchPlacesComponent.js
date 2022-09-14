@@ -17,8 +17,8 @@ export default function SearchPlacesComponent({
         setSearchLocation({
           latitude: details.geometry.location.lat,
           longitude: details.geometry.location.lng,
-          latitudeDelta: 1,
-          longitudeDelta: 1,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
         });
       }}
       query={{
