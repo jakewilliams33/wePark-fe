@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const getSpots = () => {
-  console.log('in API.js, getting spots');
+  console.log("in API.js, getting spots");
 
   return axios
     .get(
-      'https://wepark-be.herokuapp.com/api/spots?radius=10000000000000000000000000'
+      "https://wepark-be.herokuapp.com/api/spots?radius=10000000000000000000000000"
     )
     .then(({ data }) => {
       return data;
@@ -18,26 +18,26 @@ export const getSpots = () => {
       } else if (error.request) {
         console.log(error.request);
       } else {
-        console.log('Error', error.message);
+        console.log("Error", error.message);
       }
       console.log(error.config);
     });
 };
 
 export const getSingleSpot = (spot_id) => {
-  console.log('in API.js, getting single spot, spot_id: ', spot_id);
+  console.log("in API.js, getting single spot, spot_id: ", spot_id);
   return axios
     .get(`https://wepark-be.herokuapp.com/api/spots/${spot_id}`)
     .then(({ data }) => {
       return data;
     })
     .catch(function (error) {
-      console.log('ERROR IN getSingleSpot', error);
+      console.log("ERROR IN getSingleSpot", error);
     });
 };
 
 export const deleteSpot = (spot_id) => {
-  console.log('In Api.js, delete being executed');
+  console.log("In Api.js, delete being executed");
   axios
     .delete(`https://wepark-be.herokuapp.com/api/spots/${spot_id}`)
     .then(({ data }) => {
@@ -49,7 +49,7 @@ export const deleteSpot = (spot_id) => {
 };
 
 export const getComments = (spot_id) => {
-  console.log('In Api.js, getting comments');
+  console.log("In Api.js, getting comments");
 
   return axios
     .get(`https://wepark-be.herokuapp.com/api/spots/${spot_id}/comments`)
@@ -64,6 +64,14 @@ export const updateVotes = (comment_id, votes) => {
     .patch(`https://wepark-be.herokuapp.com/api/comments/${comment_id}`, votes)
     .then(({ data }) => {
       console.log(data);
+      return data;
+    });
+};
+
+export const updateSpotVotes = (spot_id, votes) => {
+  return axios
+    .patch(`https://wepark-be.herokuapp.com/api/spots/${spot_id}`, votes)
+    .then(({ data }) => {
       return data;
     });
 };
