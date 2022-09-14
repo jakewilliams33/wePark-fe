@@ -42,7 +42,10 @@ export default function MainContainer() {
         <Tab.Screen
           name={homeName}
           component={HomeScreen}
-          options={{ title: '', headerStyle: { height: 40 } }}
+          options={{
+            title: '',
+            headerStyle: { height: 40, backgroundColor: 'white' },
+          }}
         />
         <Tab.Screen
           name={mapName}
@@ -55,7 +58,10 @@ export default function MainContainer() {
         <Tab.Screen
           name={userPageName}
           component={UserScreen}
-          options={{ title: '', headerStyle: { height: 40 } }}
+          options={{
+            title: '',
+            headerStyle: { height: 40, backgroundColor: 'white' },
+          }}
         />
       </Tab.Navigator>
     </NavigationContainer>

@@ -30,28 +30,29 @@ export default LoginComponent = ({
           <Text className="text-white text-l font-medium">Back</Text>
         </TouchableOpacity>
 
-        <SafeAreaView className="w-8/12 rounded-md border-2 border-slate-400 mt-10">
-          <TextInput
-            className="rounded-md shadow-xl bg-white"
-            onChangeText={onChangeText6}
-            value={text6}
-          />
-          <Text className="border-t-2 border-slate-400 bg-slate-400 text-white text-l font-medium py-1 text-center">
-            Username
-          </Text>
-        </SafeAreaView>
         <SafeAreaView
-          className="w-8/12 shadow-3xl rounded-md border-2 border-slate-400 mt-2 mb-10"
-          style={styles.shadow}
+          className="border-0 w-8/12 bg-white rounded-3xl"
+          style={styles.input}
         >
           <TextInput
-            className="rounded-md shadow-xl bg-white"
+            className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
+            style={styles.inner_input}
+            onChangeText={onChangeText6}
+            onFocus={onChangeText6}
+            value={text6}
+          />
+        </SafeAreaView>
+        <SafeAreaView
+          className="border-0 w-8/12 bg-white rounded-3xl"
+          style={styles.input}
+        >
+          <TextInput
+            className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
+            style={styles.inner_input}
             onChangeText={onChangeText7}
+            onFocus={onChangeText7}
             value={text7}
           />
-          <Text className="border-t-2 border-slate-400 bg-slate-400 text-white text-l font-medium py-1 text-center">
-            Password
-          </Text>
         </SafeAreaView>
 
         <TouchableOpacity

@@ -44,6 +44,7 @@ export default SignUpComponent = ({
             className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
             style={styles.inner_input}
             onChangeText={onChangeText1}
+            onFocus={onChangeText1}
             value={text1}
           />
         </SafeAreaView>
@@ -55,6 +56,7 @@ export default SignUpComponent = ({
             className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
             style={styles.inner_input}
             onChangeText={onChangeText5}
+            onFocus={onChangeText5}
             value={text5}
           />
         </SafeAreaView>
@@ -66,6 +68,7 @@ export default SignUpComponent = ({
             className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
             style={styles.inner_input}
             onChangeText={onChangeText2}
+            onFocus={onChangeText2}
             value={text2}
           />
         </SafeAreaView>
@@ -77,6 +80,7 @@ export default SignUpComponent = ({
             className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
             style={styles.inner_input}
             onChangeText={onChangeText3}
+            onFocus={onChangeText3}
             value={text3}
           />
         </SafeAreaView>
@@ -88,6 +92,7 @@ export default SignUpComponent = ({
             className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
             style={styles.inner_input}
             onChangeText={onChangeText4}
+            onFocus={onChangeText4}
             value={text4}
           />
         </SafeAreaView>

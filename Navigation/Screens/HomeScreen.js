@@ -100,7 +100,7 @@ export default function HomeScreen({ navigation }) {
     >
       {history.length === 0 && (
         <>
-          <View className=" basis-1/6 bg-white w-screen items-center justify-evenly">
+          <View className=" basis-1/6 bg-white w-screen items-center justify-evenly pt-10">
             <Text className="text-7xl text-slate-600 font-bold">We Park</Text>
             <Text className="text-xl text-slate-600 font-medium">
               But Mostly We Care

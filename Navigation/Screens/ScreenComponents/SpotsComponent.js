@@ -103,6 +103,7 @@ const SpotsItem = ({
           </View>
           <TouchableOpacity
             className="  mt-2 rounded-md bg-slate-600 h-10 w-10/12 px-2 flex-row justify-center items-center"
+            style={styles.shadow}
             onPress={(event) => {
               event.spot_id = spot.item.spot_id;
               event.latitude = spot.item.latitude;
@@ -121,6 +122,7 @@ const SpotsItem = ({
           {user.favourites.includes(spot.item.spot_id) ? (
             <TouchableOpacity
               className=" ml-2 rounded-md bg-slate-600 h-14 w-14 justify-center items-center"
+              style={styles.shadow}
               onPress={(event) => {
                 event.spot_id = spot.item.spot_id;
                 handleUnFavPress(event);
@@ -134,6 +136,7 @@ const SpotsItem = ({
           ) : (
             <TouchableOpacity
               className=" ml-2 rounded-md bg-slate-600 h-14 w-14 justify-center items-center"
+              style={styles.shadow}
               onPress={(event) => {
                 event.spot_id = spot.item.spot_id;
                 handleFavPress(event);
@@ -147,6 +150,7 @@ const SpotsItem = ({
           )}
           <TouchableOpacity
             className=" ml-2 rounded-md bg-slate-600 h-10 mt-1 w-14 justify-center items-center"
+            style={styles.shadow}
             onPress={(event) => {
               event.spot_id = spot.item.spot_id;
               handleDelete(event);
@@ -181,7 +185,7 @@ export default SpotsComponent = ({
   };
 
   return (
-    <View className="flex-col border-slate-400 border-y-2 items-center h-3/5 mb-2 bg-white">
+    <View className="flex-col border-slate-400 border-y-2 items-center h-8/12 mb-10 mb-2 bg-white">
       {spotsObj ? (
         <SafeAreaView className="w-11/12  ">
           <FlatList

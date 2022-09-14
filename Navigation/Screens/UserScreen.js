@@ -253,10 +253,11 @@ export default function UserScreen({ navigation }) {
               handleDelete={handleDelete}
             />
 
-            <View className="w-screen items-center justify-center ">
+            <View className="w-screen items-center bg-white justify-center ">
               <TouchableOpacity
                 title={'Spots'}
-                className=" rounded-md bg-slate-600 h-12 w-24 justify-center items-center"
+                className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-20 justify-center items-center"
+                style={styles.shadow}
                 activeOpacity={0.7}
                 onPress={handleBack}
               >
