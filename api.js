@@ -75,3 +75,12 @@ export const updateSpotVotes = (spot_id, votes) => {
       return data;
     });
 };
+
+export const updateSpotBusy = (spot_id, status) => {
+  return axios
+    .patch(`https://wepark-be.herokuapp.com/api/spots/${spot_id}`, status)
+    .then(({ data }) => {
+      console.log(data);
+      return data; 
+    })
+}
