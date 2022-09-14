@@ -39,9 +39,24 @@ export default function MainContainer() {
           },
         })}
       >
-        <Tab.Screen name={homeName} component={HomeScreen} />
-        <Tab.Screen name={mapName} component={MapScreen} />
-        <Tab.Screen name={userPageName} component={UserScreen} />
+        <Tab.Screen
+          name={homeName}
+          component={HomeScreen}
+          options={{ title: '', headerStyle: { height: 40 } }}
+        />
+        <Tab.Screen
+          name={mapName}
+          component={MapScreen}
+          options={{
+            title: '',
+            headerStyle: { height: 40, backgroundColor: 'white' },
+          }}
+        />
+        <Tab.Screen
+          name={userPageName}
+          component={UserScreen}
+          options={{ title: '', headerStyle: { height: 40 } }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

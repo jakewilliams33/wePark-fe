@@ -40,8 +40,9 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const forceUpdate = navigation.addListener('focus', () => {
       incVisits(visits + 1);
+      forceUpdate();
     });
-  }, [carouselData]);
+  }, []);
 
   useEffect(() => {
     const featuredIndex = Math.floor(Math.random() * featuredSpots.length);
@@ -66,6 +67,7 @@ export default function HomeScreen({ navigation }) {
             imgUrl: image,
           };
         });
+
         setCarouselData(newCarouselData);
 
         console.log(
@@ -267,9 +269,9 @@ export default function HomeScreen({ navigation }) {
             >
               <TextInput
                 className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
+                style={styles.inner_input}
                 onChangeText={onChangeText}
                 value={text}
-                style={styles.inner_input}
               />
             </SafeAreaView>
             <View className=" p-2 px-6 rounded-lg w-9/12 justify-evenly rounded-md bg-slate-400">
@@ -278,7 +280,10 @@ export default function HomeScreen({ navigation }) {
                   console.log('in homescreen map of recent history', spot);
                   if (index < 3)
                     return (
-                      <View className="m-1 flex-col justify-center items-center">
+                      <View
+                        key={'history' + index}
+                        className="m-1 flex-col justify-center items-center"
+                      >
                         <View className="flex-row justify-evenly">
                           <FontAwesomeIcon icon={faCar} />
                           <Text className="text-white text-l font-medium ml-2">
@@ -294,7 +299,7 @@ export default function HomeScreen({ navigation }) {
           </View>
 
           {featuredSpot && (
-            <View className=" basis-2/4 flex-1 flex-col justify-evenly  p-2  px-14  bg-slate-400 px-2 w-screen">
+            <View className=" basis-2/4 flex-1 flex-col justify-center items-center p-2  px-14  bg-slate-400 px-2 w-screen">
               <View className="justify-center items-center  mx-8 px-2">
                 {/* <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} /> */}
                 <Text className="text-white text-l font-medium ml-2">
@@ -304,7 +309,7 @@ export default function HomeScreen({ navigation }) {
                   {featuredSpot.description}
                 </Text>
               </View>
-              <CarouselCards data={carouselData} />
+              <CarouselCards className="mr-2" data={carouselData} />
             </View>
           )}
         </>
