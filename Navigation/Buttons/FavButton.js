@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Text, TouchableOpacity } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { UserContext } from '../AppContext';
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from "react";
+import { Text, TouchableOpacity } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { UserContext } from "../AppContext";
+import axios from "axios";
 
 export default FavButton = ({ spot_id }) => {
   const [IDtoFav, setIDToFav] = useState();
@@ -12,7 +12,7 @@ export default FavButton = ({ spot_id }) => {
   const { user, setUser } = useContext(UserContext);
 
   const handleFavPress = (event) => {
-    console.log('in handleFavPress');
+    console.log("in handleFavPress");
     const spot_id = event.spot_id;
     setIDToFav(spot_id);
     console.log(IDtoFav);
@@ -31,7 +31,7 @@ export default FavButton = ({ spot_id }) => {
   useEffect(() => {
     if (addToFavs) {
       const FAVSPOT = IDtoFav;
-      console.log('Beginning POST fav request, spot_id-->>', FAVSPOT);
+      console.log("Beginning POST fav request, spot_id-->>", FAVSPOT);
       toggleAddToFavs(false);
       setIDToFav(null);
       const newUser = user;
@@ -55,7 +55,7 @@ export default FavButton = ({ spot_id }) => {
           return setUser(newUser);
         })
         .catch((err) => {
-          console.log('Error in FavButton, in post Favs useEffect', err);
+          console.log("Error in FavButton, in post Favs useEffect", err);
           const newUser = user;
           newUser.favourites = user.favourites.filter((fav) => fav !== FAVSPOT);
           return setUser(newUser);
@@ -68,7 +68,7 @@ export default FavButton = ({ spot_id }) => {
 
   useEffect(() => {
     if (unFav && IDtoUnFav) {
-      console.log('entering delete favourite');
+      console.log("entering delete favourite");
       const unfavourableSpot = IDtoUnFav;
       setIDtoUnFav(null);
       toggleUnFav(false);
@@ -82,10 +82,10 @@ export default FavButton = ({ spot_id }) => {
           `https://wepark-be.herokuapp.com/api/users/${user.username}/favourites/${unfavourableSpot}`
         )
         .then(() => {
-          console.log('the Fav is gone');
+          console.log("the Fav is gone");
         })
         .catch((err) => {
-          console.log('Error in FavButton, in Delete Favs useEffect', err);
+          console.log("Error in FavButton, in Delete Favs useEffect", err);
           const newUser = user;
           newUser.favourites = user.favourites.push(unfavourableSpot);
           setUser(newUser);

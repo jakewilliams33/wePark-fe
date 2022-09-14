@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SpotContext, HistoryContext } from '../AppContext';
 import axios from 'axios';
@@ -53,13 +53,14 @@ export default NavSpotButton = ({ spot }) => {
 
   return (
     <TouchableOpacity
-      className="  mt-2 rounded-md bg-slate-600 h-8 w-30 px-2 flex-row justify-center items-center"
+      className="  mt-2 rounded-md bg-slate-600 h-8 w-30 px-2 flex-row justify-center items-center "
       onPress={(event) => {
         event.spot_id = spot.spot_id;
         event.latitude = spot.latitude;
         event.longitude = spot.longitude;
         handleNavToSpot(event);
       }}
+      style={styles.shadow}
     >
       <Ionicons name="md-globe" size={20} color="white" />
       <Text className="text-m text-white font-medium text-center">
@@ -69,3 +70,16 @@ export default NavSpotButton = ({ spot }) => {
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 1,
+      height: 3,
+    },
+    shadowOpacity: 0.59,
+    shadowRadius: 6.65,
+    elevation: 7,
+  },
+});

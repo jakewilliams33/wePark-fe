@@ -28,6 +28,8 @@ export default BusyButton = ({ selectedSpotInfo }) => {
 
     selectedSpotInfo.time_limit === null ? time = null : time = (selectedSpotInfo.time_limit - 5) * 60
 
+    console.log(time);
+
 useEffect(() => {
     askNotification();
     const listener = Notifications.addNotificationReceivedListener();
@@ -64,6 +66,7 @@ return (
             onPress={() => {
                 handlePress(time)
             }}
+            disabled={time === null ? true : false}
         >
             <Ionicons size={20} name={"alarm-outline"} color={"white"} />
                 <Text className="text-m text-white font-medium text-center">

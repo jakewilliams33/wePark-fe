@@ -11,6 +11,7 @@ import {
   TextInput,
   ScrollView,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import CommentsComponent from "../Screens/ScreenComponents/CommentsComponent";
 import MapView, { Marker, Callout } from "react-native-maps";
@@ -30,6 +31,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import SpotVotesComponent from "./ScreenComponents/SpotVotesComponent";
 import { SliderBox } from "react-native-image-slider-box";
 import BusyButton from "../Buttons/BusyButton";
+import SearchPlacesComponent from "./ScreenComponents/SearchPlacesComponent";
+
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -53,14 +56,12 @@ export default function MapScreen({ navigation, route }) {
   const [selectedSpotInfo, setSelectedSpotInfo] = useState();
   const [selectedSpotID, setSelectedSpotID] = useState();
   const { user, setUser } = useContext(UserContext);
-  const [reRender, setReRender] = useState(0);
   const [spotImages, setSpotImages] = useState([]);
   const { contextSpot, setContextSpot } = useContext(SpotContext);
   const { history, setHistory } = useContext(HistoryContext);
 
-  console.log(spotImages);
-
   //form validation
+
   const SpaceSchema = Yup.object().shape({
     name: Yup.string()
       .min(3, "Name must be over 2 characters")
@@ -81,7 +82,7 @@ export default function MapScreen({ navigation, route }) {
         setMarkers(spotsCopy);
       });
     },
-    [JSON.stringify(markers), reRender]
+    [JSON.stringify(markers)]
   );
 
   // get image from gallery
@@ -124,9 +125,9 @@ export default function MapScreen({ navigation, route }) {
         if (pushToHistory) {
           setHistory((curr) => [...curr, spot]);
         }
-        console.log('this is the history', history);
+        console.log("this is the history", history);
       } else setHistory([spot]);
-      console.log('this is the history', history);
+      console.log("this is the history", history);
       setSelectedSpotInfo(spot);
       if (spot.images) {
         setSpotImages(spot.images.split(","));
@@ -140,6 +141,8 @@ export default function MapScreen({ navigation, route }) {
       showMessage({
         message: "Tap on the map to add a parking space",
         type: "info",
+        backgroundColor: "#2D8CFF",
+        color: "white",
       });
       setMarkerAllowed(true);
       setShowAddButton(false);
@@ -211,8 +214,6 @@ export default function MapScreen({ navigation, route }) {
     postSpot(finalChoice, values, user, image);
   };
 
-  // console.log(selectedSpotInfo, "map screen");
-
   const postSpot = (coordinate, values, user, uri) => {
     const parkingSpot = new FormData();
     parkingSpot.append("name", values.name);
@@ -272,9 +273,17 @@ export default function MapScreen({ navigation, route }) {
     }
   }, [contextSpot]);
 
+  const [searchLocation, setSearchLocation] = useState();
+
   if (userLocation && mapRegion.latitude === userLocation.coords.latitude) {
     return (
       <View style={{ flex: 1 }}>
+        <SearchPlacesComponent
+          userLocation={userLocation}
+          setSearchLocation={setSearchLocation}
+          style={styles.shadow}
+        />
+
         <Modal
           animationType="slide"
           visible={showModal}
@@ -493,13 +502,6 @@ export default function MapScreen({ navigation, route }) {
                         images={spotImages}
                         ImageLoader={"ActivityIndicator"}
                       />
-                      {/* {spotImages.map((imgUrl, index) => (
-                        <Image
-                          style={{ width: 150, height: 150, margin: 5 }}
-                          source={{ uri: imgUrl }}
-                          key={index}
-                        ></Image>
-                      ))} */}
                     </View>
                   </>
                 )}
@@ -550,89 +552,102 @@ export default function MapScreen({ navigation, route }) {
             </ScrollView>
           </SafeAreaView>
         </Modal>
+        <View style={{ flex: 1 }}>
+          <MapView
+            provider={MapView.PROVIDER_GOOGLE}
+            style={{ flex: 1, marginTop: "-78%", zIndex: -20 }}
+            initialRegion={mapRegion}
+            showsUserLocation={true}
+            region={searchLocation ? searchLocation : mapRegion}
+            //adding the marker on touch
+            onPress={(event) => {
+              if (markerAllowed) {
+                showMessage({
+                  message: "Hold down on the marker to drag",
+                  type: "info",
+                  backgroundColor: "#2D8CFF",
+                  color: "white",
+                });
 
-        <MapView
-          provider={MapView.PROVIDER_GOOGLE}
-          style={{ flex: 1 }}
-          initialRegion={mapRegion}
-          showsUserLocation={true}
-          //adding the marker on touch
-          onPress={(event) => {
-            if (markerAllowed) {
-              showMessage({
-                message: "Hold down on the marker to drag",
-                type: "info",
-              });
+                let newPlace = event.nativeEvent.coordinate;
+                setShowConfirmButton(true);
 
-              let newPlace = event.nativeEvent.coordinate;
-              setShowConfirmButton(true);
-
-              setNewMarker([
-                {
-                  coordinate: {
-                    latitude: newPlace.latitude,
-                    longitude: newPlace.longitude,
-                  },
-                  key: "temp",
-                },
-              ]);
-            }
-            setMarkerAllowed(false);
-          }}
-        >
-          {newMarker.map((marker) => {
-            return (
-              <Marker
-                draggable
-                {...marker}
-                onDragEnd={(e) => {
-                  setNewMarker([
-                    {
-                      coordinate: {
-                        latitude: e.nativeEvent.coordinate.latitude,
-                        longitude: e.nativeEvent.coordinate.longitude,
-                      },
-                      key: "temp",
+                setNewMarker([
+                  {
+                    coordinate: {
+                      latitude: newPlace.latitude,
+                      longitude: newPlace.longitude,
                     },
-                  ]);
-                }}
-              />
-            );
-          })}
-          {optimisticMarkers.map((marker) => {
-            return <Marker title="loading" {...marker} />;
-          })}
-
-          {markers.map((marker) => {
-            const spotDetails = {
-              coordinate: {
-                latitude: marker.latitude,
-                longitude: marker.longitude,
-              },
-              key: marker.spot_id ? marker.spot_id : Date.now,
-              opening_time: marker.opening_time,
-              closing_time: marker.closing_time,
-              time_limit: marker.time_limit,
-              parking_type: marker.parking_type,
-              votes: marker.votes,
-            };
-
-            if (markers.length > 0)
+                    key: "temp",
+                  },
+                ]);
+              }
+              setMarkerAllowed(false);
+            }}
+          >
+            {newMarker.map((marker) => {
               return (
-                <Marker {...spotDetails}>
-                  <Callout
-                    onPress={() => {
-                      handleSpotPopup(marker.spot_id);
-                      setSelectedSpotID(marker.spot_id);
-                    }}
-                  >
-                    <Text style={{ fontWeight: "bold" }}>{marker.name}</Text>
-                    <Text>Sample Description</Text>
-                  </Callout>
-                </Marker>
+                <Marker
+                  draggable
+                  {...marker}
+                  onDragEnd={(e) => {
+                    setNewMarker([
+                      {
+                        coordinate: {
+                          latitude: e.nativeEvent.coordinate.latitude,
+                          longitude: e.nativeEvent.coordinate.longitude,
+                        },
+                        key: "temp",
+                      },
+                    ]);
+                  }}
+                />
               );
-          })}
-        </MapView>
+            })}
+            {optimisticMarkers.map((marker) => {
+              return <Marker title="Loading..." {...marker}></Marker>;
+            })}
+
+            {markers.map((marker) => {
+              const spotDetails = {
+                coordinate: {
+                  latitude: marker.latitude,
+                  longitude: marker.longitude,
+                },
+                key: marker.spot_id ? marker.spot_id : Date.now,
+                opening_time: marker.opening_time,
+                closing_time: marker.closing_time,
+                time_limit: marker.time_limit,
+                parking_type: marker.parking_type,
+                votes: marker.votes,
+              };
+
+              if (markers.length > 0)
+                return (
+                  <Marker {...spotDetails}>
+                    <Image
+                      source={require("../../assets/markerIcon.png")}
+                      style={{ height: 38 }}
+                      resizeMode={"contain"}
+                    />
+                    <Callout
+                      onPress={() => {
+                        handleSpotPopup(marker.spot_id);
+                        setSelectedSpotID(marker.spot_id);
+                      }}
+                    >
+                      <Text style={{ fontWeight: "bold" }}>{marker.name}</Text>
+                      <Text style={{ color: "lightgrey" }}>
+                        {marker.parking_type}
+                      </Text>
+                      <Text>{marker.description}</Text>
+                    </Callout>
+                  </Marker>
+                );
+            })}
+          </MapView>
+        </View>
+
         {showConfirmButton && (
           <View
             style={{
@@ -700,9 +715,7 @@ export default function MapScreen({ navigation, route }) {
             >
               <Image
                 style={{ resizeMode: "contain", width: 65, height: 65 }}
-                source={{
-                  uri: "https://www.freeiconspng.com/uploads/parking-icon-png-12.png",
-                }}
+                source={require("../../assets/addButton.png")}
               />
             </TouchableOpacity>
           )
@@ -716,8 +729,17 @@ export default function MapScreen({ navigation, route }) {
     );
   } else
     return (
-      <View>
-        <Text>Sorry! No User location data!</Text>
+      <View
+        style={{
+          marginTop: "40%",
+          justifyContent: "center",
+          textAlign: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color="#2D8CFF" />
+        <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+          Getting user location data!
+        </Text>
       </View>
     );
 }
