@@ -33,7 +33,6 @@ import { SliderBox } from "react-native-image-slider-box";
 import BusyButton from "../Buttons/BusyButton";
 import SearchPlacesComponent from "./ScreenComponents/SearchPlacesComponent";
 
-
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
   const [mapRegion, setmapRegion] = useState({
@@ -569,7 +568,12 @@ export default function MapScreen({ navigation, route }) {
                       Back
                     </Text>
                   </TouchableOpacity>
-                  {selectedSpotInfo && <BusyButton selectedSpotInfo={selectedSpotInfo} setSelectedSpotInfo={setSelectedSpotInfo}/>}
+                  {selectedSpotInfo && (
+                    <BusyButton
+                      selectedSpotInfo={selectedSpotInfo}
+                      setSelectedSpotInfo={setSelectedSpotInfo}
+                    />
+                  )}
                 </View>
 
                 <CommentsComponent
@@ -732,7 +736,7 @@ export default function MapScreen({ navigation, route }) {
               flex: 1,
               flexDirection: "row",
               position: "absolute",
-              bottom: 590,
+              bottom: 550,
               alignSelf: "center",
               backgroundColor: "white",
               padding: 20,
