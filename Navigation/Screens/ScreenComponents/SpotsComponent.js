@@ -25,12 +25,9 @@ const SpotsItem = ({
   const navigation = useNavigation();
 
   const handleNavToSpot = (event) => {
-    // const spotContextArr = [event.spot_id, event.latitude, event.longitude];
-    // setContextSpot(spotContextArr);
     console.log('in UserScreen-SpotsComponent, Calling useEffect');
     setSpotToNavTo(event.spot_id);
     toggleCallMapScreen(true);
-    // navigation.navigate('Map');
   };
 
   useEffect(() => {

@@ -6,13 +6,23 @@ import {
   StyleSheet,
   SafeAreaView,
   TextInput,
+  Image,
 } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCar } from '@fortawesome/free-solid-svg-icons/faCar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { HistoryContext } from '../AppContext';
 import { UserContext } from '../AppContext';
-import { useNavigation } from '@react-navigation/native';
+
+import NavSpotButton from '../Buttons/NavSpotButton';
+
+const noUserObject = {
+  username: 'No User',
+  avatar:
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAkjktNk_waKZ6A064JikKQRYLxoKPNIUR_g&usqp=CAU',
+  about: 'Some random user bio',
+  kudos: 0,
+};
 
 export default function HomeScreen({ navigation }) {
   const [text, onChangeText] = useState('Where do you want to park?');
@@ -29,25 +39,14 @@ export default function HomeScreen({ navigation }) {
     });
   });
 
+  const handleNavLogin = () => {
+    navigation.navigate('User');
+  };
+
   console.log(
     'top of homescreen, checking anything happens when tab back. and heres the history',
     history
   );
-
-  /* {history.length > 0  
-              history.map((spot) => {
-                console.log('in homescreen map of recent history', spot);
-                return (
-                  <View className="m-2 flex-row justify-center">
-                    <FontAwesomeIcon icon={faCar} />
-                    <Text className="text-white text-l font-medium ml-2">
-                      Name: {'In development'}
-                    </Text>
-                  </View>
-                );
-              })
-        } */
-
   return (
     <View
       visits={visits}
@@ -63,7 +62,7 @@ export default function HomeScreen({ navigation }) {
           </View>
 
           <View className=" flex-1 flex-col justify-evenly items-center basis-2/4 w-screen">
-            <View className="flex-row justify-center">
+            {/* <View className="flex-row justify-center">
               <View className="mx-5">
                 <TouchableOpacity className=" p-2 rounded-md bg-slate-400">
                   <Text className="text-white text-l font-medium">
@@ -78,8 +77,38 @@ export default function HomeScreen({ navigation }) {
                   </Text>
                 </TouchableOpacity>
               </View>
-            </View>
-
+            </View> */}
+            {user ? (
+              <>
+                <View className="w-9/12 p-2 px-6 rounded-lg flex-row justify-around items-center rounded-md bg-slate-400">
+                  <Image
+                    className="w-16 h-16 rounded-full "
+                    source={{
+                      uri: user.avatar || noUserObject.avatar,
+                    }}
+                  />
+                  <Text className="text-l text-white font-medium mt-2">
+                    Username: {user.username}
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <>
+                <View className="w-9/12 p-2 px-6 rounded-lg rounded-md bg-slate-400">
+                  <Text className="text-m text-white font-medium text-center">
+                    No Logged In User
+                  </Text>
+                  <TouchableOpacity
+                    className="mt-2 rounded-md bg-slate-600 h-8 w-30 px-2 flex-row justify-center items-center"
+                    onPress={handleNavLogin}
+                  >
+                    <Text className="text-m text-white font-medium text-center">
+                      Login or Sign-Up
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
             <SafeAreaView className="w-8/12 ">
               <TextInput
                 className="rounded-md shadow-xl"
@@ -125,7 +154,7 @@ export default function HomeScreen({ navigation }) {
           </View>
 
           <View className=" flex-1 flex-col justify-evenly items-center basis-2/4 w-screen">
-            <View className="flex-row justify-center">
+            {/* <View className="flex-row justify-center">
               <View className="mx-5">
                 <TouchableOpacity className=" p-2 rounded-md bg-slate-400">
                   <Text className="text-white text-l font-medium">
@@ -140,7 +169,37 @@ export default function HomeScreen({ navigation }) {
                   </Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
+
+            {user ? (
+              <>
+                <View className="w-9/12 p-2 px-6 rounded-lg flex-row justify-around items-center rounded-md bg-slate-400">
+                  <Image
+                    className="w-16 h-16 rounded-full "
+                    source={{
+                      uri: user.avatar || noUserObject.avatar,
+                    }}
+                  />
+                  <Text className="text-l text-white font-medium mt-2">
+                    Username: {user.username}
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <>
+                <View className="w-9/12 p-2 px-6 rounded-lg rounded-md bg-slate-400">
+                  <Text>No Logged In User</Text>
+                  <TouchableOpacity
+                    className="  mt-2 rounded-md bg-slate-600 h-8 w-30 px-2 flex-row justify-center items-center"
+                    onPress={handleNavLogin}
+                  >
+                    <Text className="text-m text-white font-medium text-center">
+                      Login or Sign-Up
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
 
             <SafeAreaView className="w-8/12 ">
               <TextInput
@@ -152,16 +211,20 @@ export default function HomeScreen({ navigation }) {
             </SafeAreaView>
             <View className=" p-2 px-6 rounded-lg rounded-md bg-slate-400">
               <>
-                {history.map((spot) => {
+                {history.map((spot, index) => {
                   console.log('in homescreen map of recent history', spot);
-                  return (
-                    <View className="m-2 flex-row justify-center">
-                      <FontAwesomeIcon icon={faCar} />
-                      <Text className="text-white text-l font-medium ml-2">
-                        Name: {spot.name}
-                      </Text>
-                    </View>
-                  );
+                  if (index < 3)
+                    return (
+                      <View className="m-1 flex-col justify-center items-center">
+                        <View className="flex-row justify-evenly">
+                          <FontAwesomeIcon icon={faCar} />
+                          <Text className="text-white text-l font-medium ml-2">
+                            Name: {spot.name}
+                          </Text>
+                        </View>
+                        <NavSpotButton spot={spot} />
+                      </View>
+                    );
                 })}
               </>
             </View>
