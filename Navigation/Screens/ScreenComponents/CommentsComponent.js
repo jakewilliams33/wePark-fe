@@ -66,6 +66,30 @@ export default function CommentsComponent(selectedSpotID) {
     setText("");
   };
 
+  const deleteComment = (comment_id) => {
+    return axios
+      .delete(`https://wepark-be.herokuapp.com/api/comments/${comment_id}`)
+      .then(({ data }) => {
+        getComments(selectedSpotID.selectedSpotID).then(({ comments }) => {
+          comments.sort((b, a) => {
+            return (
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+            );
+          });
+          setComments(comments);
+        });
+      });
+  };
+
+  const handleDeleteComment = (comment_id) => {
+    const filtered = commentsList.filter((comment) => {
+      return comment.comment_id !== comment_id;
+    });
+    setComments(filtered);
+    deleteComment(comment_id);
+  };
+
   return (
     <View
       style={{ marginHorizontal: 40, paddingTop: 20 }}
@@ -118,10 +142,31 @@ export default function CommentsComponent(selectedSpotID) {
                 {timeAgo.format(new Date(date))}
               </Text>
             </View>
-            <Text key={uuid.v4()} style={{ paddingBottom: 5, paddingTop: 5 }}>
-              {comment.body}
-            </Text>
-            <CommentVotes comment={comment} />
+            <View
+              key={uuid.v4()}
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text key={uuid.v4()} style={{ paddingBottom: 5, paddingTop: 5 }}>
+                {comment.body}
+              </Text>
+              {user && user.username === comment.author && (
+                <TouchableOpacity
+                  key={uuid.v4()}
+                  style={{ marginTop: 3 }}
+                  onPress={() => {
+                    handleDeleteComment(comment.comment_id);
+                  }}
+                >
+                  <Ionicons
+                    key={uuid.v4()}
+                    name="close-outline"
+                    size={20}
+                    color="lightgrey"
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+            <CommentVotes key={uuid.v4()} comment={comment} />
           </View>
         );
       })}
