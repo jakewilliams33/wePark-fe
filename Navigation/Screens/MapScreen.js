@@ -50,7 +50,7 @@ export default function MapScreen({ navigation, route }) {
   const [showConfirmButton, setShowConfirmButton] = useState(false);
   const [showAddButton, setShowAddButton] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState([]);
   const [showMarkerModal, setShowMarkerModal] = useState(false);
   const [selectedSpotInfo, setSelectedSpotInfo] = useState();
   const [selectedSpotID, setSelectedSpotID] = useState();
@@ -91,11 +91,18 @@ export default function MapScreen({ navigation, route }) {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
       quality: 1,
+      image,
+      allowsMultipleSelection: true,
     });
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (!result.cancelled && result.selected) {
+      setImage(
+        result.selected.map((image) => {
+          return image.uri;
+        })
+      );
+    } else {
+      setImage([result.uri]);
     }
   };
 
@@ -108,7 +115,7 @@ export default function MapScreen({ navigation, route }) {
     }
     const result = await ImagePicker.launchCameraAsync();
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImage([result.uri]);
     }
   };
 
@@ -127,9 +134,8 @@ export default function MapScreen({ navigation, route }) {
         if (pushToHistory) {
           setHistory((curr) => [...curr, spot]);
         }
-        console.log("this is the history", history);
       } else setHistory([spot]);
-      console.log("this is the history", history);
+
       setSelectedSpotInfo(spot);
       if (spot.images) {
         setSpotImages(spot.images.split(","));
@@ -216,13 +222,14 @@ export default function MapScreen({ navigation, route }) {
   };
 
   const handleSubmitPost = (values) => {
+    setImage([]);
     confirmMarkerPosition();
     setShowModal(false);
     let finalChoice = newMarker[0].coordinate;
     postSpot(finalChoice, values, user, image);
   };
 
-  const postSpot = (coordinate, values, user, uri) => {
+  const postSpot = (coordinate, values, user, uriArr) => {
     const parkingSpot = new FormData();
     parkingSpot.append("name", values.name);
     parkingSpot.append("description", values.description);
@@ -236,13 +243,15 @@ export default function MapScreen({ navigation, route }) {
 
     console.log("posting spot");
 
-    if (uri) {
-      let uriParts = uri.split(".");
-      let fileType = uriParts[uriParts.length - 1];
-      parkingSpot.append("images", {
-        uri,
-        name: `photo.${fileType}`,
-        type: `image/${fileType}`,
+    if (uriArr) {
+      uriArr.forEach((uri) => {
+        let uriParts = uri.split(".");
+        let fileType = uriParts[uriParts.length - 1];
+        parkingSpot.append("images", {
+          uri,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
+        });
       });
     }
     axios
@@ -437,12 +446,7 @@ export default function MapScreen({ navigation, route }) {
                   onPress={openCamera}
                 ></Button>
 
-                {image && (
-                  <Image
-                    source={{ uri: image }}
-                    style={{ width: 200, height: 200 }}
-                  />
-                )}
+                <SliderBox images={image} ImageLoader={"ActivityIndicator"} />
 
                 <Button title="submit" onPress={props.handleSubmit} />
               </View>
