@@ -13,8 +13,11 @@ import { faCar } from '@fortawesome/free-solid-svg-icons/faCar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { HistoryContext } from '../AppContext';
 import { UserContext } from '../AppContext';
-
+import axios from 'axios';
 import NavSpotButton from '../Buttons/NavSpotButton';
+import CarouselCards from './ScreenComponents/CarouselCards';
+
+const featuredSpots = [121, 2];
 
 const noUserObject = {
   username: 'No User',
@@ -26,18 +29,58 @@ const noUserObject = {
 
 export default function HomeScreen({ navigation }) {
   const [text, onChangeText] = useState('Where do you want to park?');
-
+  const [featuredSpot, setFeaturedSpot] = useState();
   // static contextType = UserContext
   const { history, setHistory } = useContext(HistoryContext);
   const { user } = useContext(UserContext);
   const [visits, incVisits] = useState(0);
   // const navigation = useNavigation();
+  const [carouselData, setCarouselData] = useState([]);
 
   useEffect(() => {
     const forceUpdate = navigation.addListener('focus', () => {
       incVisits(visits + 1);
     });
-  });
+  }, [carouselData]);
+
+  useEffect(() => {
+    const featuredIndex = Math.floor(Math.random() * featuredSpots.length);
+    console.log('featuredIndex', featuredIndex);
+    axios
+      .get(
+        `https://wepark-be.herokuapp.com/api/spots/${featuredSpots[featuredIndex]}`
+      )
+      .then(({ data }) => {
+        return data;
+      })
+      .then(({ spot }) => {
+        console.log('spot in homescreen', spot);
+        setFeaturedSpot(spot);
+      })
+      .then(() => {
+        console.log('.then.then.then', [featuredSpot.images]);
+        const newCarouselData = [featuredSpot.images].map((image) => {
+          return {
+            title: 'image',
+            body: 'unneeded',
+            imgUrl: image,
+          };
+        });
+        setCarouselData(newCarouselData);
+
+        console.log(
+          "here's the carousel of festured spot images",
+          carouselData
+        );
+      })
+      .catch(function (error) {
+        console.log(
+          'ERROR IN HomeScreen FeaturedPlace, Spot: err:',
+
+          error
+        );
+      });
+  }, []);
 
   const handleNavLogin = () => {
     navigation.navigate('User');
@@ -51,17 +94,21 @@ export default function HomeScreen({ navigation }) {
     <View
       visits={visits}
       className="flex-1 items-center justify-evenly bg-white w-screen"
+      style={{ elevation: 1 }}
     >
       {history.length === 0 && (
         <>
-          <View className=" basis-1/6 w-screen items-center justify-evenly">
+          <View className=" basis-1/6 bg-white w-screen items-center justify-evenly">
             <Text className="text-7xl text-slate-600 font-bold">We Park</Text>
             <Text className="text-xl text-slate-600 font-medium">
               But Mostly We Care
             </Text>
           </View>
 
-          <View className=" flex-1 flex-col justify-evenly items-center basis-2/4 w-screen">
+          <View
+            className=" flex-1 flex-col justify-evenly items-center basis-2/4 w-screen bg-white shadow-md"
+            // style={styles.shadow}
+          >
             {/* <View className="flex-row justify-center">
               <View className="mx-5">
                 <TouchableOpacity className=" p-2 rounded-md bg-slate-400">
@@ -80,7 +127,10 @@ export default function HomeScreen({ navigation }) {
             </View> */}
             {user ? (
               <>
-                <View className="w-9/12 p-2 px-6 rounded-lg flex-row justify-around items-center rounded-md bg-slate-400">
+                <View
+                  className="w-9/12 p-2 px-6 rounded-lg flex-row justify-around items-center rounded-md bg-slate-400 shadow-md"
+                  style={styles.shadow}
+                >
                   <Image
                     className="w-16 h-16 rounded-full "
                     source={{
@@ -94,12 +144,16 @@ export default function HomeScreen({ navigation }) {
               </>
             ) : (
               <>
-                <View className="w-9/12 p-2 px-6 rounded-lg rounded-md bg-slate-400">
+                <View
+                  className="w-9/12 p-2 px-6 rounded-lg rounded-md bg-slate-400 shadow-md"
+                  style={styles.shadow}
+                >
                   <Text className="text-m text-white font-medium text-center">
                     No Logged In User
                   </Text>
                   <TouchableOpacity
-                    className="mt-2 rounded-md bg-slate-600 h-8 w-30 px-2 flex-row justify-center items-center"
+                    className="mt-2 rounded-md bg-slate-600 h-8 w-30  flex-row justify-center items-center"
+                    style={styles.shadow}
                     onPress={handleNavLogin}
                   >
                     <Text className="text-m text-white font-medium text-center">
@@ -109,53 +163,52 @@ export default function HomeScreen({ navigation }) {
                 </View>
               </>
             )}
-            <SafeAreaView className="w-8/12 ">
+            <SafeAreaView
+              className="w-8/12 pb-2 bg-white rounded-3xl border-0"
+              style={styles.input}
+            >
               <TextInput
-                className="rounded-md shadow-xl"
-                style={styles.input}
+                className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
                 onChangeText={onChangeText}
                 value={text}
+                style={styles.inner_input}
               />
             </SafeAreaView>
-            <View className=" p-2 px-6 rounded-lg rounded-md bg-slate-400">
+            <View
+              className=" p-2 px-6 rounded-lg rounded-md w-9/12 justify-center items-center bg-slate-400 shadow-md"
+              style={styles.shadow}
+            >
               <Text className="text-l text-white font-medium mt-2">
                 No Recent History
               </Text>
             </View>
           </View>
-
-          <View className=" basis-1/4 flex-1 flex-col justify-evenly  p-2 mb-4 rounded-lg px-14 rounded-md bg-slate-400">
-            <View className="flex-row justify-center">
-              <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} />
-              <Text className="text-white text-l font-medium ml-2">
-                This is a Featured Place
-              </Text>
+          {featuredSpot && (
+            <View className=" basis-1/4 flex-1 flex-col justify-evenly  p-2 rounded-lg px-14 rounded-md bg-slate-400 px-2 w-screen">
+              <View className="justify-center items-center  mx-8 px-2">
+                {/* <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} /> */}
+                <Text className="text-white text-l font-medium ml-2">
+                  Featured Spot: {featuredSpot.name}
+                </Text>
+                <Text className="text-white text-l font-medium ml-2">
+                  {featuredSpot.description}
+                </Text>
+              </View>
+              <CarouselCards data={carouselData} />
             </View>
-            <View className="flex-row justify-center">
-              <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} />
-              <Text className="text-white text-l font-medium ml-2">
-                This is a Featured Place
-              </Text>
-            </View>
-            <View className="flex-row justify-center">
-              <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} />
-              <Text className="text-white text-l font-medium ml-2">
-                This is a Featured Place
-              </Text>
-            </View>
-          </View>
+          )}
         </>
       )}
       {history.length > 0 && (
         <>
-          <View className=" basis-1/6 w-screen items-center justify-evenly">
+          <View className=" basis-1/6 w-screen items-center justify-evenly bg-white">
             <Text className="text-7xl text-slate-600 font-bold">We Park</Text>
             <Text className="text-xl text-slate-600 font-medium">
               But Mostly We Care
             </Text>
           </View>
 
-          <View className=" flex-1 flex-col justify-evenly items-center basis-2/4 w-screen">
+          <View className=" flex-1 flex-col justify-evenly items-center basis-2/4 bg-white w-screen">
             {/* <View className="flex-row justify-center">
               <View className="mx-5">
                 <TouchableOpacity className=" p-2 rounded-md bg-slate-400">
@@ -175,7 +228,10 @@ export default function HomeScreen({ navigation }) {
 
             {user ? (
               <>
-                <View className="w-9/12 p-2 px-6 rounded-lg flex-row justify-around items-center rounded-md bg-slate-400">
+                <View
+                  className="w-9/12 p-2 px-6 rounded-lg flex-row justify-around items-center rounded-md bg-slate-400 shadow-md"
+                  style={styles.shadow}
+                >
                   <Image
                     className="w-16 h-16 rounded-full "
                     source={{
@@ -205,15 +261,18 @@ export default function HomeScreen({ navigation }) {
               </>
             )}
 
-            <SafeAreaView className="w-8/12 ">
+            <SafeAreaView
+              className="border-0 w-8/12 bg-white rounded-3xl"
+              style={styles.input}
+            >
               <TextInput
-                className="rounded-md shadow-xl"
-                style={styles.input}
+                className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
                 onChangeText={onChangeText}
                 value={text}
+                style={styles.inner_input}
               />
             </SafeAreaView>
-            <View className=" p-2 px-6 rounded-lg rounded-md bg-slate-400">
+            <View className=" p-2 px-6 rounded-lg w-9/12 justify-evenly rounded-md bg-slate-400">
               <>
                 {history.map((spot, index) => {
                   console.log('in homescreen map of recent history', spot);
@@ -234,26 +293,20 @@ export default function HomeScreen({ navigation }) {
             </View>
           </View>
 
-          <View className=" basis-1/4 flex-1 flex-col justify-evenly  p-2 mb-4 rounded-lg px-14 rounded-md bg-slate-400">
-            <View className="flex-row justify-center">
-              <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} />
-              <Text className="text-white text-l font-medium ml-2">
-                This is a Featured Place
-              </Text>
+          {featuredSpot && (
+            <View className=" basis-2/4 flex-1 flex-col justify-evenly  p-2  px-14  bg-slate-400 px-2 w-screen">
+              <View className="justify-center items-center  mx-8 px-2">
+                {/* <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} /> */}
+                <Text className="text-white text-l font-medium ml-2">
+                  Featured Spot: {featuredSpot.name}
+                </Text>
+                <Text className="text-white text-l font-medium ml-2">
+                  {featuredSpot.description}
+                </Text>
+              </View>
+              <CarouselCards data={carouselData} />
             </View>
-            <View className="flex-row justify-center">
-              <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} />
-              <Text className="text-white text-l font-medium ml-2">
-                This is a Featured Place
-              </Text>
-            </View>
-            <View className="flex-row justify-center">
-              <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} />
-              <Text className="text-white text-l font-medium ml-2">
-                This is a Featured Place
-              </Text>
-            </View>
-          </View>
+          )}
         </>
       )}
     </View>
@@ -264,8 +317,33 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     margin: 12,
-    borderWidth: 1,
+    borderRadius: 50,
     padding: 10,
-    elevation: 2,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0.5,
+      height: -4.5,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 8.65,
+    elevation: 4,
+    border: 0,
+  },
+
+  inner_input: {
+    height: 30,
+    borderRadius: 50,
+    border: 0,
+  },
+
+  shadow: {
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0.5,
+      height: 2.5,
+    },
+    shadowOpacity: 0.69,
+    shadowRadius: 4.65,
+    elevation: 6,
   },
 });

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   SafeAreaView,
+  StyleSheet,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { UserContext, SpotContext, HistoryContext } from '../../AppContext';
@@ -71,7 +72,8 @@ const SpotsItem = ({
   useEffect(() => {}, [user.favourites]);
   return (
     <View
-      className="bg-slate-400 border-slate-400 flex-col items-center justify-evenly border-2  pl-2 pb-2 mt-3 ml-5 mr-5 rounded-md"
+      className="bg-slate-400 border-slate-400 flex-col items-center justify-evenly border-2  pl-2 pb-2 mt-3 ml-5 mr-5 shadow-md rounded-md"
+      style={styles.shadow}
       key={spot.item.id}
     >
       <View className="flex-row">
@@ -179,7 +181,7 @@ export default SpotsComponent = ({
   };
 
   return (
-    <View className="flex-col border-slate-400 border-y-2 items-center h-3/5 mb-2">
+    <View className="flex-col border-slate-400 border-y-2 items-center h-3/5 mb-2 bg-white">
       {spotsObj ? (
         <SafeAreaView className="w-11/12  ">
           <FlatList
@@ -192,3 +194,25 @@ export default SpotsComponent = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    elevation: 2,
+    border: 0,
+  },
+
+  shadow: {
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0.5,
+      height: 2.5,
+    },
+    shadowOpacity: 0.69,
+    shadowRadius: 4.65,
+    elevation: 6,
+  },
+});
