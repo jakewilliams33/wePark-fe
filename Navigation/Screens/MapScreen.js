@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import * as Location from "expo-location";
+import React, { useState, useEffect, useContext } from 'react';
+import * as Location from 'expo-location';
 import {
   View,
   StyleSheet,
@@ -12,25 +12,25 @@ import {
   ScrollView,
   SafeAreaView,
   ActivityIndicator,
-} from "react-native";
-import CommentsComponent from "../Screens/ScreenComponents/CommentsComponent";
-import MapView, { Marker, Callout } from "react-native-maps";
-import { showMessage, hideMessage } from "react-native-flash-message";
-import FlashMessage from "react-native-flash-message";
-import { Formik } from "formik";
-import * as ImagePicker from "expo-image-picker";
-import SelectDropdown from "react-native-select-dropdown";
-import * as Yup from "yup";
-import { UserContext, SpotContext } from "../AppContext";
-import FavButton from "../Buttons/FavButton";
-import axios from "axios";
-import Toast from "react-native-root-toast";
-import { HistoryContext } from "../AppContext";
-import { getSpots, postSpot, getSingleSpot, deleteSpot } from "../../api";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import SpotVotesComponent from "./ScreenComponents/SpotVotesComponent";
-import { SliderBox } from "react-native-image-slider-box";
-import SearchPlacesComponent from "./ScreenComponents/SearchPlacesComponent";
+} from 'react-native';
+import CommentsComponent from '../Screens/ScreenComponents/CommentsComponent';
+import MapView, { Marker, Callout } from 'react-native-maps';
+import { showMessage, hideMessage } from 'react-native-flash-message';
+import FlashMessage from 'react-native-flash-message';
+import { Formik } from 'formik';
+import * as ImagePicker from 'expo-image-picker';
+import SelectDropdown from 'react-native-select-dropdown';
+import * as Yup from 'yup';
+import { UserContext, SpotContext } from '../AppContext';
+import FavButton from '../Buttons/FavButton';
+import axios from 'axios';
+import Toast from 'react-native-root-toast';
+import { HistoryContext } from '../AppContext';
+import { getSpots, postSpot, getSingleSpot, deleteSpot } from '../../api';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import SpotVotesComponent from './ScreenComponents/SpotVotesComponent';
+import { SliderBox } from 'react-native-image-slider-box';
+import SearchPlacesComponent from './ScreenComponents/SearchPlacesComponent';
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -62,14 +62,14 @@ export default function MapScreen({ navigation, route }) {
 
   const SpaceSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Name must be over 2 characters")
-      .max(50, "Name must be between 2 and 50 characters")
-      .required("Required"),
+      .min(3, 'Name must be over 2 characters')
+      .max(50, 'Name must be between 2 and 50 characters')
+      .required('Required'),
     description: Yup.string()
-      .min(11, "Description must be over 10 characters")
-      .max(500, "Too Long!")
-      .required("Required"),
-    parking_type: Yup.string().required("Required"),
+      .min(11, 'Description must be over 10 characters')
+      .max(500, 'Too Long!')
+      .required('Required'),
+    parking_type: Yup.string().required('Required'),
   });
 
   // get spots from db
@@ -123,12 +123,12 @@ export default function MapScreen({ navigation, route }) {
         if (pushToHistory) {
           setHistory((curr) => [...curr, spot]);
         }
-        console.log("this is the history", history);
+        console.log('this is the history', history);
       } else setHistory([spot]);
-      console.log("this is the history", history);
+      console.log('this is the history', history);
       setSelectedSpotInfo(spot);
       if (spot.images) {
-        setSpotImages(spot.images.split(","));
+        setSpotImages(spot.images.split(','));
       }
     });
   };
@@ -137,15 +137,15 @@ export default function MapScreen({ navigation, route }) {
   const clickHandler = () => {
     if (user) {
       showMessage({
-        message: "Tap on the map to add a parking space",
-        type: "info",
-        backgroundColor: "#2D8CFF",
-        color: "white",
+        message: 'Tap on the map to add a parking space',
+        type: 'info',
+        backgroundColor: '#2D8CFF',
+        color: 'white',
       });
       setMarkerAllowed(true);
       setShowAddButton(false);
     } else
-      Toast.show("Please sign up or log in to add a parking spot", {
+      Toast.show('Please sign up or log in to add a parking spot', {
         duration: Toast.durations.SHORT,
         position: Toast.positions.CENTER,
       });
@@ -155,8 +155,8 @@ export default function MapScreen({ navigation, route }) {
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setStatus("Permission to access location was denied");
+      if (status !== 'granted') {
+        setStatus('Permission to access location was denied');
         return;
       } else {
         setStatus(status);
@@ -214,32 +214,32 @@ export default function MapScreen({ navigation, route }) {
 
   const postSpot = (coordinate, values, user, uri) => {
     const parkingSpot = new FormData();
-    parkingSpot.append("name", values.name);
-    parkingSpot.append("description", values.description);
-    parkingSpot.append("longitude", coordinate.longitude);
-    parkingSpot.append("latitude", coordinate.latitude);
-    parkingSpot.append("opening_time", values.opening_time);
-    parkingSpot.append("closing_time", values.closing_time);
-    parkingSpot.append("time_limit", values.time_limit);
-    parkingSpot.append("parking_type", values.parking_type);
-    parkingSpot.append("creator", user.username);
+    parkingSpot.append('name', values.name);
+    parkingSpot.append('description', values.description);
+    parkingSpot.append('longitude', coordinate.longitude);
+    parkingSpot.append('latitude', coordinate.latitude);
+    parkingSpot.append('opening_time', values.opening_time);
+    parkingSpot.append('closing_time', values.closing_time);
+    parkingSpot.append('time_limit', values.time_limit);
+    parkingSpot.append('parking_type', values.parking_type);
+    parkingSpot.append('creator', user.username);
 
-    console.log("posting spot");
+    console.log('posting spot');
 
     if (uri) {
-      let uriParts = uri.split(".");
+      let uriParts = uri.split('.');
       let fileType = uriParts[uriParts.length - 1];
-      parkingSpot.append("images", {
+      parkingSpot.append('images', {
         uri,
         name: `photo.${fileType}`,
         type: `image/${fileType}`,
       });
     }
     axios
-      .post("https://wepark-be.herokuapp.com/api/spots", parkingSpot, {
+      .post('https://wepark-be.herokuapp.com/api/spots', parkingSpot, {
         headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then((response) => {
@@ -249,21 +249,21 @@ export default function MapScreen({ navigation, route }) {
           setOptimisticmarkers([]);
         });
 
-        console.log("the post request was a success");
+        console.log('the post request was a success');
 
         return JSON.stringify(response.data);
       })
       .then((spots) => {
-        console.log("spots post request in api.js", spots);
+        console.log('spots post request in api.js', spots);
       })
       .catch(function (error) {
-        console.log("error in MapScreen post spots request, line ~310", error);
+        console.log('error in MapScreen post spots request, line ~310', error);
       });
   };
 
   useEffect(() => {
     if (contextSpot) {
-      console.log("heres the context spot in mapscreen: ", contextSpot);
+      console.log('heres the context spot in mapscreen: ', contextSpot);
       setShowMarkerModal(true);
       setSelectedSpotInfo(contextSpot);
       setSelectedSpotID(contextSpot.spot_id);
@@ -279,6 +279,7 @@ export default function MapScreen({ navigation, route }) {
         <SearchPlacesComponent
           userLocation={userLocation}
           setSearchLocation={setSearchLocation}
+          style={styles.shadow}
         />
 
         <Modal
@@ -291,11 +292,11 @@ export default function MapScreen({ navigation, route }) {
         >
           <Formik
             initialValues={{
-              name: "",
-              description: "",
-              parking_type: "",
-              opening_time: "No specified times",
-              closing_time: "No specified times",
+              name: '',
+              description: '',
+              parking_type: '',
+              opening_time: 'No specified times',
+              closing_time: 'No specified times',
               time_limit: null,
             }}
             validationSchema={SpaceSchema}
@@ -307,24 +308,24 @@ export default function MapScreen({ navigation, route }) {
               <View>
                 <TextInput
                   style={{
-                    backgroundColor: "#f4f8ff",
+                    backgroundColor: '#f4f8ff',
                     marginTop: 50,
                     margin: 20,
                     padding: 10,
-                    borderColor: "grey",
+                    borderColor: 'grey',
                     borderWidth: 0.1,
                     borderRadius: 50,
                   }}
                   placeholder="Name"
-                  onChangeText={props.handleChange("name")}
+                  onChangeText={props.handleChange('name')}
                   value={props.values.name}
                 />
                 {props.errors.name && (
                   <Text
                     style={{
                       fontSize: 10,
-                      color: "red",
-                      alignItems: "center",
+                      color: 'red',
+                      alignItems: 'center',
                     }}
                   >
                     {props.errors.name}
@@ -333,65 +334,65 @@ export default function MapScreen({ navigation, route }) {
                 <TextInput
                   multiline
                   style={{
-                    backgroundColor: "#f4f8ff",
+                    backgroundColor: '#f4f8ff',
                     marginTop: 20,
                     margin: 20,
                     padding: 10,
-                    borderColor: "grey",
+                    borderColor: 'grey',
                     borderWidth: 0.1,
                     borderRadius: 50,
                   }}
                   placeholder="Description"
-                  onChangeText={props.handleChange("description")}
+                  onChangeText={props.handleChange('description')}
                   value={props.values.description}
                 />
                 {props.errors.description && (
-                  <Text style={{ fontSize: 10, color: "red" }}>
+                  <Text style={{ fontSize: 10, color: 'red' }}>
                     {props.errors.description}
                   </Text>
                 )}
-                <View style={{ alignItems: "center" }}>
+                <View style={{ alignItems: 'center' }}>
                   <SelectDropdown
-                    data={["street", "car park"]}
-                    onSelect={props.handleChange("parking_type")}
-                    defaultButtonText={"Select parking type"}
+                    data={['street', 'car park']}
+                    onSelect={props.handleChange('parking_type')}
+                    defaultButtonText={'Select parking type'}
                     buttonStyle={styles.dropdown1BtnStyle}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                   />
 
                   {props.errors.parking_type && (
-                    <Text style={{ fontSize: 10, color: "red" }}>
+                    <Text style={{ fontSize: 10, color: 'red' }}>
                       {props.errors.parking_type}
                     </Text>
                   )}
 
                   <SelectDropdown
                     data={times}
-                    onSelect={props.handleChange("opening_time")}
-                    defaultButtonText={"Opening time"}
+                    onSelect={props.handleChange('opening_time')}
+                    defaultButtonText={'Opening time'}
                     buttonStyle={styles.dropdown1BtnStyle}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                   />
                   <SelectDropdown
                     data={times}
-                    onSelect={props.handleChange("closing_time")}
-                    defaultButtonText={"Closing time"}
+                    onSelect={props.handleChange('closing_time')}
+                    defaultButtonText={'Closing time'}
                     buttonStyle={styles.dropdown1BtnStyle}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                   />
                   <SelectDropdown
                     data={limit}
-                    onSelect={props.handleChange("time_limit")}
-                    defaultButtonText={"Time limit (hours)"}
+                    onSelect={props.handleChange('time_limit')}
+                    defaultButtonText={'Time limit (hours)'}
                     buttonStyle={{
-                      width: "80%",
+                      width: '80%',
                       height: 50,
-                      backgroundColor: "#f4f8ff",
+                      backgroundColor: '#f4f8ff',
                       borderRadius: 10,
                       borderWidth: 1,
-                      borderColor: "#f4f8ff",
+                      borderColor: '#f4f8ff',
                       marginTop: 10,
-                      justifyContent: "center",
+                      justifyContent: 'center',
                       marginBottom: 40,
                     }}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
@@ -433,7 +434,7 @@ export default function MapScreen({ navigation, route }) {
           }}
         >
           <SafeAreaView>
-            <ScrollView keyboardShouldPersistTaps={"handled"}>
+            <ScrollView keyboardShouldPersistTaps={'handled'}>
               <View style={{ marginHorizontal: 10 }}>
                 {selectedSpotInfo && (
                   <>
@@ -447,13 +448,13 @@ export default function MapScreen({ navigation, route }) {
                       <View style={{ flex: 1 }}>
                         <Text
                           className="text-xs font-bold"
-                          style={{ textAlign: "right" }}
+                          style={{ textAlign: 'right' }}
                         >
                           {selectedSpotInfo.creator}
                         </Text>
                         <Text
                           className="text-xs font-bold"
-                          style={{ textAlign: "right" }}
+                          style={{ textAlign: 'right' }}
                         >
                           {new Date(selectedSpotInfo.created_at).toUTCString()}
                         </Text>
@@ -477,27 +478,27 @@ export default function MapScreen({ navigation, route }) {
                     <Text>
                       Time Limit:
                       {selectedSpotInfo.time_limit === null
-                        ? " No Limit"
+                        ? ' No Limit'
                         : selectedSpotInfo.time_limit}
                     </Text>
                     {selectedSpotInfo.images &&
-                      selectedSpotInfo.images.split(",").map((image) => {})}
+                      selectedSpotInfo.images.split(',').map((image) => {})}
 
                     <View
                       className="my-5"
                       style={{
                         flex: 1,
-                        flexDirection: "row",
-                        flexWrap: "wrap",
-                        alignItems: "center",
-                        width: "100%",
-                        alignContent: "space-around",
-                        justifyContent: "space-around",
+                        flexDirection: 'row',
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                        width: '100%',
+                        alignContent: 'space-around',
+                        justifyContent: 'space-around',
                       }}
                     >
                       <SliderBox
                         images={spotImages}
-                        ImageLoader={"ActivityIndicator"}
+                        ImageLoader={'ActivityIndicator'}
                       />
                     </View>
                   </>
@@ -508,8 +509,8 @@ export default function MapScreen({ navigation, route }) {
                 ></SpotVotesComponent>
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-evenly",
+                    flexDirection: 'row',
+                    justifyContent: 'space-evenly',
                   }}
                 >
                   {user &&
@@ -521,7 +522,7 @@ export default function MapScreen({ navigation, route }) {
                           handleDelete();
                         }}
                       >
-                        <Ionicons size={20} name="trash-bin" color={"white"} />
+                        <Ionicons size={20} name="trash-bin" color={'white'} />
                         <Text className="text-m text-white font-medium text-center">
                           Delete
                         </Text>
@@ -534,7 +535,7 @@ export default function MapScreen({ navigation, route }) {
                       setShowMarkerModal(false);
                     }}
                   >
-                    <Ionicons size={20} name="arrow-back" color={"white"} />
+                    <Ionicons size={20} name="arrow-back" color={'white'} />
                     <Text className="text-m text-white font-medium text-center">
                       Back
                     </Text>
@@ -551,7 +552,7 @@ export default function MapScreen({ navigation, route }) {
         <View style={{ flex: 1 }}>
           <MapView
             provider={MapView.PROVIDER_GOOGLE}
-            style={{ flex: 1, marginTop: "-78%", zIndex: -20 }}
+            style={{ flex: 1, marginTop: '-78%', zIndex: -20 }}
             initialRegion={mapRegion}
             showsUserLocation={true}
             region={searchLocation ? searchLocation : mapRegion}
@@ -559,10 +560,10 @@ export default function MapScreen({ navigation, route }) {
             onPress={(event) => {
               if (markerAllowed) {
                 showMessage({
-                  message: "Hold down on the marker to drag",
-                  type: "info",
-                  backgroundColor: "#2D8CFF",
-                  color: "white",
+                  message: 'Hold down on the marker to drag',
+                  type: 'info',
+                  backgroundColor: '#2D8CFF',
+                  color: 'white',
                 });
 
                 let newPlace = event.nativeEvent.coordinate;
@@ -574,7 +575,7 @@ export default function MapScreen({ navigation, route }) {
                       latitude: newPlace.latitude,
                       longitude: newPlace.longitude,
                     },
-                    key: "temp",
+                    key: 'temp',
                   },
                 ]);
               }
@@ -593,7 +594,7 @@ export default function MapScreen({ navigation, route }) {
                           latitude: e.nativeEvent.coordinate.latitude,
                           longitude: e.nativeEvent.coordinate.longitude,
                         },
-                        key: "temp",
+                        key: 'temp',
                       },
                     ]);
                   }}
@@ -622,9 +623,9 @@ export default function MapScreen({ navigation, route }) {
                 return (
                   <Marker {...spotDetails}>
                     <Image
-                      source={require("../../assets/markerIcon.png")}
+                      source={require('../../assets/markerIcon.png')}
                       style={{ height: 38 }}
-                      resizeMode={"contain"}
+                      resizeMode={'contain'}
                     />
                     <Callout
                       onPress={() => {
@@ -632,8 +633,8 @@ export default function MapScreen({ navigation, route }) {
                         setSelectedSpotID(marker.spot_id);
                       }}
                     >
-                      <Text style={{ fontWeight: "bold" }}>{marker.name}</Text>
-                      <Text style={{ color: "lightgrey" }}>
+                      <Text style={{ fontWeight: 'bold' }}>{marker.name}</Text>
+                      <Text style={{ color: 'lightgrey' }}>
                         {marker.parking_type}
                       </Text>
                       <Text>{marker.description}</Text>
@@ -648,16 +649,16 @@ export default function MapScreen({ navigation, route }) {
           <View
             style={{
               flex: 1,
-              flexDirection: "row",
-              position: "absolute",
+              flexDirection: 'row',
+              position: 'absolute',
               bottom: 50,
-              alignSelf: "center",
-              justifyContent: "space-between",
+              alignSelf: 'center',
+              justifyContent: 'space-between',
             }}
           >
             <TouchableOpacity
               style={{
-                backgroundColor: "white",
+                backgroundColor: 'white',
                 padding: 20,
                 borderRadius: 10,
                 marginRight: 2,
@@ -674,7 +675,7 @@ export default function MapScreen({ navigation, route }) {
 
             <TouchableOpacity
               style={{
-                backgroundColor: "white",
+                backgroundColor: 'white',
                 padding: 20,
                 paddingRight: 27,
                 paddingLeft: 26.5,
@@ -698,10 +699,10 @@ export default function MapScreen({ navigation, route }) {
             <TouchableOpacity
               style={{
                 flex: 1,
-                flexDirection: "row",
-                position: "absolute",
+                flexDirection: 'row',
+                position: 'absolute',
                 bottom: 10,
-                alignSelf: "center",
+                alignSelf: 'center',
               }}
               //add button
               activeOpacity={0.7}
@@ -710,14 +711,14 @@ export default function MapScreen({ navigation, route }) {
               }}
             >
               <Image
-                style={{ resizeMode: "contain", width: 65, height: 65 }}
-                source={require("../../assets/addButton.png")}
+                style={{ resizeMode: 'contain', width: 65, height: 65 }}
+                source={require('../../assets/addButton.png')}
               />
             </TouchableOpacity>
           )
         }
         <FlashMessage
-          position={"center"}
+          position={'center'}
           style={{ marginBottom: 600 }}
           autoHide={false}
         />
@@ -727,13 +728,13 @@ export default function MapScreen({ navigation, route }) {
     return (
       <View
         style={{
-          marginTop: "40%",
-          justifyContent: "center",
-          textAlign: "center",
+          marginTop: '40%',
+          justifyContent: 'center',
+          textAlign: 'center',
         }}
       >
         <ActivityIndicator size="large" color="#2D8CFF" />
-        <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+        <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>
           Getting user location data!
         </Text>
       </View>
@@ -742,114 +743,114 @@ export default function MapScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: "#f4f8ff",
+    backgroundColor: '#f4f8ff',
     marginTop: 20,
     margin: 20,
     padding: 10,
-    borderColor: "grey",
+    borderColor: 'grey',
     borderWidth: 0.1,
     borderRadius: 50,
   },
 
   dropdown1BtnStyle: {
-    width: "80%",
+    width: '80%',
     height: 50,
-    backgroundColor: "#f4f8ff",
+    backgroundColor: '#f4f8ff',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#f4f8ff",
+    borderColor: '#f4f8ff',
     marginTop: 10,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
-  dropdown1BtnTxtStyle: { color: "#444", textAlign: "left" },
+  dropdown1BtnTxtStyle: { color: '#444', textAlign: 'left' },
   dropdown1DropdownStyle: {
-    backgroundColor: "#EFEFEF",
-    justifyContent: "center",
+    backgroundColor: '#EFEFEF',
+    justifyContent: 'center',
   },
   dropdown1RowStyle: {
-    backgroundColor: "#EFEFEF",
-    borderBottomColor: "#C5C5C5",
+    backgroundColor: '#EFEFEF',
+    borderBottomColor: '#C5C5C5',
   },
   modalStyle: {
-    margin: "10%",
+    margin: '10%',
   },
 });
 
 const times = [
-  "No specified times",
-  "00:00",
-  "00:30",
-  "01:00",
-  "01:30",
-  "02:00",
-  "02:30",
-  "03:00",
-  "03:30",
-  "04:00",
-  "04:30",
-  "05:00",
-  "05:30",
-  "06:00",
-  "06:30",
-  "07:00",
-  "07:30",
-  "08:00",
-  "08:30",
-  "09:00",
-  "09:30",
-  "10:00",
-  "10:30",
-  "11:00",
-  "11:30",
-  "12:00",
-  "13:00",
-  "13:30",
-  "14:00",
-  "14:30",
-  "15:00",
-  "15:30",
-  "16:00",
-  "16:30",
-  "17:00",
-  "17:30",
-  "18:00",
-  "18:30",
-  "19:00",
-  "19:30",
-  "20:00",
-  "20:30",
-  "21:00",
-  "21:30",
-  "22:00",
-  "22:30",
-  "23:00",
-  "23:30",
+  'No specified times',
+  '00:00',
+  '00:30',
+  '01:00',
+  '01:30',
+  '02:00',
+  '02:30',
+  '03:00',
+  '03:30',
+  '04:00',
+  '04:30',
+  '05:00',
+  '05:30',
+  '06:00',
+  '06:30',
+  '07:00',
+  '07:30',
+  '08:00',
+  '08:30',
+  '09:00',
+  '09:30',
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '12:00',
+  '13:00',
+  '13:30',
+  '14:00',
+  '14:30',
+  '15:00',
+  '15:30',
+  '16:00',
+  '16:30',
+  '17:00',
+  '17:30',
+  '18:00',
+  '18:30',
+  '19:00',
+  '19:30',
+  '20:00',
+  '20:30',
+  '21:00',
+  '21:30',
+  '22:00',
+  '22:30',
+  '23:00',
+  '23:30',
 ];
 
 const limit = [
-  "no limit",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "11",
-  "12",
-  "13",
-  "14",
-  "15",
-  "16",
-  "17",
-  "18",
-  "19",
-  "20",
-  "21",
-  "22",
-  "23",
-  "24",
+  'no limit',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '13',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23',
+  '24',
 ];

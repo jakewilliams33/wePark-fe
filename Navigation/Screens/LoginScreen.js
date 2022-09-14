@@ -19,13 +19,13 @@ const styles = StyleSheet.create({
 export default LoginScreen = () => {
   const { user, setUser } = useContext(UserContext);
   const [screenToDisplay, setScreenToDisplay] = useState('Main');
-  const [text1, onChangeText1] = useState('');
-  const [text2, onChangeText2] = useState('');
-  const [text3, onChangeText3] = useState('');
-  const [text4, onChangeText4] = useState('');
-  const [text5, onChangeText5] = useState('');
-  const [text6, onChangeText6] = useState('');
-  const [text7, onChangeText7] = useState('');
+  const [text1, onChangeText1] = useState('Username');
+  const [text2, onChangeText2] = useState('Email Address');
+  const [text3, onChangeText3] = useState('A Few Words About Yourself');
+  const [text4, onChangeText4] = useState('Your Picture');
+  const [text5, onChangeText5] = useState('Password');
+  const [text6, onChangeText6] = useState('Username');
+  const [text7, onChangeText7] = useState('Password');
   const [loginAttempted, toggleLoginAttempted] = useState(false);
   const [signUpAttempted, toggleSignUpAttempted] = useState(false);
 

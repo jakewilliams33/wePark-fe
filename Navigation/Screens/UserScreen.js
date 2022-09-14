@@ -253,10 +253,11 @@ export default function UserScreen({ navigation }) {
               handleDelete={handleDelete}
             />
 
-            <View className="w-screen items-center justify-center ">
+            <View className="w-screen items-center bg-white justify-center ">
               <TouchableOpacity
                 title={'Spots'}
-                className=" rounded-md bg-slate-600 h-12 w-24 justify-center items-center"
+                className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-20 justify-center items-center"
+                style={styles.shadow}
                 activeOpacity={0.7}
                 onPress={handleBack}
               >
@@ -281,8 +282,11 @@ export default function UserScreen({ navigation }) {
   const WhichScreen = ({ isFavScreen, isInfoScreen, user }) => {
     if (user) {
       return (
-        <View className="flex-column items-center justify-evenly h-screen mt-8">
-          <View className=" flex-row items-center justify-evenly w-screen mb-4 rounded-lg bg-slate-400 py-3 w-10/12">
+        <View className="flex-column items-center justify-evenly h-screen mt-8 bg-white">
+          <View
+            className=" flex-row items-center justify-evenly w-screen mb-4 rounded-lg bg-slate-400 py-3 w-10/12 shadow-md"
+            style={styles.shadow}
+          >
             <Image
               className="w-32 h-32 rounded-full "
               source={{
@@ -324,3 +328,24 @@ export default function UserScreen({ navigation }) {
     />
   );
 }
+const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    elevation: 2,
+    border: 0,
+  },
+
+  shadow: {
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0.5,
+      height: 2.5,
+    },
+    shadowOpacity: 0.69,
+    shadowRadius: 4.65,
+    elevation: 6,
+  },
+});
