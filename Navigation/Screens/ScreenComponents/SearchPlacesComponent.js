@@ -1,6 +1,6 @@
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import React from "react";
-import { View } from "react-native";
+import { GOOGLE_MAPS_APIKEY } from "@env";
 
 export default function SearchPlacesComponent({
   userLocation,
@@ -22,7 +22,7 @@ export default function SearchPlacesComponent({
         });
       }}
       query={{
-        key: "AIzaSyArHZ22m69eAGxGpOj6_Irve2SbvNlgqQg",
+        key: GOOGLE_MAPS_APIKEY,
         language: "en",
         components: "country:uk",
         location: `${userLocation.coords.latitude}, ${userLocation.coords.longitude}`,
