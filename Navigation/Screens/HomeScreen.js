@@ -118,7 +118,9 @@ export default function HomeScreen({ navigation }) {
               />
             </SafeAreaView>
             <View className=" p-2 px-6 rounded-lg rounded-md bg-slate-400">
-              <Text>No Recent History</Text>
+              <Text className="text-l text-white font-medium mt-2">
+                No Recent History
+              </Text>
             </View>
           </View>
 
@@ -188,7 +190,9 @@ export default function HomeScreen({ navigation }) {
             ) : (
               <>
                 <View className="w-9/12 p-2 px-6 rounded-lg rounded-md bg-slate-400">
-                  <Text>No Logged In User</Text>
+                  <Text className="text-l text-white font-medium mt-2">
+                    No Logged In User
+                  </Text>
                   <TouchableOpacity
                     className="  mt-2 rounded-md bg-slate-600 h-8 w-30 px-2 flex-row justify-center items-center"
                     onPress={handleNavLogin}
