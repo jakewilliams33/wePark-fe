@@ -21,7 +21,6 @@ export default function CommentsComponent(selectedSpotID) {
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
         );
       });
-      console.log(comments);
       setComments(comments);
     });
   }, []);
@@ -30,8 +29,6 @@ export default function CommentsComponent(selectedSpotID) {
   const timeAgo = new TimeAgo("en-US");
 
   const postComment = (spot_id, posting) => {
-    console.log(posting);
-
     return axios
       .post(
         `https://wepark-be.herokuapp.com/api/spots/${spot_id}/comments`,
@@ -124,7 +121,7 @@ export default function CommentsComponent(selectedSpotID) {
             <Text key={uuid.v4()} style={{ paddingBottom: 5, paddingTop: 5 }}>
               {comment.body}
             </Text>
-           <CommentVotes comment={comment}/>
+            <CommentVotes comment={comment} />
           </View>
         );
       })}
