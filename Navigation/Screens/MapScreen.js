@@ -29,6 +29,7 @@ import { getSpots, postSpot, getSingleSpot, deleteSpot } from "../../api";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SpotVotesComponent from "./ScreenComponents/SpotVotesComponent";
 import { SliderBox } from "react-native-image-slider-box";
+import BusyButton from "../Buttons/BusyButton";
 
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
@@ -539,6 +540,7 @@ export default function MapScreen({ navigation, route }) {
                       Back
                     </Text>
                   </TouchableOpacity>
+                  {selectedSpotInfo && <BusyButton selectedSpotInfo={selectedSpotInfo} setSelectedSpotInfo={setSelectedSpotInfo}/>}
                 </View>
 
                 <CommentsComponent
