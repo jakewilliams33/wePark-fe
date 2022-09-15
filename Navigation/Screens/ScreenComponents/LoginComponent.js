@@ -51,6 +51,8 @@ export default LoginComponent = ({
             style={styles.inner_input}
             onChangeText={onChangeText7}
             onFocus={onChangeText7}
+            placeholder="Password"
+            secureTextEntry={true}
             value={text7}
           />
         </SafeAreaView>

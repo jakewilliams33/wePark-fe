@@ -102,7 +102,7 @@ const SpotsItem = ({
             </Text>
           </View>
           <TouchableOpacity
-            className="  mt-2 rounded-md bg-white h-10 w-10/12 px-2 flex-row justify-center items-center"
+            className="  mt-2 rounded-md bg-[#2D8CFF] h-10 w-10/12 px-2 flex-row justify-center items-center"
             style={styles.shadow}
             onPress={(event) => {
               event.spot_id = spot.item.spot_id;
@@ -112,7 +112,7 @@ const SpotsItem = ({
             }}
           >
             <Ionicons name="md-globe" size={20} color="white" />
-            <Text className="text-m text-[#2D8CFF] font-medium text-center">
+            <Text className="text-m text-white font-medium text-center">
               {'   '}
               See More
             </Text>

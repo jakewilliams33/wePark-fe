@@ -351,7 +351,7 @@ export default function UserScreen({ navigation }) {
             <Image
               className="w-32 h-32 rounded-full "
               source={{
-                uri: user.avatar || noUserObject.avatar,
+                uri: user.avatar_url || noUserObject.avatar,
               }}
             />
             <View>

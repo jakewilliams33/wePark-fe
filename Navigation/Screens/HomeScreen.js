@@ -290,7 +290,7 @@ export default function HomeScreen({ navigation }) {
                         className="m-1 flex-col justify-center items-center"
                       >
                         <View className="flex-row justify-evenly">
-                          <FontAwesomeIcon icon={faCar} />
+                          <FontAwesomeIcon icon={faCar} color="white" />
                           <Text className="text-[#2D8CFF] text-l font-medium ml-2">
                             Name: {spot.name}
                           </Text>
@@ -304,13 +304,13 @@ export default function HomeScreen({ navigation }) {
           </View>
 
           {featuredSpot && (
-            <View className=" basis-2/4 flex-1 flex-col justify-center items-center p-2  px-14  bg-white px-2 w-screen">
+            <View className=" basis-3/5 flex-1 flex-col justify-end items-center p-2  px-14  bg-[#2D8CFF] px-2 w-screen">
               <View className="justify-center items-center  mx-8 px-2">
-                {/* <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} /> */}
-                <Text className="text-[#2D8CFF] text-l font-medium ml-2">
+                <Ionicons name={'golf-outline'} size={20} color={'white'} />
+                <Text className="text-white text-l font-medium ml-2">
                   Featured Spot: {featuredSpot.name}
                 </Text>
-                <Text className="text-[#2D8CFF] text-l font-medium ml-2">
+                <Text className="text-white text-l font-medium ml-2">
                   {featuredSpot.description}
                 </Text>
               </View>
