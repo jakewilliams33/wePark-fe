@@ -1,11 +1,24 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  TouchableOpacity,
+  Modal,
+  Button,
+  TextInput,
+  SafeAreaView,
+} from 'react-native';
 import SpotsComponent from './ScreenComponents/SpotsComponent';
 import BottomComponent from './ScreenComponents/BottomComponent';
 import LoginScreen from './LoginScreen';
-
+import { Formik } from 'formik';
 import axios from 'axios';
 import { UserContext } from '../AppContext';
+import * as Yup from 'yup';
+import * as ImagePicker from 'expo-image-picker';
+import SelectDropdown from 'react-native-select-dropdown';
 
 const noUserObject = {
   username: 'No User',
@@ -27,6 +40,43 @@ export default function UserScreen({ navigation }) {
   const [unFav, toggleUnFav] = useState(false);
   const [IDtoDelete, setIDtoDelete] = useState();
   const [shouldDelete, toggleShouldDelete] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [image, setImage] = useState(null);
+
+  const SpaceSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(3, 'Name must be over 2 characters')
+      .max(50, 'Name must be between 2 and 50 characters')
+      .required('Required'),
+    description: Yup.string()
+      .min(11, 'Description must be over 10 characters')
+      .max(500, 'Too Long!')
+      .required('Required'),
+    parking_type: Yup.string().required('Required'),
+  });
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
+  const openCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync();
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
 
   const handleClick = (bool) => {
     setIsFavScreen(bool);
@@ -303,8 +353,148 @@ export default function UserScreen({ navigation }) {
               <Text className="text-l text-white font-medium mt-2">
                 Kudos: {user.kudos}
               </Text>
+              <TouchableOpacity
+                title={'patchUser'}
+                className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-30 mt-1 justify-center items-center"
+                style={styles.shadow}
+                activeOpacity={0.7}
+                onPress={setShowModal(true)}
+              >
+                <Text className="text-md text-white font-medium ">
+                  Change Details
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
+
+          <Modal
+            animationType="slide"
+            className="flex-col bg-white justify-center items-center"
+            visible={showModal}
+            onRequestClose={() => {
+              setShowModal(false);
+              setNewMarker([]);
+            }}
+          >
+            <Formik
+              initialValues={{
+                name: '',
+                description: '',
+                parking_type: '',
+                opening_time: 'No specified times',
+                closing_time: 'No specified times',
+                time_limit: null,
+              }}
+              validationSchema={SpaceSchema}
+              className="flex-col bg-white justify-center items-center"
+              onSubmit={(values) => {
+                handleSubmitPost(values);
+              }}
+            >
+              {(props) => (
+                <View className="flex-col bg-white justify-center items-center">
+                  <SafeAreaView
+                    className="border-0 w-8/12 bg-white rounded-3xl"
+                    style={styles.input}
+                  >
+                    <TextInput
+                      className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
+                      style={styles.inner_input}
+                      placeholder="Name"
+                      onChangeText={props.handleChange('name')}
+                      value={props.values.name}
+                    />
+                  </SafeAreaView>
+                  {props.errors.name && (
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        color: 'red',
+                        alignItems: 'center',
+                      }}
+                    >
+                      {props.errors.name}
+                    </Text>
+                  )}
+                  <SafeAreaView
+                    className="border-0 w-8/12 bg-white rounded-3xl"
+                    style={styles.input}
+                  >
+                    <TextInput
+                      className=" border-0 rounded-3xl font-medium text-l text-slate-600 text-center shadow-xl"
+                      style={styles.inner_input}
+                      placeholder="Description"
+                      onChangeText={props.handleChange('description')}
+                      value={props.values.description}
+                    />
+                  </SafeAreaView>
+                  {props.errors.description && (
+                    <Text style={{ fontSize: 10, color: 'red' }}>
+                      {props.errors.description}
+                    </Text>
+                  )}
+                  <View style={{ alignItems: 'center' }}>
+                    <SelectDropdown
+                      data={['street', 'car park']}
+                      onSelect={props.handleChange('parking_type')}
+                      defaultButtonText={'Select parking type'}
+                      buttonStyle={styles.dropdown1BtnStyle}
+                      buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                    />
+
+                    {props.errors.parking_type && (
+                      <Text style={{ fontSize: 10, color: 'red' }}>
+                        {props.errors.parking_type}
+                      </Text>
+                    )}
+                  </View>
+                  <View className="flex-1 items-center flex-col justify-center mt-10 items-center bg-white w-screen ">
+                    <View className="flex-1 items-center flex-row justify-center bg-white w-screen ">
+                      <TouchableOpacity
+                        className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-2/5 mx-1 justify-center items-center"
+                        style={styles.shadow}
+                        title="Pick an image from camera roll"
+                        onPress={pickImage}
+                      >
+                        <Text className="text-white text-l font-medium">
+                          Image From Gallery
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-2/5 mx-1 justify-center items-center"
+                        style={styles.shadow}
+                        title="Take a photo with camera"
+                        onPress={openCamera}
+                      >
+                        <Text className="text-white text-l font-medium">
+                          Take Photo
+                        </Text>
+                      </TouchableOpacity>
+
+                      {image && (
+                        <Image
+                          source={{ uri: image }}
+                          style={{ width: 200, height: 200 }}
+                        />
+                      )}
+                    </View>
+
+                    <TouchableOpacity
+                      className=" p-2 rounded-md shadow-md bg-slate-600 mt-6 h-14 w-4/5 justify-center items-center"
+                      style={styles.shadow}
+                      title="submit"
+                      onPress={props.handleSubmit}
+                    >
+                      <Text className="text-white text-xl font-bold">
+                        Submit
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+            </Formik>
+          </Modal>
 
           <Card
             className=""
