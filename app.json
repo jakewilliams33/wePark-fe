@@ -11,6 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "notification":{
+      "icon":"./assets/Screenshot 2022-09-15 at 10.16.18.png"
+   },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
