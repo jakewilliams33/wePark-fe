@@ -362,7 +362,7 @@ export default function UserScreen({ navigation }) {
                 bio: {user.about}
               </Text>
               <Text className="text-l text-[#2D8CFF] font-bold mt-2">
-                Kudos: {user.kudos}
+                Kudos: {user.karma}
               </Text>
               <TouchableOpacity
                 title={'patchUser'}
