@@ -343,7 +343,7 @@ export default function UserScreen({ navigation }) {
   const WhichScreen = ({ isFavScreen, isInfoScreen, user }) => {
     if (user) {
       return (
-        <View className="flex-column items-center justify-evenly h-screen mt-8 bg-white">
+        <View className="flex-column items-center justify-evenly h-screen  bg-white">
           <View
             className=" flex-row items-center justify-evenly w-screen mb-4 rounded-lg bg-white py-3 w-10/12 shadow-md"
             style={styles.shadow}

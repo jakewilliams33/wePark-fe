@@ -62,7 +62,9 @@ export default function MainContainer() {
           component={UserScreen}
           options={{
             title: 'Account',
-            headerStyle: { height: 40, backgroundColor: 'white' },
+            headerStyle: { backgroundColor: 'white' },
+            headerTintColor: '#2D8CFF',
+            headerTitleStyle: { fontWeight: 'bold' },
           }}
         />
       </Tab.Navigator>
