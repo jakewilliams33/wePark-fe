@@ -33,7 +33,6 @@ import { SliderBox } from "react-native-image-slider-box";
 import BusyButton from "../Buttons/BusyButton";
 import SearchPlacesComponent from "./ScreenComponents/SearchPlacesComponent";
 
-
 export default function MapScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState();
   const [mapRegion, setmapRegion] = useState({
@@ -51,7 +50,7 @@ export default function MapScreen({ navigation, route }) {
   const [showConfirmButton, setShowConfirmButton] = useState(false);
   const [showAddButton, setShowAddButton] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState([]);
   const [showMarkerModal, setShowMarkerModal] = useState(false);
   const [selectedSpotInfo, setSelectedSpotInfo] = useState();
   const [selectedSpotID, setSelectedSpotID] = useState();
@@ -59,6 +58,11 @@ export default function MapScreen({ navigation, route }) {
   const [spotImages, setSpotImages] = useState([]);
   const { contextSpot, setContextSpot } = useContext(SpotContext);
   const { history, setHistory } = useContext(HistoryContext);
+  const [regionChange, setRegionChange] = useState();
+  const [searchLocation, setSearchLocation] = useState();
+  const [searchRegion, setSearchRegion] = useState();
+  const [showSearchButton, setShowSearchButton] = useState(false);
+  const [customSearch, setCustomSearch] = useState();
 
   //form validation
 
@@ -75,25 +79,30 @@ export default function MapScreen({ navigation, route }) {
   });
 
   // get spots from db
-  useEffect(
-    (markers) => {
-      getSpots(markers).then(({ spots }) => {
-        const spotsCopy = [...spots];
-        setMarkers(spotsCopy);
-      });
-    },
-    [JSON.stringify(markers)]
-  );
+  useEffect(() => {
+    getSpots(searchRegion).then(({ spots }) => {
+      const spotsCopy = [...spots];
+      setMarkers(spotsCopy);
+      console.log("hello");
+    });
+  }, [JSON.stringify(markers), JSON.stringify(searchRegion)]);
 
   // get image from gallery
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
       quality: 1,
+      image,
+      allowsMultipleSelection: true,
     });
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (!result.cancelled && result.selected) {
+      setImage(
+        result.selected.map((image) => {
+          return image.uri;
+        })
+      );
+    } else {
+      setImage([result.uri]);
     }
   };
 
@@ -106,7 +115,7 @@ export default function MapScreen({ navigation, route }) {
     }
     const result = await ImagePicker.launchCameraAsync();
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImage([result.uri]);
     }
   };
 
@@ -125,9 +134,8 @@ export default function MapScreen({ navigation, route }) {
         if (pushToHistory) {
           setHistory((curr) => [...curr, spot]);
         }
-        console.log("this is the history", history);
       } else setHistory([spot]);
-      console.log("this is the history", history);
+
       setSelectedSpotInfo(spot);
       if (spot.images) {
         setSpotImages(spot.images.split(","));
@@ -171,6 +179,12 @@ export default function MapScreen({ navigation, route }) {
     (async () => {
       const location = await Location.getCurrentPositionAsync();
       setUserLocation(location);
+      setSearchRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
       setmapRegion({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -208,13 +222,14 @@ export default function MapScreen({ navigation, route }) {
   };
 
   const handleSubmitPost = (values) => {
+    setImage([]);
     confirmMarkerPosition();
     setShowModal(false);
     let finalChoice = newMarker[0].coordinate;
     postSpot(finalChoice, values, user, image);
   };
 
-  const postSpot = (coordinate, values, user, uri) => {
+  const postSpot = (coordinate, values, user, uriArr) => {
     const parkingSpot = new FormData();
     parkingSpot.append("name", values.name);
     parkingSpot.append("description", values.description);
@@ -228,13 +243,15 @@ export default function MapScreen({ navigation, route }) {
 
     console.log("posting spot");
 
-    if (uri) {
-      let uriParts = uri.split(".");
-      let fileType = uriParts[uriParts.length - 1];
-      parkingSpot.append("images", {
-        uri,
-        name: `photo.${fileType}`,
-        type: `image/${fileType}`,
+    if (uriArr) {
+      uriArr.forEach((uri) => {
+        let uriParts = uri.split(".");
+        let fileType = uriParts[uriParts.length - 1];
+        parkingSpot.append("images", {
+          uri,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
+        });
       });
     }
     axios
@@ -263,6 +280,25 @@ export default function MapScreen({ navigation, route }) {
       });
   };
 
+  //handle region change
+  const handleRegionChange = (Region) => {
+    let zoom = Region.latitudeDelta.toFixed(1);
+    if (zoom < 0.5) {
+      setShowSearchButton(true);
+      setCustomSearch(Region);
+    } else {
+      setShowSearchButton(false);
+    }
+    setRegionChange(Region);
+    setSearchLocation(Region);
+  };
+
+  // search area click
+  function handleCustomSearch(customSearch) {
+    setShowSearchButton(false);
+    setSearchRegion(customSearch);
+  }
+
   useEffect(() => {
     if (contextSpot) {
       console.log("heres the context spot in mapscreen: ", contextSpot);
@@ -273,14 +309,13 @@ export default function MapScreen({ navigation, route }) {
     }
   }, [contextSpot]);
 
-  const [searchLocation, setSearchLocation] = useState();
-
   if (userLocation && mapRegion.latitude === userLocation.coords.latitude) {
     return (
       <View style={{ flex: 1 }}>
         <SearchPlacesComponent
           userLocation={userLocation}
           setSearchLocation={setSearchLocation}
+          setSearchRegion={setSearchRegion}
           style={styles.shadow}
         />
 
@@ -411,12 +446,7 @@ export default function MapScreen({ navigation, route }) {
                   onPress={openCamera}
                 ></Button>
 
-                {image && (
-                  <Image
-                    source={{ uri: image }}
-                    style={{ width: 200, height: 200 }}
-                  />
-                )}
+                <SliderBox images={image} ImageLoader={"ActivityIndicator"} />
 
                 <Button title="submit" onPress={props.handleSubmit} />
               </View>
@@ -542,7 +572,12 @@ export default function MapScreen({ navigation, route }) {
                       Back
                     </Text>
                   </TouchableOpacity>
-                  {selectedSpotInfo && <BusyButton selectedSpotInfo={selectedSpotInfo} setSelectedSpotInfo={setSelectedSpotInfo}/>}
+                  {selectedSpotInfo && (
+                    <BusyButton
+                      selectedSpotInfo={selectedSpotInfo}
+                      setSelectedSpotInfo={setSelectedSpotInfo}
+                    />
+                  )}
                 </View>
 
                 <CommentsComponent
@@ -558,7 +593,10 @@ export default function MapScreen({ navigation, route }) {
             style={{ flex: 1, marginTop: "-78%", zIndex: -20 }}
             initialRegion={mapRegion}
             showsUserLocation={true}
-            region={searchLocation ? searchLocation : mapRegion}
+            region={searchLocation ? searchLocation : regionChange}
+            onRegionChangeComplete={(Region) => {
+              handleRegionChange(Region);
+            }}
             //adding the marker on touch
             onPress={(event) => {
               if (markerAllowed) {
@@ -696,6 +734,28 @@ export default function MapScreen({ navigation, route }) {
             </TouchableOpacity>
           </View>
         )}
+        {showSearchButton && (
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              position: "absolute",
+              bottom: 550,
+              alignSelf: "center",
+              backgroundColor: "white",
+              padding: 20,
+              borderRadius: 50,
+              opacity: 0.9,
+            }}
+            activeOpacity={0.5}
+            onPress={() => {
+              handleCustomSearch(customSearch);
+            }}
+          >
+            <Text>Search this area</Text>
+          </TouchableOpacity>
+        )}
+
         {
           //add button
           showAddButton && (
