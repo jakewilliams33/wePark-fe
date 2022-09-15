@@ -100,12 +100,17 @@ export default function HomeScreen({ navigation }) {
     >
       {history.length === 0 && (
         <>
-          <View className=" basis-1/6 bg-white w-screen items-center justify-evenly pt-10">
-            <Text className="text-7xl text-slate-600 font-bold">We Park</Text>
-            <Text className="text-xl text-slate-600 font-medium">
-              But Mostly We Care
-            </Text>
-          </View>
+          <View>
+  <Image
+    style={{
+      width: 300,
+      height: 120,
+      resizeMode: "contain",
+      marginTop: 10,
+    }}
+    source={require("../../assets/wePark.png")}
+  />
+</View>
 
           <View
             className=" flex-1 flex-col justify-evenly items-center basis-2/4 w-screen bg-white shadow-md"
