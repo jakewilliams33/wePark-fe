@@ -283,7 +283,7 @@ export default function HomeScreen({ navigation }) {
               <>
                 {history.map((spot, index) => {
                   console.log('in homescreen map of recent history', spot);
-                  if (index < 3)
+                  if (index < 2)
                     return (
                       <View
                         key={'history' + index}
