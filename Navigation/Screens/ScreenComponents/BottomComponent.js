@@ -9,7 +9,7 @@ export default BottomComponent = ({ userObj, handleClick }) => {
     <View className="w-screen flex-col justify-between items-center h-2/4">
       <TouchableOpacity
         title={'Sign Out'}
-        className=" p-2  rounded-md shadow-md bg-slate-600 h-10 w-40 justify-center items-center"
+        className=" p-2  rounded-md shadow-md bg-[#2D8CFF] h-10 w-40 justify-center items-center"
         style={styles.shadow}
         activeOpacity={0.7}
         onPress={() => {
@@ -21,7 +21,7 @@ export default BottomComponent = ({ userObj, handleClick }) => {
 
       <TouchableOpacity
         title={'Favourites'}
-        className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-40 justify-center items-center"
+        className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-40 justify-center items-center"
         style={styles.shadow}
         activeOpacity={0.7}
         onPress={() => handleClick(true)}
@@ -30,7 +30,7 @@ export default BottomComponent = ({ userObj, handleClick }) => {
       </TouchableOpacity>
       <TouchableOpacity
         title={'Spots'}
-        className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-40 justify-center items-center"
+        className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-40 justify-center items-center"
         style={styles.shadow}
         activeOpacity={0.7}
         onPress={() => {

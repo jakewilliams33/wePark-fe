@@ -18,7 +18,6 @@ import axios from 'axios';
 import { UserContext } from '../AppContext';
 import * as Yup from 'yup';
 import * as ImagePicker from 'expo-image-picker';
-import SelectDropdown from 'react-native-select-dropdown';
 
 const noUserObject = {
   username: 'No User',
@@ -106,6 +105,14 @@ export default function UserScreen({ navigation }) {
     const spot_id = event.spot_id;
     setIDtoUnFav(spot_id);
     toggleUnFav(true);
+  };
+
+  const handleSubmitPost = (values) => {
+    setImage([]);
+    confirmMarkerPosition();
+    setShowModal(false);
+    let finalChoice = newMarker[0].coordinate;
+    postSpot(finalChoice, values, user, image);
   };
 
   //-----------------------------------------------------------------------------
@@ -206,7 +213,7 @@ export default function UserScreen({ navigation }) {
           return setSpots(spots);
         })
         .catch((err) => {
-          console.log('Error in UserScreen, in getSpots useEffect', err);
+          console.log('Error in UserScreen, in getSpo<>ts useEffect', err);
         });
     }
   }, [isFavScreen, isInfoScreen]);
@@ -280,7 +287,7 @@ export default function UserScreen({ navigation }) {
             <View className="w-screen items-center justify-start ">
               <TouchableOpacity
                 title={'Spots'}
-                className=" rounded-md bg-slate-600 h-12 w-24 justify-center items-center"
+                className=" rounded-md bg-[#2D8CFF] h-12 w-24 justify-center items-center"
                 activeOpacity={0.7}
                 onPress={handleBack}
               >
@@ -306,7 +313,7 @@ export default function UserScreen({ navigation }) {
             <View className="w-screen items-center bg-white justify-center ">
               <TouchableOpacity
                 title={'Spots'}
-                className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-20 justify-center items-center"
+                className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-20 justify-center items-center"
                 style={styles.shadow}
                 activeOpacity={0.7}
                 onPress={handleBack}
@@ -334,7 +341,7 @@ export default function UserScreen({ navigation }) {
       return (
         <View className="flex-column items-center justify-evenly h-screen mt-8 bg-white">
           <View
-            className=" flex-row items-center justify-evenly w-screen mb-4 rounded-lg bg-slate-400 py-3 w-10/12 shadow-md"
+            className=" flex-row items-center justify-evenly w-screen mb-4 rounded-lg bg-white py-3 w-10/12 shadow-md"
             style={styles.shadow}
           >
             <Image
@@ -344,21 +351,21 @@ export default function UserScreen({ navigation }) {
               }}
             />
             <View>
-              <Text className="text-l text-white font-medium mt-2">
+              <Text className="text-l text-[#2D8CFF] font-bold mt-2">
                 Username: {user.username}
               </Text>
-              <Text className="text-l text-white font-medium mt-2">
+              <Text className="text-l text-[#2D8CFF] font-bold mt-2">
                 bio: {user.about}
               </Text>
-              <Text className="text-l text-white font-medium mt-2">
+              <Text className="text-l text-[#2D8CFF] font-bold mt-2">
                 Kudos: {user.kudos}
               </Text>
               <TouchableOpacity
                 title={'patchUser'}
-                className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-30 mt-1 justify-center items-center"
+                className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-30 mt-3 justify-center items-center"
                 style={styles.shadow}
                 activeOpacity={0.7}
-                onPress={setShowModal(true)}
+                onPress={() => setShowModal(true)}
               >
                 <Text className="text-md text-white font-medium ">
                   Change Details
@@ -367,15 +374,44 @@ export default function UserScreen({ navigation }) {
             </View>
           </View>
 
-          <Modal
-            animationType="slide"
-            className="flex-col bg-white justify-center items-center"
-            visible={showModal}
-            onRequestClose={() => {
-              setShowModal(false);
-              setNewMarker([]);
-            }}
-          >
+          <Card
+            className=""
+            isFavScreen={isFavScreen}
+            isInfoScreen={isInfoScreen}
+            handleDelete={handleDelete}
+            handleFavPress={handleFavPress}
+            spots={spots}
+            favs={favs}
+          />
+        </View>
+      );
+    } else return <LoginScreen />;
+  };
+
+  return (
+    <>
+      <WhichScreen
+        isFavScreen={isFavScreen}
+        isInfoScreen={isInfoScreen}
+        user={user}
+      />
+      {showModal ? (
+        <Modal
+          animationType="slide"
+          className="flex-col bg-white justify-center items-center"
+          visible={showModal}
+          onRequestClose={() => {
+            setShowModal(false);
+          }}
+        >
+          <View className="mt-10 ">
+            <TouchableOpacity
+              className=" p-2 self-center mb-10 rounded-md shadow-md bg-[#2D8CFF] h-10 w-20 justify-center items-center"
+              style={styles.shadow}
+              onPress={() => setShowModal(false)}
+            >
+              <Text className="text-white text-l font-medium">Back</Text>
+            </TouchableOpacity>
             <Formik
               initialValues={{
                 name: '',
@@ -433,25 +469,11 @@ export default function UserScreen({ navigation }) {
                       {props.errors.description}
                     </Text>
                   )}
-                  <View style={{ alignItems: 'center' }}>
-                    <SelectDropdown
-                      data={['street', 'car park']}
-                      onSelect={props.handleChange('parking_type')}
-                      defaultButtonText={'Select parking type'}
-                      buttonStyle={styles.dropdown1BtnStyle}
-                      buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                    />
-
-                    {props.errors.parking_type && (
-                      <Text style={{ fontSize: 10, color: 'red' }}>
-                        {props.errors.parking_type}
-                      </Text>
-                    )}
-                  </View>
+                  <View style={{ alignItems: 'center' }}></View>
                   <View className="flex-1 items-center flex-col justify-center mt-10 items-center bg-white w-screen ">
                     <View className="flex-1 items-center flex-row justify-center bg-white w-screen ">
                       <TouchableOpacity
-                        className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-2/5 mx-1 justify-center items-center"
+                        className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-2/5 mx-1 justify-center items-center"
                         style={styles.shadow}
                         title="Pick an image from camera roll"
                         onPress={pickImage}
@@ -462,7 +484,7 @@ export default function UserScreen({ navigation }) {
                       </TouchableOpacity>
 
                       <TouchableOpacity
-                        className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-2/5 mx-1 justify-center items-center"
+                        className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-2/5 mx-1 justify-center items-center"
                         style={styles.shadow}
                         title="Take a photo with camera"
                         onPress={openCamera}
@@ -481,7 +503,7 @@ export default function UserScreen({ navigation }) {
                     </View>
 
                     <TouchableOpacity
-                      className=" p-2 rounded-md shadow-md bg-slate-600 mt-6 h-14 w-4/5 justify-center items-center"
+                      className=" p-2 rounded-md shadow-md bg-[#2D8CFF] mt-6 h-14 w-4/5 justify-center items-center"
                       style={styles.shadow}
                       title="submit"
                       onPress={props.handleSubmit}
@@ -494,28 +516,12 @@ export default function UserScreen({ navigation }) {
                 </View>
               )}
             </Formik>
-          </Modal>
-
-          <Card
-            className=""
-            isFavScreen={isFavScreen}
-            isInfoScreen={isInfoScreen}
-            handleDelete={handleDelete}
-            handleFavPress={handleFavPress}
-            spots={spots}
-            favs={favs}
-          />
-        </View>
-      );
-    } else return <LoginScreen />;
-  };
-
-  return (
-    <WhichScreen
-      isFavScreen={isFavScreen}
-      isInfoScreen={isInfoScreen}
-      user={user}
-    />
+          </View>
+        </Modal>
+      ) : (
+        <></>
+      )}
+    </>
   );
 }
 const styles = StyleSheet.create({

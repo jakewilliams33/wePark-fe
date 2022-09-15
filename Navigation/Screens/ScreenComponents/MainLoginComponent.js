@@ -14,7 +14,7 @@ export default MainLoginComponent = ({ handlePress }) => {
         <View className=" flex-1 flex-col bg-white justify-start items-center basis-3/4 w-screen pt-10">
           <View className="flex-row justify-center bg-white w-screen">
             <TouchableOpacity
-              className=" p-2 mx-4 shadow-md rounded-md bg-slate-600 h-10 w-20 justify-center items-center"
+              className=" p-2 mx-4 shadow-md rounded-md bg-[#2D8CFF] h-10 w-20 justify-center items-center"
               style={styles.shadow}
               onPress={(event) => {
                 event.destination = 'Login';
@@ -25,7 +25,7 @@ export default MainLoginComponent = ({ handlePress }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              className=" p-2 mx-4 rounded-md shadow-md bg-slate-600 h-10 w-20 justify-center items-center"
+              className=" p-2 mx-4 rounded-md shadow-md bg-[#2D8CFF] h-10 w-20 justify-center items-center"
               style={styles.shadow}
               onPress={(event) => {
                 event.destination = 'Sign Up';
