@@ -1,11 +1,26 @@
 import axios from "axios";
 
-export const getSpots = () => {
+export const getSpots = (searchRegion) => {
   console.log("in API.js, getting spots");
+
+  const coords = searchRegion
+    ? `?coords=${searchRegion.latitude},${searchRegion.longitude}`
+    : "";
+
+  let radius = "10";
+
+  const andOr = searchRegion ? "&" : "?";
+
+  if (searchRegion && searchRegion.latitudeDelta) {
+    let miles = searchRegion.latitudeDelta * 69;
+    radius = miles.toString();
+  }
+
+  console.log(coords, "coords in api");
 
   return axios
     .get(
-      "https://wepark-be.herokuapp.com/api/spots?radius=10000000000000000000000000"
+      `https://wepark-be.herokuapp.com/api/spots${coords}${andOr}radius=${radius}`
     )
     .then(({ data }) => {
       return data;
@@ -75,3 +90,12 @@ export const updateSpotVotes = (spot_id, votes) => {
       return data;
     });
 };
+
+export const updateSpotBusy = (spot_id, status) => {
+  return axios
+    .patch(`https://wepark-be.herokuapp.com/api/spots/${spot_id}`, status)
+    .then(({ data }) => {
+      console.log(data);
+      return data; 
+    })
+}
