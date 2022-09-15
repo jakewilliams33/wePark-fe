@@ -73,13 +73,13 @@ export default NavSpotButton = ({ spot }) => {
 
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: '#000',
+    shadowColor: '#000000',
     shadowOffset: {
-      width: 1,
-      height: 3,
+      width: 0.5,
+      height: -2.5,
     },
-    shadowOpacity: 0.59,
-    shadowRadius: 6.65,
-    elevation: 7,
+    shadowOpacity: 0.69,
+    shadowRadius: 2.65,
+    elevation: 4,
   },
 });

@@ -72,19 +72,19 @@ const SpotsItem = ({
   useEffect(() => {}, [user.favourites]);
   return (
     <View
-      className="bg-[#d5dee8] border-[#d5dee8] flex-col items-center justify-evenly border-2  pl-2 pb-2 mt-3 ml-5 mr-5 shadow-md rounded-md"
+      className="bg-white  flex-col items-center justify-evenly   pl-2 pb-2 mt-3 ml-5 mr-5 shadow-md rounded-md"
       style={styles.shadow}
       key={spot.item.id}
     >
       <View className="flex-row">
-        <View className=" bg-[#d5dee8] border-[#d5dee8] flex-col  items-start justify-evenly">
-          <Text className="text-m text-white flex-wrap font-medium mt-1">
+        <View className=" bg-white border-[#d5dee8] flex-col  items-start justify-evenly">
+          <Text className="text-m text-[#2D8CFF] flex-wrap font-medium mt-1">
             Name:{' '}
             {spot.item.name.length > 20
               ? spot.item.name.substring(0, 20) + '... '
               : spot.item.name + ',  '}
           </Text>
-          <Text className="text-m text-white font-medium mt-1">
+          <Text className="text-m text-[#2D8CFF] font-medium mt-1">
             Co-ords: {('' + spot.item.latitude).substring(0, 10)}
             {', '}
             {('' + spot.item.longitude).substring(0, 10)}
@@ -92,17 +92,17 @@ const SpotsItem = ({
           </Text>
 
           <View className="flex-row justify-between">
-            <Text className="text-m text-white font-medium mt-1">
+            <Text className="text-m text-[#2D8CFF] font-medium mt-1">
               Type: {spot.item.parking_type}
               {',  '}
             </Text>
-            <Text className="text-m text-white font-medium mt-1">
+            <Text className="text-m text-[#2D8CFF] font-medium mt-1">
               Votes: {spot.item.vote_count}
               {',  '}
             </Text>
           </View>
           <TouchableOpacity
-            className="  mt-2 rounded-md bg-[#2D8CFF] h-10 w-10/12 px-2 flex-row justify-center items-center"
+            className="  mt-2 rounded-md bg-white h-10 w-10/12 px-2 flex-row justify-center items-center"
             style={styles.shadow}
             onPress={(event) => {
               event.spot_id = spot.item.spot_id;
@@ -112,7 +112,7 @@ const SpotsItem = ({
             }}
           >
             <Ionicons name="md-globe" size={20} color="white" />
-            <Text className="text-m text-white font-medium text-center">
+            <Text className="text-m text-[#2D8CFF] font-medium text-center">
               {'   '}
               See More
             </Text>
@@ -121,7 +121,7 @@ const SpotsItem = ({
         <SafeAreaView className="flex-col justify-between items-center mt-2">
           {user.favourites.includes(spot.item.spot_id) ? (
             <TouchableOpacity
-              className=" ml-2 rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center"
+              className=" ml-2 rounded-md bg-white h-14 w-14 justify-center items-center"
               style={styles.shadow}
               onPress={(event) => {
                 event.spot_id = spot.item.spot_id;
@@ -129,13 +129,13 @@ const SpotsItem = ({
               }}
             >
               <Ionicons name="star" size={20} color="yellow" />
-              <Text className="text-m text-white font-medium text-center">
+              <Text className="text-m text-[#2D8CFF] font-medium text-center">
                 Remove
               </Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              className=" ml-2 rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center"
+              className=" ml-2 rounded-md bg-white h-14 w-14 justify-center items-center"
               style={styles.shadow}
               onPress={(event) => {
                 event.spot_id = spot.item.spot_id;
@@ -143,20 +143,20 @@ const SpotsItem = ({
               }}
             >
               <Ionicons name="star-outline" size={20} color="white" />
-              <Text className="text-m text-white font-medium text-center">
+              <Text className="text-m text-[#2D8CFF] font-medium text-center">
                 Add
               </Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity
-            className=" ml-2 rounded-md bg-[#2D8CFF] h-10 mt-1 w-14 justify-center items-center"
+            className=" ml-2 rounded-md bg-white h-10 mt-1 w-14 justify-center items-center"
             style={styles.shadow}
             onPress={(event) => {
               event.spot_id = spot.item.spot_id;
               handleDelete(event);
             }}
           >
-            <Text className="text-m text-white font-medium text-center">
+            <Text className="text-m text-[#2D8CFF] font-medium text-center">
               Delete
             </Text>
           </TouchableOpacity>
@@ -185,7 +185,7 @@ export default SpotsComponent = ({
   };
 
   return (
-    <View className="flex-col border-[#d5dee8] border-y-2 items-center h-8/12 mb-10 mb-2 bg-white">
+    <View className="flex-col  items-center h-8/12 mb-10 mb-2 bg-[#d5dee8]">
       {spotsObj ? (
         <SafeAreaView className="w-11/12  ">
           <FlatList
@@ -213,10 +213,10 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOffset: {
       width: 0.5,
-      height: 2.5,
+      height: -2.5,
     },
     shadowOpacity: 0.69,
-    shadowRadius: 4.65,
-    elevation: 6,
+    shadowRadius: 2.65,
+    elevation: 4,
   },
 });

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { UserContext } from '../AppContext';
 import axios from 'axios';
@@ -96,30 +96,46 @@ export default FavButton = ({ spot_id }) => {
   return user !== null ? (
     spot_id && user.favourites.includes(spot_id) ? (
       <TouchableOpacity
-        className=" ml-2 rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center"
+        className=" ml-2 rounded-md bg-white h-14 w-14 justify-center items-center shadow-md"
+        style={styles.shadow}
         onPress={(event) => {
           event.spot_id = spot_id;
           handleUnFavPress(event);
         }}
       >
         <Ionicons name="star" size={20} color="yellow" />
-        <Text className="text-m text-white font-medium text-center">
+        <Text className="text-m text-[#2D8CFF] font-medium text-center">
           Remove
         </Text>
       </TouchableOpacity>
     ) : (
       <TouchableOpacity
-        className=" ml-2 rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center"
+        className=" ml-2 rounded-md bg-white h-14 w-14 justify-center items-center"
         onPress={(event) => {
           event.spot_id = spot_id;
           handleFavPress(event);
         }}
       >
         <Ionicons name="star-outline" size={20} color="white" />
-        <Text className="text-m text-white font-medium text-center">Add</Text>
+        <Text className="text-m text-[#2D8CFF] font-medium text-center">
+          Add
+        </Text>
       </TouchableOpacity>
     )
   ) : (
     <></>
   );
 };
+
+const styles = StyleSheet.create({
+  shadow: {
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0.5,
+      height: -2.5,
+    },
+    shadowOpacity: 0.69,
+    shadowRadius: 2.65,
+    elevation: 4,
+  },
+});

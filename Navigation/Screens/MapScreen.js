@@ -311,7 +311,7 @@ export default function MapScreen({ navigation, route }) {
 
   if (userLocation && mapRegion.latitude === userLocation.coords.latitude) {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }} className="bg-white">
         <SearchPlacesComponent
           userLocation={userLocation}
           setSearchLocation={setSearchLocation}
@@ -549,26 +549,26 @@ export default function MapScreen({ navigation, route }) {
                     selectedSpotInfo &&
                     user.username === selectedSpotInfo.creator && (
                       <TouchableOpacity
-                        className=" rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center"
+                        className=" rounded-md bg-white h-14 w-14 justify-center items-center"
                         onPress={() => {
                           handleDelete();
                         }}
                       >
                         <Ionicons size={20} name="trash-bin" color={'white'} />
-                        <Text className="text-m text-white font-medium text-center">
+                        <Text className="text-m text-[#2D8CFF] font-medium text-center">
                           Delete
                         </Text>
                       </TouchableOpacity>
                     )}
                   {selectedSpotID && <FavButton spot_id={selectedSpotID} />}
                   <TouchableOpacity
-                    className=" rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center"
+                    className=" rounded-md bg-white h-14 w-14 justify-center items-center"
                     onPress={() => {
                       setShowMarkerModal(false);
                     }}
                   >
                     <Ionicons size={20} name="arrow-back" color={'white'} />
-                    <Text className="text-m text-white font-medium text-center">
+                    <Text className="text-m text-[#2D8CFF] font-medium text-center">
                       Back
                     </Text>
                   </TouchableOpacity>
@@ -836,6 +836,16 @@ const styles = StyleSheet.create({
   },
   modalStyle: {
     margin: '10%',
+  },
+  shadow: {
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0.5,
+      height: -2.5,
+    },
+    shadowOpacity: 0.69,
+    shadowRadius: 2.65,
+    elevation: 4,
   },
 });
 

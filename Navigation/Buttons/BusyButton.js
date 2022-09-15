@@ -60,7 +60,7 @@ export default BusyButton = ({ selectedSpotInfo }) => {
         className={
           buttonClicked
             ? 'rounded-md bg-green-600 h-14 w-14 justify-center items-center'
-            : 'rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center'
+            : 'rounded-md bg-white h-14 w-14 justify-center items-center'
         }
         onPress={() => {
           handlePress(time);
@@ -68,7 +68,9 @@ export default BusyButton = ({ selectedSpotInfo }) => {
         disabled={time === null ? true : false}
       >
         <Ionicons size={20} name={'alarm-outline'} color={'white'} />
-        <Text className="text-m text-white font-medium text-center">Timer</Text>
+        <Text className="text-m text-[#2D8CFF] font-medium text-center">
+          Timer
+        </Text>
       </TouchableOpacity>
     </View>
   );
