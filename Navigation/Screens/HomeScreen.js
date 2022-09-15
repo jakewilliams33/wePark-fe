@@ -220,6 +220,10 @@ export default function HomeScreen({ navigation }) {
                 <Text className="text-[#2D8CFF] text-l font-medium ml-2 mb-2">
                   {featuredSpot.description}
                 </Text>
+                <NavSpotButton
+                  className="self-end mb-2 w-3/5"
+                  spot={featuredSpot}
+                />
                 <SliderBox
                   images={featuredSpot.images}
                   ImageLoader={'ActivityIndicator'}
@@ -333,6 +337,10 @@ export default function HomeScreen({ navigation }) {
                 <Text className="text-[#2D8CFF] text-l font-medium ml-2 mb-2">
                   {featuredSpot.description}
                 </Text>
+                <NavSpotButton
+                  className="self-end mb-2 w-3/5"
+                  spot={featuredSpot}
+                />
                 <SliderBox
                   images={featuredSpot.images}
                   ImageLoader={'ActivityIndicator'}
