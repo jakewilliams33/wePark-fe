@@ -118,14 +118,14 @@ export default function HomeScreen({ navigation }) {
           >
             {/* <View className="flex-row justify-center">
               <View className="mx-5">
-                <TouchableOpacity className=" p-2 rounded-md bg-slate-400">
+                <TouchableOpacity className=" p-2 rounded-md bg-[#d5dee8]">
                   <Text className="text-white text-l font-medium">
                     Favourites
                   </Text>
                 </TouchableOpacity>
               </View>
               <View className="mx-5">
-                <TouchableOpacity className=" p-2 rounded-md bg-slate-400">
+                <TouchableOpacity className=" p-2 rounded-md bg-[#d5dee8]">
                   <Text className="text-white text-l font-medium">
                     Favourites
                   </Text>
@@ -135,7 +135,7 @@ export default function HomeScreen({ navigation }) {
             {user ? (
               <>
                 <View
-                  className="w-9/12 p-2 px-6 rounded-lg flex-row justify-around items-center rounded-md bg-slate-400 shadow-md"
+                  className="w-9/12 p-2 px-6 rounded-lg flex-row justify-around items-center rounded-md bg-[#d5dee8] shadow-md"
                   style={styles.shadow}
                 >
                   <Image
@@ -152,14 +152,14 @@ export default function HomeScreen({ navigation }) {
             ) : (
               <>
                 <View
-                  className="w-9/12 p-2 px-6 rounded-lg rounded-md bg-slate-400 shadow-md"
+                  className="w-9/12 p-2 px-6 rounded-lg rounded-md bg-[#d5dee8] shadow-md"
                   style={styles.shadow}
                 >
                   <Text className="text-m text-white font-medium text-center">
                     No Logged In User
                   </Text>
                   <TouchableOpacity
-                    className="mt-2 rounded-md bg-slate-600 h-8 w-30  flex-row justify-center items-center"
+                    className="mt-2 rounded-md bg-[#2D8CFF] h-8 w-30  flex-row justify-center items-center"
                     style={styles.shadow}
                     onPress={handleNavLogin}
                   >
@@ -182,7 +182,7 @@ export default function HomeScreen({ navigation }) {
               />
             </SafeAreaView>
             <View
-              className=" p-2 px-6 rounded-lg rounded-md w-9/12 justify-center items-center bg-slate-400 shadow-md"
+              className=" p-2 px-6 rounded-lg rounded-md w-9/12 justify-center items-center bg-[#d5dee8] shadow-md"
               style={styles.shadow}
             >
               <Text className="text-l text-white font-medium mt-2">
@@ -191,7 +191,7 @@ export default function HomeScreen({ navigation }) {
             </View>
           </View>
           {featuredSpot && (
-            <View className=" basis-1/4 flex-1 flex-col justify-evenly  p-2 rounded-lg px-14 rounded-md bg-slate-400 px-2 w-screen">
+            <View className=" basis-1/4 flex-1 flex-col justify-evenly  p-2 rounded-lg px-14 rounded-md bg-[#d5dee8] px-2 w-screen">
               <View className="justify-center items-center  mx-8 px-2">
                 {/* <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} /> */}
                 <Text className="text-white text-l font-medium ml-2">
@@ -218,14 +218,14 @@ export default function HomeScreen({ navigation }) {
           <View className=" flex-1 flex-col justify-evenly items-center basis-2/4 bg-white w-screen">
             {/* <View className="flex-row justify-center">
               <View className="mx-5">
-                <TouchableOpacity className=" p-2 rounded-md bg-slate-400">
+                <TouchableOpacity className=" p-2 rounded-md bg-[#d5dee8]">
                   <Text className="text-white text-l font-medium">
                     Favourites
                   </Text>
                 </TouchableOpacity>
               </View>
               <View className="mx-5">
-                <TouchableOpacity className=" p-2 rounded-md bg-slate-400">
+                <TouchableOpacity className=" p-2 rounded-md bg-[#d5dee8]">
                   <Text className="text-white text-l font-medium">
                     Favourites
                   </Text>
@@ -236,7 +236,7 @@ export default function HomeScreen({ navigation }) {
             {user ? (
               <>
                 <View
-                  className="w-9/12 p-2 px-6 rounded-lg flex-row justify-around items-center rounded-md bg-slate-400 shadow-md"
+                  className="w-9/12 p-2 px-6 rounded-lg flex-row justify-around items-center rounded-md bg-[#d5dee8] shadow-md"
                   style={styles.shadow}
                 >
                   <Image
@@ -252,12 +252,12 @@ export default function HomeScreen({ navigation }) {
               </>
             ) : (
               <>
-                <View className="w-9/12 p-2 px-6 rounded-lg rounded-md bg-slate-400">
+                <View className="w-9/12 p-2 px-6 rounded-lg rounded-md bg-[#d5dee8]">
                   <Text className="text-l text-white font-medium mt-2">
                     No Logged In User
                   </Text>
                   <TouchableOpacity
-                    className="  mt-2 rounded-md bg-slate-600 h-8 w-30 px-2 flex-row justify-center items-center"
+                    className="  mt-2 rounded-md bg-[#2D8CFF] h-8 w-30 px-2 flex-row justify-center items-center"
                     onPress={handleNavLogin}
                   >
                     <Text className="text-m text-white font-medium text-center">
@@ -279,7 +279,7 @@ export default function HomeScreen({ navigation }) {
                 value={text}
               />
             </SafeAreaView>
-            <View className=" p-2 px-6 rounded-lg w-9/12 justify-evenly rounded-md bg-slate-400">
+            <View className=" p-2 px-6 rounded-lg w-9/12 justify-evenly rounded-md bg-[#d5dee8]">
               <>
                 {history.map((spot, index) => {
                   console.log('in homescreen map of recent history', spot);
@@ -304,7 +304,7 @@ export default function HomeScreen({ navigation }) {
           </View>
 
           {featuredSpot && (
-            <View className=" basis-2/4 flex-1 flex-col justify-center items-center p-2  px-14  bg-slate-400 px-2 w-screen">
+            <View className=" basis-2/4 flex-1 flex-col justify-center items-center p-2  px-14  bg-[#d5dee8] px-2 w-screen">
               <View className="justify-center items-center  mx-8 px-2">
                 {/* <Ionicons name={'golf-outline'} size={20} color={'darkBlue'} /> */}
                 <Text className="text-white text-l font-medium ml-2">

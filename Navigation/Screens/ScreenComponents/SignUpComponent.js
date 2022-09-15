@@ -26,7 +26,7 @@ export default SignUpComponent = ({
     <>
       <View className="flex-1 items-center justify-center bg-white w-screen ">
         <TouchableOpacity
-          className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-20 justify-center items-center"
+          className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-20 justify-center items-center"
           style={styles.shadow}
           onPress={(event) => {
             event.destination = 'Main';
@@ -98,7 +98,7 @@ export default SignUpComponent = ({
         </SafeAreaView>
 
         <TouchableOpacity
-          className=" p-2 rounded-md shadow-md bg-slate-600 h-10 w-20 justify-center items-center"
+          className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-20 justify-center items-center"
           style={styles.shadow}
           onPress={() => {
             handleSignUpSubmit();

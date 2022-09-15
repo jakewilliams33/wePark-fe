@@ -53,7 +53,7 @@ export default NavSpotButton = ({ spot }) => {
 
   return (
     <TouchableOpacity
-      className="  mt-2 rounded-md bg-slate-600 h-8 w-30 px-2 flex-row justify-center items-center "
+      className="  mt-2 rounded-md bg-[#2D8CFF] h-8 w-30 px-2 flex-row justify-center items-center "
       onPress={(event) => {
         event.spot_id = spot.spot_id;
         event.latitude = spot.latitude;

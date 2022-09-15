@@ -72,12 +72,12 @@ const SpotsItem = ({
   useEffect(() => {}, [user.favourites]);
   return (
     <View
-      className="bg-slate-400 border-slate-400 flex-col items-center justify-evenly border-2  pl-2 pb-2 mt-3 ml-5 mr-5 shadow-md rounded-md"
+      className="bg-[#d5dee8] border-[#d5dee8] flex-col items-center justify-evenly border-2  pl-2 pb-2 mt-3 ml-5 mr-5 shadow-md rounded-md"
       style={styles.shadow}
       key={spot.item.id}
     >
       <View className="flex-row">
-        <View className=" bg-slate-400 border-slate-400 flex-col  items-start justify-evenly">
+        <View className=" bg-[#d5dee8] border-[#d5dee8] flex-col  items-start justify-evenly">
           <Text className="text-m text-white flex-wrap font-medium mt-1">
             Name:{' '}
             {spot.item.name.length > 20
@@ -102,7 +102,7 @@ const SpotsItem = ({
             </Text>
           </View>
           <TouchableOpacity
-            className="  mt-2 rounded-md bg-slate-600 h-10 w-10/12 px-2 flex-row justify-center items-center"
+            className="  mt-2 rounded-md bg-[#2D8CFF] h-10 w-10/12 px-2 flex-row justify-center items-center"
             style={styles.shadow}
             onPress={(event) => {
               event.spot_id = spot.item.spot_id;
@@ -121,7 +121,7 @@ const SpotsItem = ({
         <SafeAreaView className="flex-col justify-between items-center mt-2">
           {user.favourites.includes(spot.item.spot_id) ? (
             <TouchableOpacity
-              className=" ml-2 rounded-md bg-slate-600 h-14 w-14 justify-center items-center"
+              className=" ml-2 rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center"
               style={styles.shadow}
               onPress={(event) => {
                 event.spot_id = spot.item.spot_id;
@@ -135,7 +135,7 @@ const SpotsItem = ({
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              className=" ml-2 rounded-md bg-slate-600 h-14 w-14 justify-center items-center"
+              className=" ml-2 rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center"
               style={styles.shadow}
               onPress={(event) => {
                 event.spot_id = spot.item.spot_id;
@@ -149,7 +149,7 @@ const SpotsItem = ({
             </TouchableOpacity>
           )}
           <TouchableOpacity
-            className=" ml-2 rounded-md bg-slate-600 h-10 mt-1 w-14 justify-center items-center"
+            className=" ml-2 rounded-md bg-[#2D8CFF] h-10 mt-1 w-14 justify-center items-center"
             style={styles.shadow}
             onPress={(event) => {
               event.spot_id = spot.item.spot_id;
@@ -185,7 +185,7 @@ export default SpotsComponent = ({
   };
 
   return (
-    <View className="flex-col border-slate-400 border-y-2 items-center h-8/12 mb-10 mb-2 bg-white">
+    <View className="flex-col border-[#d5dee8] border-y-2 items-center h-8/12 mb-10 mb-2 bg-white">
       {spotsObj ? (
         <SafeAreaView className="w-11/12  ">
           <FlatList

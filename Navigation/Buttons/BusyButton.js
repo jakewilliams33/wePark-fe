@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import  * as Device from 'expo-device';
+import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 
-Notifications.setNotificationHandler({ 
-    handleNotification: async () => ({
-        shouldShowAlert: true, 
-        shouldPlaySound: true, 
-        shouldSetBadge: true,
-    })
-})
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 const askNotification = async () => {
   const { status } = await Notifications.requestPermissionsAsync();
@@ -18,61 +18,58 @@ const askNotification = async () => {
     console.log('Notification permissions granted.');
 };
 
-
-
 export default BusyButton = ({ selectedSpotInfo }) => {
+  const [buttonClicked, setButtonClicked] = useState(false);
 
-    const [buttonClicked, setButtonClicked] = useState(false); 
-    
-    let time; 
+  let time;
 
-    selectedSpotInfo.time_limit === null ? time = null : time = (selectedSpotInfo.time_limit - 5) * 60
+  selectedSpotInfo.time_limit === null
+    ? (time = null)
+    : (time = (selectedSpotInfo.time_limit - 5) * 60);
 
-    console.log(time);
+  console.log(time);
 
-useEffect(() => {
+  useEffect(() => {
     askNotification();
     const listener = Notifications.addNotificationReceivedListener();
     return () => listener.remove();
-  }, []); 
+  }, []);
 
-    
-    const handlePress = (time) => {
+  const handlePress = (time) => {
+    const schedulingOptions = {
+      content: {
+        title: 'wePark',
+        body: 'You have 5 minutes left in your spot!',
+        sound: true,
+        priority: Notifications.AndroidNotificationPriority.HIGH,
+        color: 'red',
+      },
+      trigger: {
+        seconds: time,
+      },
+    };
 
-        const schedulingOptions = {
-            content: {
-              title: 'wePark',
-              body: 'You have 5 minutes left in your spot!',
-              sound: true,
-              priority: Notifications.AndroidNotificationPriority.HIGH,
-              color: "red"
-            },
-            trigger: {
-              seconds: time,
-            },
-          };
-      
-                Notifications.scheduleNotificationAsync(
-                  schedulingOptions,
-                );
+    Notifications.scheduleNotificationAsync(schedulingOptions);
 
-        setButtonClicked(true); 
-    }
+    setButtonClicked(true);
+  };
 
-return (
+  return (
     <View>
       <TouchableOpacity
-            className={buttonClicked ? "rounded-md bg-green-600 h-14 w-14 justify-center items-center" : "rounded-md bg-slate-600 h-14 w-14 justify-center items-center"}
-            onPress={() => {
-                handlePress(time)
-            }}
-            disabled={time === null ? true : false}
-        >
-            <Ionicons size={20} name={"alarm-outline"} color={"white"} />
-                <Text className="text-m text-white font-medium text-center">
-                    Timer
-                </Text>
-        </TouchableOpacity>
-    </View> 
-    )
-}
+        className={
+          buttonClicked
+            ? 'rounded-md bg-green-600 h-14 w-14 justify-center items-center'
+            : 'rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center'
+        }
+        onPress={() => {
+          handlePress(time);
+        }}
+        disabled={time === null ? true : false}
+      >
+        <Ionicons size={20} name={'alarm-outline'} color={'white'} />
+        <Text className="text-m text-white font-medium text-center">Timer</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
