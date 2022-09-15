@@ -96,13 +96,12 @@ export default function MapScreen({ navigation, route }) {
       allowsMultipleSelection: true,
     });
     if (!result.cancelled && result.selected) {
-      setImage(
-        result.selected.map((image) => {
-          return image.uri;
+      let multi = result.selected.map((item) => {
+          return item.uri
         })
-      );
+      setImage([...image, ...multi]);
     } else {
-      setImage([result.uri]);
+      setImage([...image, result.uri]);
     }
   };
 
@@ -115,9 +114,10 @@ export default function MapScreen({ navigation, route }) {
     }
     const result = await ImagePicker.launchCameraAsync();
     if (!result.cancelled) {
-      setImage([result.uri]);
+      setImage([...image, result.uri]);
     }
   };
+
 
   // Get single spot information
   const handleSpotPopup = (spot_id) => {
@@ -149,7 +149,7 @@ export default function MapScreen({ navigation, route }) {
       showMessage({
         message: 'Tap on the map to add a parking space',
         type: 'info',
-        backgroundColor: '[#2D8CFF]',
+        backgroundColor: '#2D8CFF',
         color: 'white',
       });
       setMarkerAllowed(true);
@@ -323,6 +323,7 @@ export default function MapScreen({ navigation, route }) {
           animationType="slide"
           visible={showModal}
           onRequestClose={() => {
+            setImage([]);
             setShowModal(false);
             setNewMarker([]);
           }}
@@ -346,8 +347,9 @@ export default function MapScreen({ navigation, route }) {
                 <TextInput
                   style={{
                     backgroundColor: '#f4f8ff',
-                    marginTop: 50,
-                    margin: 20,
+                    marginTop: 30,
+                    marginHorizontal: 20,
+                    marginBottom:10,
                     padding: 10,
                     borderColor: 'grey',
                     borderWidth: 0.1,
@@ -372,8 +374,9 @@ export default function MapScreen({ navigation, route }) {
                   multiline
                   style={{
                     backgroundColor: '#f4f8ff',
-                    marginTop: 20,
-                    margin: 20,
+                    marginTop: 5,
+                    marginHorizontal: 20,
+                    marginBottom: 5,
                     padding: 10,
                     borderColor: 'grey',
                     borderWidth: 0.1,
@@ -425,30 +428,38 @@ export default function MapScreen({ navigation, route }) {
                       width: '80%',
                       height: 50,
                       backgroundColor: '#f4f8ff',
-                      borderRadius: 10,
+                      borderRadius: 50,
                       borderWidth: 1,
                       borderColor: '#f4f8ff',
                       marginTop: 10,
                       justifyContent: 'center',
-                      marginBottom: 40,
+                      marginBottom: 30,
                     }}
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                   />
                 </View>
+                <Text style={{fontWeight: "bold", justifyContent: "center", textAlign: "center", marginBottom: 20}}>Upload Images</Text>
 
-                <Button
-                  title="Pick an image from camera roll"
-                  onPress={pickImage}
-                />
+<View style={{flexDirection:"row", justifyContent: "space-evenly"}}>
+                <TouchableOpacity onPress={pickImage}>
+                  <Text style={{color: "grey"}}>Open gallery</Text>
+                  <Ionicons name="film-outline" color={"#2D8CFF"} size={70}/>
+                </TouchableOpacity>
 
-                <Button
-                  title="Take a photo with camera"
-                  onPress={openCamera}
-                ></Button>
+                <TouchableOpacity onPress={openCamera}>
+                  <Text style={{color: "grey"}}>Take photo</Text>
+                  <Ionicons name="camera-outline" color={"#2D8CFF"} size={70}/>
+                </TouchableOpacity>
+                </View>
 
                 <SliderBox images={image} ImageLoader={'ActivityIndicator'} />
-
-                <Button title="submit" onPress={props.handleSubmit} />
+                <TouchableOpacity onPress={props.handleSubmit} style={{backgroundColor: "#2D8CFF", marginHorizontal: 130, borderRadius: 10}}>
+                  <View style={{flexDirection:"row", justifyContent: "center", paddingLeft: 5}}>
+                  <Text style={{fontSize: 15, color: "white", marginTop: 12, marginRight: 5}}>Submit!</Text>
+                  <Ionicons name="return-down-back-sharp" size={40} color={"white"}/>
+                  </View>
+                </TouchableOpacity>
+                
               </View>
             )}
           </Formik>
@@ -603,7 +614,7 @@ export default function MapScreen({ navigation, route }) {
                 showMessage({
                   message: 'Hold down on the marker to drag',
                   type: 'info',
-                  backgroundColor: '[#2D8CFF]',
+                  backgroundColor: '#2D8CFF',
                   color: 'white',
                 });
 
@@ -819,13 +830,14 @@ const styles = StyleSheet.create({
     width: '80%',
     height: 50,
     backgroundColor: '#f4f8ff',
-    borderRadius: 10,
+    borderRadius: 50,
     borderWidth: 1,
     borderColor: '#f4f8ff',
     marginTop: 10,
     justifyContent: 'center',
+    
   },
-  dropdown1BtnTxtStyle: { color: '#444', textAlign: 'left' },
+  dropdown1BtnTxtStyle: { color: 'grey', textAlign: 'left', fontSize: 14 },
   dropdown1DropdownStyle: {
     backgroundColor: '#EFEFEF',
     justifyContent: 'center',
