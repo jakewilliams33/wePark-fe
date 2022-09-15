@@ -9,35 +9,35 @@ export default BottomComponent = ({ userObj, handleClick }) => {
     <View className="w-screen flex-col justify-between items-center h-2/4">
       <TouchableOpacity
         title={'Sign Out'}
-        className=" p-2  rounded-md shadow-md bg-[#2D8CFF] h-10 w-40 justify-center items-center"
+        className=" p-2  rounded-md shadow-md bg-white h-10 w-40 justify-center items-center"
         style={styles.shadow}
         activeOpacity={0.7}
         onPress={() => {
           setUser(null);
         }}
       >
-        <Text className="text-white text-l font-medium">Sign Out</Text>
+        <Text className="text-[#2D8CFF] text-l font-medium">Sign Out</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         title={'Favourites'}
-        className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-40 justify-center items-center"
+        className=" p-2 rounded-md shadow-md bg-white h-10 w-40 justify-center items-center"
         style={styles.shadow}
         activeOpacity={0.7}
         onPress={() => handleClick(true)}
       >
-        <Text className="text-white text-l font-medium">My Favourites</Text>
+        <Text className="text-[#2D8CFF] text-l font-medium">My Favourites</Text>
       </TouchableOpacity>
       <TouchableOpacity
         title={'Spots'}
-        className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-40 justify-center items-center"
+        className=" p-2 rounded-md shadow-md bg-white h-10 w-40 justify-center items-center"
         style={styles.shadow}
         activeOpacity={0.7}
         onPress={() => {
           handleClick(false);
         }}
       >
-        <Text className="text-white text-l font-medium">My Spots</Text>
+        <Text className="text-[#2D8CFF] text-l font-medium">My Spots</Text>
       </TouchableOpacity>
     </View>
   );
@@ -66,13 +66,13 @@ const styles = StyleSheet.create({
     border: 0,
   },
   shadow: {
-    shadowColor: '#000',
+    shadowColor: '#000000',
     shadowOffset: {
-      width: 1,
-      height: 3,
+      width: 0.5,
+      height: -2.5,
     },
-    shadowOpacity: 0.59,
-    shadowRadius: 6.65,
-    elevation: 7,
+    shadowOpacity: 0.69,
+    shadowRadius: 2.65,
+    elevation: 4,
   },
 });

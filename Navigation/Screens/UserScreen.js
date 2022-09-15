@@ -287,11 +287,13 @@ export default function UserScreen({ navigation }) {
             <View className="w-screen items-center justify-start ">
               <TouchableOpacity
                 title={'Spots'}
-                className=" rounded-md bg-[#2D8CFF] h-12 w-24 justify-center items-center"
+                className=" rounded-md bg-white h-12 w-24 justify-center items-center"
                 activeOpacity={0.7}
                 onPress={handleBack}
               >
-                <Text className="text-xl text-white font-medium ">Back</Text>
+                <Text className="text-xl text-[#2D8CFF] font-medium ">
+                  Back
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -313,12 +315,14 @@ export default function UserScreen({ navigation }) {
             <View className="w-screen items-center bg-white justify-center ">
               <TouchableOpacity
                 title={'Spots'}
-                className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-20 justify-center items-center"
+                className=" p-2 rounded-md shadow-md bg-white h-10 w-20 justify-center items-center"
                 style={styles.shadow}
                 activeOpacity={0.7}
                 onPress={handleBack}
               >
-                <Text className="text-xl text-white font-medium ">Back</Text>
+                <Text className="text-xl text-[#2D8CFF] font-medium ">
+                  Back
+                </Text>
               </TouchableOpacity>
             </View>
           </>
@@ -347,7 +351,7 @@ export default function UserScreen({ navigation }) {
             <Image
               className="w-32 h-32 rounded-full "
               source={{
-                uri: user.avatar || noUserObject.avatar,
+                uri: user.avatar_url || noUserObject.avatar,
               }}
             />
             <View>
@@ -406,11 +410,11 @@ export default function UserScreen({ navigation }) {
         >
           <View className="mt-10 ">
             <TouchableOpacity
-              className=" p-2 self-center mb-10 rounded-md shadow-md bg-[#2D8CFF] h-10 w-20 justify-center items-center"
+              className=" p-2 self-center mb-10 rounded-md shadow-md bg-white h-10 w-20 justify-center items-center"
               style={styles.shadow}
               onPress={() => setShowModal(false)}
             >
-              <Text className="text-white text-l font-medium">Back</Text>
+              <Text className="text-[#2D8CFF] text-l font-medium">Back</Text>
             </TouchableOpacity>
             <Formik
               initialValues={{
@@ -473,23 +477,23 @@ export default function UserScreen({ navigation }) {
                   <View className="flex-1 items-center flex-col justify-center mt-10 items-center bg-white w-screen ">
                     <View className="flex-1 items-center flex-row justify-center bg-white w-screen ">
                       <TouchableOpacity
-                        className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-2/5 mx-1 justify-center items-center"
+                        className=" p-2 rounded-md shadow-md bg-white h-10 w-2/5 mx-1 justify-center items-center"
                         style={styles.shadow}
                         title="Pick an image from camera roll"
                         onPress={pickImage}
                       >
-                        <Text className="text-white text-l font-medium">
+                        <Text className="text-[#2D8CFF] text-l font-medium">
                           Image From Gallery
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
-                        className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-2/5 mx-1 justify-center items-center"
+                        className=" p-2 rounded-md shadow-md bg-white h-10 w-2/5 mx-1 justify-center items-center"
                         style={styles.shadow}
                         title="Take a photo with camera"
                         onPress={openCamera}
                       >
-                        <Text className="text-white text-l font-medium">
+                        <Text className="text-[#2D8CFF] text-l font-medium">
                           Take Photo
                         </Text>
                       </TouchableOpacity>
@@ -503,12 +507,12 @@ export default function UserScreen({ navigation }) {
                     </View>
 
                     <TouchableOpacity
-                      className=" p-2 rounded-md shadow-md bg-[#2D8CFF] mt-6 h-14 w-4/5 justify-center items-center"
+                      className=" p-2 rounded-md shadow-md bg-white mt-6 h-14 w-4/5 justify-center items-center"
                       style={styles.shadow}
                       title="submit"
                       onPress={props.handleSubmit}
                     >
-                      <Text className="text-white text-xl font-bold">
+                      <Text className="text-[#2D8CFF] text-xl font-bold">
                         Submit
                       </Text>
                     </TouchableOpacity>
@@ -538,10 +542,10 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOffset: {
       width: 0.5,
-      height: 2.5,
+      height: -2.5,
     },
     shadowOpacity: 0.69,
-    shadowRadius: 4.65,
-    elevation: 6,
+    shadowRadius: 2.65,
+    elevation: 4,
   },
 });

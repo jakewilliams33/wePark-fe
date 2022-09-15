@@ -26,14 +26,14 @@ export default SignUpComponent = ({
     <>
       <View className="flex-1 items-center justify-center bg-white w-screen ">
         <TouchableOpacity
-          className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-20 justify-center items-center"
+          className=" p-2 rounded-md shadow-md bg-white h-10 w-20 justify-center items-center"
           style={styles.shadow}
           onPress={(event) => {
             event.destination = 'Main';
             handlePress(event);
           }}
         >
-          <Text className="text-white text-l font-medium">Back</Text>
+          <Text className="text-[#2D8CFF] text-l font-medium">Back</Text>
         </TouchableOpacity>
 
         <SafeAreaView
@@ -98,13 +98,13 @@ export default SignUpComponent = ({
         </SafeAreaView>
 
         <TouchableOpacity
-          className=" p-2 rounded-md shadow-md bg-[#2D8CFF] h-10 w-20 justify-center items-center"
+          className=" p-2 rounded-md shadow-md bg-white h-10 w-20 justify-center items-center"
           style={styles.shadow}
           onPress={() => {
             handleSignUpSubmit();
           }}
         >
-          <Text className="text-white text-l font-medium">Submit</Text>
+          <Text className="text-[#2D8CFF] text-l font-medium">Submit</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -134,13 +134,13 @@ const styles = StyleSheet.create({
     border: 0,
   },
   shadow: {
-    shadowColor: '#000',
+    shadowColor: '#000000',
     shadowOffset: {
-      width: 1,
-      height: 3,
+      width: 0.5,
+      height: -2.5,
     },
-    shadowOpacity: 0.59,
-    shadowRadius: 6.65,
-    elevation: 7,
+    shadowOpacity: 0.69,
+    shadowRadius: 2.65,
+    elevation: 4,
   },
 });

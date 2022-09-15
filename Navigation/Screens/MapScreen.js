@@ -97,8 +97,8 @@ export default function MapScreen({ navigation, route }) {
     });
     if (!result.cancelled && result.selected) {
       let multi = result.selected.map((item) => {
-          return item.uri
-        })
+        return item.uri;
+      });
       setImage([...image, ...multi]);
     } else {
       setImage([...image, result.uri]);
@@ -117,7 +117,6 @@ export default function MapScreen({ navigation, route }) {
       setImage([...image, result.uri]);
     }
   };
-
 
   // Get single spot information
   const handleSpotPopup = (spot_id) => {
@@ -311,7 +310,7 @@ export default function MapScreen({ navigation, route }) {
 
   if (userLocation && mapRegion.latitude === userLocation.coords.latitude) {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }} className="bg-white">
         <SearchPlacesComponent
           userLocation={userLocation}
           setSearchLocation={setSearchLocation}
@@ -349,7 +348,7 @@ export default function MapScreen({ navigation, route }) {
                     backgroundColor: '#f4f8ff',
                     marginTop: 30,
                     marginHorizontal: 20,
-                    marginBottom:10,
+                    marginBottom: 10,
                     padding: 10,
                     borderColor: 'grey',
                     borderWidth: 0.1,
@@ -438,28 +437,71 @@ export default function MapScreen({ navigation, route }) {
                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                   />
                 </View>
-                <Text style={{fontWeight: "bold", justifyContent: "center", textAlign: "center", marginBottom: 20}}>Upload Images</Text>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                    marginBottom: 20,
+                  }}
+                >
+                  Upload Images
+                </Text>
 
-<View style={{flexDirection:"row", justifyContent: "space-evenly"}}>
-                <TouchableOpacity onPress={pickImage}>
-                  <Text style={{color: "grey"}}>Open gallery</Text>
-                  <Ionicons name="film-outline" color={"#2D8CFF"} size={70}/>
-                </TouchableOpacity>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-evenly',
+                  }}
+                >
+                  <TouchableOpacity onPress={pickImage}>
+                    <Text style={{ color: 'grey' }}>Open gallery</Text>
+                    <Ionicons name="film-outline" color={'#2D8CFF'} size={70} />
+                  </TouchableOpacity>
 
-                <TouchableOpacity onPress={openCamera}>
-                  <Text style={{color: "grey"}}>Take photo</Text>
-                  <Ionicons name="camera-outline" color={"#2D8CFF"} size={70}/>
-                </TouchableOpacity>
+                  <TouchableOpacity onPress={openCamera}>
+                    <Text style={{ color: 'grey' }}>Take photo</Text>
+                    <Ionicons
+                      name="camera-outline"
+                      color={'#2D8CFF'}
+                      size={70}
+                    />
+                  </TouchableOpacity>
                 </View>
 
                 <SliderBox images={image} ImageLoader={'ActivityIndicator'} />
-                <TouchableOpacity onPress={props.handleSubmit} style={{backgroundColor: "#2D8CFF", marginHorizontal: 130, borderRadius: 10}}>
-                  <View style={{flexDirection:"row", justifyContent: "center", paddingLeft: 5}}>
-                  <Text style={{fontSize: 15, color: "white", marginTop: 12, marginRight: 5}}>Submit!</Text>
-                  <Ionicons name="return-down-back-sharp" size={40} color={"white"}/>
+                <TouchableOpacity
+                  onPress={props.handleSubmit}
+                  style={{
+                    backgroundColor: '#2D8CFF',
+                    marginHorizontal: 130,
+                    borderRadius: 10,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      paddingLeft: 5,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: 'white',
+                        marginTop: 12,
+                        marginRight: 5,
+                      }}
+                    >
+                      Submit!
+                    </Text>
+                    <Ionicons
+                      name="return-down-back-sharp"
+                      size={40}
+                      color={'white'}
+                    />
                   </View>
                 </TouchableOpacity>
-                
               </View>
             )}
           </Formik>
@@ -560,26 +602,26 @@ export default function MapScreen({ navigation, route }) {
                     selectedSpotInfo &&
                     user.username === selectedSpotInfo.creator && (
                       <TouchableOpacity
-                        className=" rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center"
+                        className=" rounded-md bg-white h-14 w-14 justify-center items-center"
                         onPress={() => {
                           handleDelete();
                         }}
                       >
                         <Ionicons size={20} name="trash-bin" color={'white'} />
-                        <Text className="text-m text-white font-medium text-center">
+                        <Text className="text-m text-[#2D8CFF] font-medium text-center">
                           Delete
                         </Text>
                       </TouchableOpacity>
                     )}
                   {selectedSpotID && <FavButton spot_id={selectedSpotID} />}
                   <TouchableOpacity
-                    className=" rounded-md bg-[#2D8CFF] h-14 w-14 justify-center items-center"
+                    className=" rounded-md bg-white h-14 w-14 justify-center items-center"
                     onPress={() => {
                       setShowMarkerModal(false);
                     }}
                   >
                     <Ionicons size={20} name="arrow-back" color={'white'} />
-                    <Text className="text-m text-white font-medium text-center">
+                    <Text className="text-m text-[#2D8CFF] font-medium text-center">
                       Back
                     </Text>
                   </TouchableOpacity>
@@ -800,16 +842,17 @@ export default function MapScreen({ navigation, route }) {
     );
   } else
     return (
-      <View
-        style={{
-          marginTop: '40%',
-          justifyContent: 'center',
-          textAlign: 'center',
-        }}
-      >
-        <ActivityIndicator size="large" color="[#2D8CFF]" />
-        <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>
-          Getting user location data!
+      <View className="flex-col justify-center items-center h-screen w-screen">
+        <ActivityIndicator size="large" color="#2D8CFF" className=" mb-1/5" />
+        <Text
+          style={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            color: '#2D8CFF',
+            marginTop: 10,
+          }}
+        >
+          Loading...
         </Text>
       </View>
     );
@@ -835,7 +878,6 @@ const styles = StyleSheet.create({
     borderColor: '#f4f8ff',
     marginTop: 10,
     justifyContent: 'center',
-    
   },
   dropdown1BtnTxtStyle: { color: 'grey', textAlign: 'left', fontSize: 14 },
   dropdown1DropdownStyle: {
@@ -848,6 +890,16 @@ const styles = StyleSheet.create({
   },
   modalStyle: {
     margin: '10%',
+  },
+  shadow: {
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0.5,
+      height: -2.5,
+    },
+    shadowOpacity: 0.69,
+    shadowRadius: 2.65,
+    elevation: 4,
   },
 });
 

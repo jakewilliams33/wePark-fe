@@ -20,14 +20,14 @@ export default LoginComponent = ({
     <>
       <View className="flex-1 items-center justify-center bg-white w-screen ">
         <TouchableOpacity
-          className=" p-2 shadow-md rounded-md bg-[#2D8CFF] h-10 w-20 justify-center items-center"
+          className=" p-2 shadow-md rounded-md bg-white h-10 w-20 justify-center items-center"
           style={styles.shadow}
           onPress={(event) => {
             event.destination = 'Main';
             handlePress(event);
           }}
         >
-          <Text className="text-white text-l font-medium">Back</Text>
+          <Text className="text-[#2D8CFF] text-l font-medium">Back</Text>
         </TouchableOpacity>
 
         <SafeAreaView
@@ -51,18 +51,20 @@ export default LoginComponent = ({
             style={styles.inner_input}
             onChangeText={onChangeText7}
             onFocus={onChangeText7}
+            placeholder="Password"
+            secureTextEntry={true}
             value={text7}
           />
         </SafeAreaView>
 
         <TouchableOpacity
-          className=" p-2 rounded-md bg-[#2D8CFF] shadow-md h-10 w-20 justify-center items-center"
+          className=" p-2 rounded-md bg-white shadow-md h-10 w-20 justify-center items-center"
           style={styles.shadow}
           onPress={() => {
             handleLoginSubmit();
           }}
         >
-          <Text className="text-white text-l font-medium">Submit</Text>
+          <Text className="text-[#2D8CFF] text-l font-medium">Submit</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -96,10 +98,10 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOffset: {
       width: 0.5,
-      height: 2.5,
+      height: -2.5,
     },
     shadowOpacity: 0.69,
-    shadowRadius: 4.65,
-    elevation: 6,
+    shadowRadius: 2.65,
+    elevation: 4,
   },
 });
