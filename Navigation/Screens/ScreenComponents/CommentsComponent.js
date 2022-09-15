@@ -118,7 +118,7 @@ export default function CommentsComponent(selectedSpotID) {
             <Ionicons
               name="arrow-forward-circle-outline"
               size={34}
-              color={"lightblue"}
+              color={"#2D8CFF"}
             />
           </TouchableOpacity>
         </View>

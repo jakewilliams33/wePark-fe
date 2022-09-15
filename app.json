@@ -1,19 +1,30 @@
 {
   "expo": {
+    
     "name": "wePark",
     "slug": "wePark",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/notificationIcon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "notification":{
-      "icon":"./assets/Screenshot 2022-09-15 at 10.16.18.png"
-   },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./local/assets/notificationIcon.png",
+          "color": "#ffffff",
+          "sounds": [
+            "./local/assets/notification-sound.wav",
+            "./local/assets/notification-sound-other.wav"
+          ]
+        }
+      ]
+    ],
     "updates": {
       "fallbackToCacheTimeout": 0
     },
