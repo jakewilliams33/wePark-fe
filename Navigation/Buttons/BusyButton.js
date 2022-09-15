@@ -59,7 +59,7 @@ export default BusyButton = ({ selectedSpotInfo }) => {
       <TouchableOpacity
         className={'rounded-md bg-white h-14 w-14 justify-center items-center' }
         onPress={() => {
-          handlePress(time);
+          handlePress(5);
         }}
         disabled={time === null ? true : false}
       >
