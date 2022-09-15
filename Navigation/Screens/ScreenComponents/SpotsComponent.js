@@ -72,7 +72,7 @@ const SpotsItem = ({
   useEffect(() => {}, [user.favourites]);
   return (
     <View
-      className="bg-white  flex-col items-center justify-evenly   pl-2 pb-2 mt-3 ml-5 mr-5 shadow-md rounded-md"
+      className="bg-white  flex-col items-center justify-evenly w-11/12  pl-2 pb-2 mt-3 ml-5 mr-5 shadow-md rounded-md"
       style={styles.shadow}
       key={spot.item.id}
     >
@@ -185,9 +185,9 @@ export default SpotsComponent = ({
   };
 
   return (
-    <View className="flex-col  items-center h-8/12 mb-10 mb-2 bg-[#d5dee8]">
+    <View className="w-screen">
       {spotsObj ? (
-        <SafeAreaView className="w-11/12  ">
+        <SafeAreaView className="flex-col  items-center justify-end bg-[#d5dee8] h-5/8  ">
           <FlatList
             data={spotsObj.spots}
             renderItem={renderItem}

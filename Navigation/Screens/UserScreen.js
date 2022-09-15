@@ -300,12 +300,12 @@ export default function UserScreen({ navigation }) {
         );
       } else {
         content = (
-          <>
+          <View className="flex-col mt-20 w-screen">
             <Text className="text-xl text-center font-bold color-slate-600 mb-4">
               Your Spots
             </Text>
             <SpotsComponent
-              className="  w-screen"
+              className="  "
               spotsObj={spots}
               handleFavPress={handleFavPress}
               handleUnFavPress={handleUnFavPress}
@@ -325,7 +325,7 @@ export default function UserScreen({ navigation }) {
                 </Text>
               </TouchableOpacity>
             </View>
-          </>
+          </View>
         );
       }
     } else {
@@ -343,7 +343,7 @@ export default function UserScreen({ navigation }) {
   const WhichScreen = ({ isFavScreen, isInfoScreen, user }) => {
     if (user) {
       return (
-        <View className="flex-column items-center justify-evenly h-screen  bg-white">
+        <View className="flex-column items-center justify-evenly h-12/12  bg-white">
           <View
             className=" flex-row items-center justify-evenly w-screen mb-4 rounded-lg bg-white py-3 w-10/12 shadow-md"
             style={styles.shadow}
