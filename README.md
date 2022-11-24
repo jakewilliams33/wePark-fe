@@ -4,5 +4,8 @@ A React-Native android app that allows users to search and share parking spaces 
 
 ![wePark](We-Park.png)
 
-Follow the below link to a gif that demos the app
-https://drive.google.com/file/d/1orgG_jt3xRKwxcjOIzQWz1S2S9eR7UhF/view?usp=share_link
+Follow this link for a presentation and demo on the app:
+https://www.youtube.com/watch?v=KlPj9s7-wyg
+
+Follow this link for the demo only:
+https://www.youtube.com/watch?v=NTuEHa1NHmM
