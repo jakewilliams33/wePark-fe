@@ -2,6 +2,8 @@
 
 A React-Native android app that allows users to search and share parking spaces in their area, and encourages network effects with commenting, voting and favouriting functionality.
 
+https://northcoders.com/projects/sep-2022/wepark
+
 ![wePark](We-Park.png)
 
 Follow this link for a presentation and demo on the app:
